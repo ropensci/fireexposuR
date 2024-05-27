@@ -7,7 +7,7 @@
 #' @param summary logical, if True returns a summary table
 #' @param map logical, if true returns a ggplot map of values coloured by classification
 #'
-#' @return
+#' @return spatvector unless summary or map = T
 #' @export
 #'
 #' @examples

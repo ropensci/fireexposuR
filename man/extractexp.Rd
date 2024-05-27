@@ -26,6 +26,9 @@ extractexp(
 
 \item{map}{logical, if true returns a ggplot map of values coloured by classification}
 }
+\value{
+spatvector unless summary or map = T
+}
 \description{
 Title
 }
