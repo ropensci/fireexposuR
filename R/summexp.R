@@ -1,3 +1,13 @@
+#' Title
+#'
+#' @param exp spat raster from exposure()
+#' @param aoi spatvector to mask exposure to for summaries
+#' @param classify character, either "landscape" or "local"
+#'
+#' @return ggplot object
+#' @export
+#'
+#' @examples
 summexp <- function(exp, aoi, classify = c("landscape", "local")) {
   if (terra::linearUnits(exp) != 1) {
     stop("Linear units of exposure layer must be in meters")
