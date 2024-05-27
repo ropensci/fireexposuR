@@ -1,4 +1,22 @@
-exposure <- function(haz, tdist = c("l", "s", "r"), burnable) {
+#' Calculate Exposure
+#'
+#' @param haz a SpatRaster that represents hazardous fuels for the transmission
+#'     distance specified in tdist
+#' @param tdist a character vector, can be 'l' for long-range embers, 's' for
+#'     short-range embers, or 'r' for radiant heat
+#' @param nonburnable (optional) a spatRaster that represents the burnable landscape. Any cells
+#'     that cannot receive wildfire (e.g. open water, rocks) should be of value 1,
+#'     all other cells should be of value 0
+#'
+#' @return a SpatRaster
+#' @export
+#'
+#' @importFrom rlang .data
+#'
+#' @examples
+#'
+#'
+exposure <- function(haz, tdist = c("l", "s", "r"), nonburnable) {
   res <- terra::res(haz)[1]
   if (tdist == "l") {
     if (res > 150) {
@@ -28,11 +46,11 @@ exposure <- function(haz, tdist = c("l", "s", "r"), burnable) {
   }
   wgtwindow <- window / sum(window, na.rm = T)
   exp <- terra::focal(haz, wgtwindow, fun = sum) %>%
-    rename(exposure = focal_sum)
-  if (missing(burnable)){
+    dplyr::rename(exposure = .data$focal_sum)
+  if (missing(nonburnable)){
     return(exp)
   } else {
-  expb <- terra::mask(exp,burnable)
+  expb <- terra::mask(exp,nonburnable)
   return(expb)
   }
 }
