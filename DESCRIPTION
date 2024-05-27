@@ -23,10 +23,7 @@ Imports:
     terra,
     tidyr,
     tidyselect,
-    tidyterra,
-    magrittr,
-    MultiscaleDTM,
-    terra
+    tidyterra
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.1
