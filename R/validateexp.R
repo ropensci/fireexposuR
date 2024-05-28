@@ -1,5 +1,5 @@
 
-validateexp <- function(expb, fires, aoi){
+validateexp <- function(expb, fires, aoi, plot = F){
   rcmat <- matrix(c(0,0.2,1,
                     0.2,0.4,2,
                     0.4,0.6,3,
