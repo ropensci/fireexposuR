@@ -1,5 +1,5 @@
 adjustexp <- function(haz, tdist, nonburnable) {
-  print("Caution: any adjustments to transmission distances should be further validated with observed fires")
+  warning("Proceed with caution: any adjustments to transmission distances should be further validated with observed fires")
   res <- terra::res(haz)[1]
   if (res < tdist/3) {
     stop("insufficient data resolution for chosen exposure transmission distance")
