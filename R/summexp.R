@@ -17,9 +17,9 @@ summexp <- function(exp, aoi, classify = c("landscape", "local")) {
   }
   res <- terra::res(exp)[1]
   lut <- 0:5
-  names(lut) <- c("Nil","Low","Moderate", "High","Very High", "Extreme")
+  names(lut) <- c("Nil", "Low", "Moderate", "High", "Very High", "Extreme")
 
-  if (!missing(aoi)){
+  if (!missing(aoi)) {
     exp <- exp %>%
       terra::crop(aoi) %>%
       terra::mask(aoi)
@@ -27,30 +27,38 @@ summexp <- function(exp, aoi, classify = c("landscape", "local")) {
   df <- as.data.frame(exp)
   if (classify == "landscape") {
     df <- df %>%
-      dplyr::mutate(classexp = as.factor(dplyr::case_when(
-        exposure >= 0.8 ~ 5,
-        exposure >= 0.6 ~ 4,
-        exposure >= 0.4 ~ 3,
-        exposure >= 0.2 ~ 2,
-        exposure >= 0 ~ 1))) }
+      dplyr::mutate(classexp = as.factor(
+        dplyr::case_when(
+          exposure >= 0.8 ~ 5,
+          exposure >= 0.6 ~ 4,
+          exposure >= 0.4 ~ 3,
+          exposure >= 0.2 ~ 2,
+          exposure >= 0 ~ 1
+        )
+      ))
+  }
   if (classify == "local") {
     df <- df %>%
-      dplyr::mutate(classexp = as.factor(dplyr::case_when(
-        exposure >= 0.45 ~ 5,
-        exposure >= 0.3 ~ 3,
-        exposure >= 0.15 ~ 2,
-        exposure > 0 ~ 1,
-        exposure == 0 ~ 0))) }
+      dplyr::mutate(classexp = as.factor(
+        dplyr::case_when(
+          exposure >= 0.45 ~ 5,
+          exposure >= 0.3 ~ 3,
+          exposure >= 0.15 ~ 2,
+          exposure > 0 ~ 1,
+          exposure == 0 ~ 0
+        )
+      ))
+  }
 
 
   df <- df %>%
     dplyr::count(.data$classexp) %>%
-    dplyr::mutate(class = names(lut)[match(.data$classexp,lut)]) %>%
+    dplyr::mutate(class = names(lut)[match(.data$classexp, lut)]) %>%
     dplyr::mutate(npixels = .data$n) %>%
-    dplyr::mutate(prop = .data$npixels/sum(.data$npixels)) %>%
+    dplyr::mutate(prop = .data$npixels / sum(.data$npixels)) %>%
     dplyr::mutate(aream2 = .data$npixels * res * res) %>%
-    dplyr::mutate(areaha = .data$aream2/10000) %>%
-    dplyr::select(-c(.data$classexp,.data$n))
+    dplyr::mutate(areaha = .data$aream2 / 10000) %>%
+    dplyr::select(-c(.data$classexp, .data$n))
 
   return(df)
 }

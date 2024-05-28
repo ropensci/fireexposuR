@@ -1,6 +1,6 @@
 #' Directional Exposure
 #'
-#' @param expl Spatraster from exposure()
+#' @param exposure Spatraster from exposure()
 #' @param value Spatvector of value as a point or simplified polygon
 #' @param plot logical. if true, returns a directional plot
 #' @param map logical, if true, returns a map of the viable transects
@@ -10,10 +10,12 @@
 #' @export
 #'
 #' @examples
-direxp <- function(expl, value, plot = F, map = F, table = F) {
+direxp <- function(exposure, value, plot = FALSE, map = FALSE, table = FALSE) {
+  expl <- exposure
   if (length(value) > 1) {
     value <- value[1]
-    print("Value object provided has more than one feature, only the first point or polygon will be used.")
+    print("Value object provided has more than one feature, only the first
+          point or polygon will be used.")
   }
   wgs <- terra::project(value, "EPSG:4326")
   if (terra::geomtype(value) == "points") {
@@ -23,17 +25,19 @@ direxp <- function(expl, value, plot = F, map = F, table = F) {
     linestart <- data.frame(deg = 1:360) %>%
       dplyr::mutate(x0 = x) %>%
       dplyr::mutate(y0 = y)
-  }
-  else if (terra::geomtype(value) == "polygons") {
+  } else if (terra::geomtype(value) == "polygons") {
     x <- as.data.frame(terra::centroids(wgs), geom = "XY")$x
     y <- as.data.frame(terra::centroids(wgs), geom = "XY")$y
 
     linegeom0 <- data.frame(deg = 1:360) %>%
       dplyr::mutate(x0 = x) %>%
       dplyr::mutate(y0 = y) %>%
-      dplyr::mutate(x1 = geosphere::destPoint(cbind(.data$x0, .data$y0), .data$deg, 25000)[, 1]) %>%
-      dplyr::mutate(y1 = geosphere::destPoint(cbind(.data$x0, .data$y0), .data$deg, 25000)[, 2]) %>%
-      dplyr::mutate(wkt = paste("LINESTRING(", .data$x0, " ", .data$y0, ", ", .data$x1, " ", .data$y1, ")", sep = ""))
+      dplyr::mutate(x1 = geosphere::destPoint(cbind(.data$x0, .data$y0),
+                                              .data$deg, 25000)[, 1]) %>%
+      dplyr::mutate(y1 = geosphere::destPoint(cbind(.data$x0, .data$y0),
+                                              .data$deg, 25000)[, 2]) %>%
+      dplyr::mutate(wkt = paste("LINESTRING(", .data$x0, " ", .data$y0, ", ",
+                                .data$x1, " ", .data$y1, ")", sep = ""))
 
     transects0 <- terra::vect(linegeom0, geom = "wkt", crs = "EPSG:4326") %>%
       terra::crop(wgs)
@@ -58,33 +62,41 @@ direxp <- function(expl, value, plot = F, map = F, table = F) {
 
   # find end points for transects
   linegeom <- linestart %>%
-    dplyr::mutate(x5 = geosphere::destPoint(cbind(.data$x0, .data$y0), .data$deg, 5000)[, 1]) %>%
-    dplyr::mutate(y5 = geosphere::destPoint(cbind(.data$x0, .data$y0), .data$deg, 5000)[, 2]) %>%
-    dplyr::mutate(to5 = paste("LINESTRING(", .data$x0, " ", .data$y0, ", ", .data$x5, " ", .data$y5, ")", sep = "")) %>%
-    dplyr::mutate(x10 = geosphere::destPoint(cbind(.data$x5, .data$y5), .data$deg, 5000)[, 1]) %>%
-    dplyr::mutate(y10 = geosphere::destPoint(cbind(.data$x5, .data$y5), .data$deg, 5000)[, 2]) %>%
-    dplyr::mutate(to10 = paste("LINESTRING(", .data$x5, " ", .data$y5, ", ", .data$x10, " ", .data$y10, ")", sep = "")) %>%
-    dplyr::mutate(x15 = geosphere::destPoint(cbind(.data$x10, .data$y10), .data$deg, 5000)[, 1]) %>%
-    dplyr::mutate(y15 = geosphere::destPoint(cbind(.data$x10, .data$y10), .data$deg, 5000)[, 2]) %>%
-    dplyr::mutate(to15 = paste("LINESTRING(", .data$x10, " ", .data$y10, ", ", .data$x15, " ", .data$y15, ")", sep = ""))
+    dplyr::mutate(x5 = geosphere::destPoint(cbind(.data$x0, .data$y0),
+                                            .data$deg, 5000)[, 1]) %>%
+    dplyr::mutate(y5 = geosphere::destPoint(cbind(.data$x0, .data$y0),
+                                            .data$deg, 5000)[, 2]) %>%
+    dplyr::mutate(to5 = paste("LINESTRING(", .data$x0, " ", .data$y0, ", ",
+                              .data$x5, " ", .data$y5, ")", sep = "")) %>%
+    dplyr::mutate(x10 = geosphere::destPoint(cbind(.data$x5, .data$y5),
+                                             .data$deg, 5000)[, 1]) %>%
+    dplyr::mutate(y10 = geosphere::destPoint(cbind(.data$x5, .data$y5),
+                                             .data$deg, 5000)[, 2]) %>%
+    dplyr::mutate(to10 = paste("LINESTRING(", .data$x5, " ", .data$y5, ", ",
+                               .data$x10, " ", .data$y10, ")", sep = "")) %>%
+    dplyr::mutate(x15 = geosphere::destPoint(cbind(.data$x10, .data$y10),
+                                             .data$deg, 5000)[, 1]) %>%
+    dplyr::mutate(y15 = geosphere::destPoint(cbind(.data$x10, .data$y10),
+                                             .data$deg, 5000)[, 2]) %>%
+    dplyr::mutate(to15 = paste("LINESTRING(", .data$x10, " ", .data$y10, ", ",
+                               .data$x15, " ", .data$y15, ")", sep = ""))
+
   linegeomlong <- linegeom %>%
     dplyr::select(c(.data$deg, .data$to5, .data$to10, .data$to15)) %>%
-    tidyr::pivot_longer(
-      cols = c(.data$to5, .data$to10, .data$to15),
-      names_to = "seg",
-      values_to = "wkt"
-    )
+    tidyr::pivot_longer(cols = c(.data$to5, .data$to10, .data$to15),
+                        names_to = "seg", values_to = "wkt")
+
   transects <- terra::vect(linegeomlong,
                            geom = "wkt",
                            crs = "EPSG:4326",
-                           keepgeom = T) %>% # draws lines with WGS
+                           keepgeom = TRUE) %>% # draws lines with WGS
     terra::project(expl) # reprojects to match exposure layer
 
-  # prepare exposure
-  exp <- terra::crop(expl, terra::rescale(transects, 1.1)) # crop to extent of transects
+  # crop to extent of transects
+  exp <- terra::crop(expl, terra::rescale(transects, 1.1))
 
   rcm <- c(0, 0.6, NA, 0.6, 1, 1)
-  rcmat <- matrix(rcm, ncol = 3, byrow = TRUE) # reclass to high expl for dir plot
+  rcmat <- matrix(rcm, ncol = 3, byrow = TRUE)
   highexp <- terra::classify(exp, rcmat, include.lowest = TRUE)
   highexppoly <- terra::as.polygons(highexp) #convert to polygon for intersect
 
@@ -96,28 +108,29 @@ direxp <- function(expl, value, plot = F, map = F, table = F) {
   transects2 <- merge(transects,
                       intdt,
                       by = c("deg", "seg"),
-                      all = T) %>% # merge lengths with full transects
+                      all = TRUE) %>%
     dplyr::mutate(interslength = tidyr::replace_na(interslength, 0)) %>%
     dplyr::mutate(viable = ifelse(interslength / 5000 >= 0.8, 1, 0)) %>%
     dplyr::select(-interslength)
 
-  if (table == T) {
+  if (table == TRUE) {
     return(as.data.frame(transects2))
-  }
-  else if (map == T) {
+  } else if (map == TRUE) {
     #prepare for plotting
     t <- transects2 %>%
       dplyr::filter(.data$viable == 1) %>%
-      terra::project('EPSG:3857')
+      terra::project("EPSG:3857")
 
-    e <- transects2 %>% terra::project("EPSG:3857") %>%
+    e <- transects2 %>%
+      terra::project("EPSG:3857") %>%
       terra::rescale(1.1)
 
-    tile <- maptiles::get_tiles(e, "Esri.WorldImagery", crop = T, zoom = 11)
+    tile <- maptiles::get_tiles(e, "Esri.WorldImagery",
+                                crop = TRUE, zoom = 11)
 
-    v <- terra::project(value, 'EPSG:3857')
+    v <- terra::project(value, "EPSG:3857")
 
-    cred <- maptiles::get_credit('Esri.WorldImagery')
+    cred <- maptiles::get_credit("Esri.WorldImagery")
 
     caption <- paste("Basemap",
                      substr(cred, 1, 63),
@@ -126,17 +139,18 @@ direxp <- function(expl, value, plot = F, map = F, table = F) {
 
     plt <- ggplot2::ggplot() +
       tidyterra::geom_spatraster_rgb(data = tile, alpha = 0.9) +
-      tidyterra::geom_spatvector(data = t, ggplot2::aes(color = factor(.data$seg))) +
+      tidyterra::geom_spatvector(data = t,
+                                 ggplot2::aes(color = factor(.data$seg))) +
       ggplot2::scale_color_manual(
         values = c(
           "to5" = "darkred",
           "to10" = "darkorange",
           "to15" = "yellow"
         ),
-        limits = c('to5', 'to10', 'to15'),
-        breaks = c('to5', 'to10', 'to15'),
-        labels = c('Origin to 5 km', '5 km to 10 km', '10 km to 15 km'),
-        drop = F
+        limits = c("to5", "to10", "to15"),
+        breaks = c("to5", "to10", "to15"),
+        labels = c("Origin to 5 km", "5 km to 10 km", "10 km to 15 km"),
+        drop = FALSE
       ) +
       tidyterra::geom_spatvector(
         data = v,
@@ -144,24 +158,24 @@ direxp <- function(expl, value, plot = F, map = F, table = F) {
         colour = "black",
         linewidth = 0.7
       ) +
-      ggspatial::annotation_scale(location = 'bl') +
+      ggspatial::annotation_scale(location = "bl") +
       ggspatial::annotation_north_arrow(
         location = "bl",
-        which_north = T,
-        pad_y = grid::unit(0.3, 'in'),
-        height = grid::unit(0.3, 'in'),
-        width = grid::unit(0.3, 'in')
+        which_north = TRUE,
+        pad_y = grid::unit(0.3, "in"),
+        height = grid::unit(0.3, "in"),
+        width = grid::unit(0.3, "in")
       ) +
       ggplot2::theme_void() +
       ggplot2::labs(
-        title = 'Directional Exposure',
-        subtitle = 'Map generated with fireexposuR()',
-        color = 'Segment',
+        title = "Directional Exposure",
+        subtitle = "Map generated with fireexposuR()",
+        color = "Segment",
         caption = caption
       ) +
-      ggplot2::coord_sf(expand = F)
+      ggplot2::coord_sf(expand = FALSE)
     return(plt)
-  } else if (plot == T) {
+  } else if (plot == TRUE) {
     dffinal <- as.data.frame(transects2) %>%
       dplyr::select(-.data$wkt) %>%
       tidyr::pivot_wider(names_from = .data$seg, values_from = .data$viable) %>%
@@ -215,14 +229,13 @@ direxp <- function(expl, value, plot = F, map = F, table = F) {
         fill = "darkred",
         color = "darkred"
       ) +
-      ggplot2::geom_line(
-        ggplot2::aes(y = 1 / 3), linewidth = 0.5, color = "black") +
-      ggplot2::geom_line(
-        ggplot2::aes(y = 2 / 3), linewidth = 0.5, color = "black") +
-      ggplot2::geom_line(
-        ggplot2::aes(y = 1), linewidth = 0.5, color = "black") +
-      ggplot2::geom_point(
-        ggplot2::aes(y = 0)) +
+      ggplot2::geom_line(ggplot2::aes(y = 1 / 3),
+                         linewidth = 0.5, color = "black") +
+      ggplot2::geom_line(ggplot2::aes(y = 2 / 3),
+                         linewidth = 0.5, color = "black") +
+      ggplot2::geom_line(ggplot2::aes(y = 1),
+                         linewidth = 0.5, color = "black") +
+      ggplot2::geom_point(ggplot2::aes(y = 0)) +
       ggplot2::annotate(
         "label",
         x = 0,
@@ -249,22 +262,23 @@ direxp <- function(expl, value, plot = F, map = F, table = F) {
       ggplot2::theme(
         panel.grid.major = ggplot2::element_blank(),
         panel.grid.minor = ggplot2::element_blank(),
-        panel.background =  ggplot2::element_rect(fill = 'transparent'),
-        plot.background = ggplot2::element_rect(fill = 'transparent', color =
-                                         NA),
         panel.border = ggplot2::element_blank(),
         axis.text.y = ggplot2::element_blank(),
+        axis.ticks.y = ggplot2::element_blank(),
+        axis.title = ggplot2::element_blank(),
+        panel.background =  ggplot2::element_rect(fill = "transparent"),
+        plot.background = ggplot2::element_rect(fill = "transparent",
+                                                color = NA),
         axis.text.x = ggplot2::element_text(
           color = "black",
           size = 15,
           face = "bold"
-        ),
-        axis.ticks.y = ggplot2::element_blank(),
-        axis.title = ggplot2::element_blank()
-      )  +
+        )
+      ) +
       ggplot2::scale_x_continuous(breaks = c(90, 180, 270, 360),
-                         labels = c("E", "S", "W", "N")) +
-      ggplot2::labs(title = "Directional Exposure", subtitle = "Plot generated with fireexposuR()")
+                                  labels = c("E", "S", "W", "N")) +
+      ggplot2::labs(title = "Directional Exposure",
+                    subtitle = "Plot generated with fireexposuR()")
     return(plt)
   } else {
     transects3 <- transects2 %>%
