@@ -1,47 +1,62 @@
-rcmat <- matrix(c(0,0.2,1,
-                  0.2,0.4,2,
-                  0.4,0.6,3,
-                  0.6,0.8, 4,
-                  0.8,1, 5), ncol=3, byrow = T)
 
-classexp <- classify(exp_2020, rcmat, include.lowest = T) %>% 
-  mask(nonfuel_2020)
+validateexp <- function(expb, fires, aoi){
+  rcmat <- matrix(c(0,0.2,1,
+                    0.2,0.4,2,
+                    0.4,0.6,3,
+                    0.6,0.8, 4,
+                    0.8,1, 5), ncol=3, byrow = T)
 
-plot(classexp)
+  classexp <- terra::classify(expb, rcmat, include.lowest = T)
 
+  if (missing(aoi)){
+    studyarea <- classexp
+    studyareafires <- fires
+  } else {
+    studyarea <- terra::crop(classexp, aoi, overwrite = T) %>%
+      terra::mask(aoi)
+    studyareafires <- terra::crop(fires, aoi)
+  }
 
-studyarea <- crop(classexp, fpa, overwrite = T) %>% 
-  mask(fpa)
-studyareafires <- crop(fire_perims, fpa)
-firesarea <- crop(classexp, studyareafires, overwrite = T) %>% 
-  mask(studyareafires)
-
-totalstudyarea <- count(as.data.frame(studyarea), exposure) %>% 
-  mutate(proptotsarea = n/sum(n))
-totalfirearea <- count(as.data.frame(firesarea), exposure) %>% 
-  mutate(proptotfires = n/sum(n)) %>% 
-  left_join(totalstudyarea, by = "exposure")
-
-sampletotal <- round(sum(totalstudyarea$n)*0.001)
-firestotal <- round(sum(totalfirearea$n.x)*0.001)
-
-samplestudy <- count(spatSample(studyarea, sampletotal, na.rm = T, as.df = T, method = 'random'), exposure) %>% 
-  mutate(propsampsarea = n/sum(n)) %>% 
-  select(-n) %>% 
-  left_join(totalfirearea, by = "exposure")
-samplefires <- count(spatSample(firesarea, firestotal, na.rm = T, as.df = T, method = 'random'), exposure) %>% 
-  mutate(propsampfires = n/sum(n)) %>% 
-  select(-n) %>% 
-  left_join(samplestudy, by = "exposure")
+  firesarea <- terra::crop(studyarea, studyareafires, overwrite = T) %>%
+    terra::mask(studyareafires)
 
 
-props <- samplefires %>% 
-  select(c(exposure, proptotsarea,proptotfires,propsampsarea,propsampfires))
+  totalstudyarea <- dplyr::count(as.data.frame(studyarea), .data$exposure) %>%
+    dplyr::mutate(proptotstudyarea = .data$n/sum(.data$n))
+  totalfirearea <- dplyr::count(as.data.frame(firesarea), .data$exposure) %>%
+    dplyr::mutate(proptotfiresarea = .data$n/sum(.data$n)) %>%
+    dplyr::left_join(totalstudyarea, by = "exposure")
 
-ggplot(props, aes(x = exposure)) +
-  geom_col(mapping = aes(y = proptotfires), fill = "grey") +
-  geom_col(mapping = aes(y = proptotsarea), fill =NA, col = 'black', linetype = 2)
 
-ggplot(props, aes(x = exposure)) +
-  geom_col(mapping = aes(y = propsampfires), fill = "grey") +
-  geom_col(mapping = aes(y = propsampsarea), fill =NA, col = 'black', linetype = 2)
+  samplestudyareasize <- round(sum(totalstudyarea$n)*0.001)
+  samplefiresareasize <- round(sum(totalfirearea$n.x)*0.001)
+
+  samplestudyarea <- dplyr::count(terra::spatSample(studyarea, samplestudyareasize, na.rm = T, as.df = T, method = 'random'), .data$exposure) %>%
+    dplyr::mutate(propsampstudyarea = .data$n/sum(.data$n)) %>%
+    dplyr::select(-.data$n) %>%
+    dplyr::left_join(totalfirearea, by = "exposure")
+
+  samplefiresarea <- dplyr::count(terra::spatSample(firesarea, samplefiresareasize, na.rm = T, as.df = T, method = 'random'), .data$exposure) %>%
+    dplyr::mutate(propsampfiresarea = .data$n/sum(.data$n)) %>%
+    dplyr::select(-.data$n) %>%
+    dplyr::left_join(samplestudyarea, by = "exposure")
+
+  props <- samplefiresarea %>%
+    dplyr::select(c(.data$exposure, .data$proptotstudyarea,.data$proptotfiresarea,.data$propsampstudyarea,.data$propsampfiresarea))
+  if (plot ==T){
+    plt1 <- ggplot2::ggplot(props, ggplot2::aes(x = .data$exposure)) +
+      ggplot2::geom_col(mapping = ggplot2::aes(y = .data$proptotfiresarea), fill = "grey") +
+      ggplot2::geom_col(mapping = ggplot2::aes(y = .data$proptotstudyarea), fill =NA, col = 'black', linetype = 2)
+
+    plt2 <- ggplot2::ggplot(props, ggplot2::aes(x = .data$exposure)) +
+      ggplot2::geom_col(mapping = ggplot2::aes(y = .data$propsampfiresarea), fill = "grey") +
+      ggplot2::geom_col(mapping = ggplot2::aes(y = .data$propsampstudyarea), fill =NA, col = 'black', linetype = 2)
+
+    plts <- cowplot::plot_grid(plt1, plt2)
+    return(plts)
+  } else {
+    return(props)
+  }
+}
+
+
