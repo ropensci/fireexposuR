@@ -4,22 +4,29 @@
 \alias{exposure}
 \title{Calculate Exposure}
 \usage{
-exposure(haz, tdist = c("l", "s", "r"), nonburnable)
+exposure(hazard, tdist = c("l", "s", "r"), nonburnable)
 }
 \arguments{
-\item{haz}{a SpatRaster that represents hazardous fuels for the transmission
-distance specified in tdist}
+\item{hazard}{a SpatRaster that represents hazardous fuels for the
+transmission distance specified in tdist}
 
 \item{tdist}{a character vector, can be 'l' for long-range embers, 's' for
 short-range embers, or 'r' for radiant heat}
 
-\item{nonburnable}{(optional) a spatRaster that represents the burnable landscape. Any cells
-that cannot receive wildfire (e.g. open water, rocks) should be of value 1,
-all other cells should be of value 0}
+\item{nonburnable}{(optional) a spatRaster that represents the burnable
+landscape. Any cells that cannot receive wildfire (e.g. open water,
+rocks) should be of value 1, all other cells should be NODATA}
 }
 \value{
 a SpatRaster
 }
 \description{
 Calculate Exposure
+}
+\examples{
+lhaz <- terra::rast(system.file("extdata/LHazAB2020.tif", package = "fireexposuR"))
+nonburnable <- terra::rast(system.file("extdata/nonburnableAB2020.tif", package = "fireexposuR"))
+lexp <- exposure(lhaz, tdist = "l")
+lexpburnable <- exposure(lhaz, tdist = "l", nonburnable)
+
 }

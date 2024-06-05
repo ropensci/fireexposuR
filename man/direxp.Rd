@@ -2,12 +2,13 @@
 % Please edit documentation in R/direxp.R
 \name{direxp}
 \alias{direxp}
-\title{Directional Exposure}
+\title{Directional Exposure
+exposu}
 \usage{
-direxp(expl, value, plot = F, map = F, table = F)
+direxp(exposure, value, plot = FALSE, map = FALSE, table = FALSE)
 }
 \arguments{
-\item{expl}{Spatraster from exposure()}
+\item{exposure}{Spatraster from exposure()}
 
 \item{value}{Spatvector of value as a point or simplified polygon}
 
@@ -22,4 +23,24 @@ a spatvector of transects unless plot, map, or table are set to TRUE
 }
 \description{
 Directional Exposure
+exposu
+}
+\examples{
+
+lexp <- terra::rast(system.file("extdata/LExpAB2020.tif", package = "fireexposuR"))
+WHITpoly <- terra::vect(system.file("extdata/WHITpoly.shp", package = "fireexposuR"))
+WHITpt <- terra::centroids(WHITpoly)
+
+# return a SpatVector that can be used in R or exported
+direxp(lexp, WHITpoly)
+
+# generate a map in R using a polygon
+direxp(lexp, WHITpoly, map = TRUE)
+
+# generate a map in R using a point
+direxp(lexp, WHITpt, map = TRUE)
+
+# or generate plots
+direxp(lexp, WHITpoly, plot = TRUE)
+direxp(lexp, WHITpt, plot = TRUE)
 }

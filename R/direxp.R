@@ -1,5 +1,5 @@
 #' Directional Exposure
-#'
+#'exposu
 #' @param exposure Spatraster from exposure()
 #' @param value Spatvector of value as a point or simplified polygon
 #' @param plot logical. if true, returns a directional plot
@@ -10,6 +10,25 @@
 #' @export
 #'
 #' @examples
+#'
+#' lexp <- terra::rast(system.file("extdata/LExpAB2020.tif", package = "fireexposuR"))
+#' WHITpoly <- terra::vect(system.file("extdata/WHITpoly.shp", package = "fireexposuR"))
+#' WHITpt <- terra::centroids(WHITpoly)
+#'
+#' # return a SpatVector that can be used in R or exported
+#' direxp(lexp, WHITpoly)
+#'
+#' # generate a map in R using a polygon
+#' direxp(lexp, WHITpoly, map = TRUE)
+#'
+#' # generate a map in R using a point
+#' direxp(lexp, WHITpt, map = TRUE)
+#'
+#' # or generate plots
+#' direxp(lexp, WHITpoly, plot = TRUE)
+#' direxp(lexp, WHITpt, plot = TRUE)
+
+
 direxp <- function(exposure, value, plot = FALSE, map = FALSE, table = FALSE) {
   expl <- exposure
   if (length(value) > 1) {
@@ -102,10 +121,10 @@ direxp <- function(exposure, value, plot = FALSE, map = FALSE, table = FALSE) {
 
   #intersect and calculate length
   inters <- terra::crop(transects, highexppoly) %>%
-    dplyr::select(-.data$wkt)
+    tidyterra::select(-.data$wkt)
   interslength <- terra::perim(inters)
   intdt <- cbind(as.data.frame(inters), interslength) # append lengths to data
-  transects2 <- merge(transects,
+  transects2 <- terra::merge(transects,
                       intdt,
                       by = c("deg", "seg"),
                       all = TRUE) %>%
@@ -117,8 +136,8 @@ direxp <- function(exposure, value, plot = FALSE, map = FALSE, table = FALSE) {
     return(as.data.frame(transects2))
   } else if (map == TRUE) {
     #prepare for plotting
-    t <- transects2 %>%
-      dplyr::filter(.data$viable == 1) %>%
+
+    t <- tidyterra::filter(transects2, .data$viable == 1) %>%
       terra::project("EPSG:3857")
 
     e <- transects2 %>%
@@ -185,6 +204,13 @@ direxp <- function(exposure, value, plot = FALSE, map = FALSE, table = FALSE) {
       dplyr::mutate(blank10 = 2 / 3) %>%
       dplyr::mutate(in5 = .data$to5 * 1 / 3) %>%
       dplyr::mutate(blank5 = 1 / 3)
+
+
+    caption <- ifelse(terra::geomtype(value) == "points",
+                      "Centre of plot represents point feature",
+                      strwrap("centre of plot represents all transect origins
+                              along the boundary of the polygon"))
+
 
     plt <- ggplot2::ggplot(data = dffinal, ggplot2::aes(x = .data$deg)) +
       ggplot2::geom_bar(
@@ -278,7 +304,8 @@ direxp <- function(exposure, value, plot = FALSE, map = FALSE, table = FALSE) {
       ggplot2::scale_x_continuous(breaks = c(90, 180, 270, 360),
                                   labels = c("E", "S", "W", "N")) +
       ggplot2::labs(title = "Directional Exposure",
-                    subtitle = "Plot generated with fireexposuR()")
+                    subtitle = "Plot generated with fireexposuR()",
+                    caption = caption)
     return(plt)
   } else {
     transects3 <- transects2 %>%
