@@ -6,7 +6,7 @@
 #'     short-range embers, or 'r' for radiant heat
 #' @param nonburnable (optional) a spatRaster that represents the burnable
 #'     landscape. Any cells that cannot receive wildfire (e.g. open water,
-#'     rocks) should be of value 1, all other cells should be of value 0
+#'     rocks) should be of value 1, all other cells should be NODATA
 #'
 #' @return a SpatRaster
 #' @export
@@ -14,10 +14,13 @@
 #' @importFrom rlang .data
 #'
 #' @examples
-#'
+#' lhaz <- terra::rast(system.file("extdata/LHazAB2020.tif", package = "fireexposuR"))
+#' nonburnable <- terra::rast(system.file("extdata/nonburnableAB2020.tif", package = "fireexposuR"))
+#' lexp <- exposure(lhaz, tdist = "l")
+#' lexpburnable <- exposure(lhaz, tdist = "l", nonburnable)
 #'
 exposure <- function(hazard, tdist = c("l", "s", "r"), nonburnable) {
-  haz <- hazard
+  haz = hazard
   res <- terra::res(haz)[1]
   if (tdist == "l") {
     if (res > 150) {
@@ -50,11 +53,11 @@ exposure <- function(hazard, tdist = c("l", "s", "r"), nonburnable) {
   }
   wgtwindow <- window / sum(window, na.rm = TRUE)
   exp <- terra::focal(haz, wgtwindow, fun = sum) %>%
-    dplyr::rename(exposure = .data$focal_sum)
+    tidyterra::rename(exposure = .data$focal_sum)
   if (missing(nonburnable)) {
     return(exp)
   } else {
-    expb <- terra::mask(exp, nonburnable)
+    expb <- terra::mask(exp, nonburnable, inverse = TRUE)
     return(expb)
   }
 }

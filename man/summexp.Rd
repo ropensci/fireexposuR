@@ -2,20 +2,36 @@
 % Please edit documentation in R/summexp.R
 \name{summexp}
 \alias{summexp}
-\title{Title}
+\title{Summarize Exposure}
 \usage{
 summexp(exp, aoi, classify = c("landscape", "local"))
 }
 \arguments{
-\item{exp}{spat raster from exposure()}
+\item{exp}{SpatRaster from exposure()}
 
-\item{aoi}{spatvector to mask exposure to for summaries}
+\item{aoi}{SpatVector to mask exposure to for summary}
 
 \item{classify}{character, either "landscape" or "local"}
 }
 \value{
-ggplot object
+data frame
 }
 \description{
-Title
+Summarize Exposure
+}
+\examples{
+
+lexp <- terra::rast(system.file("extdata/LExpAB2020.tif", package = "fireexposuR"))
+fpa <- terra::vect(system.file("extdata/fpa.shp", package = "fireexposuR"))
+WHITpoly <- terra::vect(system.file("extdata/WHITpoly.shp", package = "fireexposuR"))
+
+#summary table for landscape classification, entire extent
+summexp(lexp, classify = "landscape")
+
+#summary table for landscape classification, for forest protection area
+summexp(lexp, fpa, classify = "landscape")
+
+# summary table for local classification, built enviro of a community
+summexp(lexp, WHITpoly, classify = "local")
+
 }

@@ -14,6 +14,16 @@
 #' @export
 #'
 #' @examples
+#'
+#' lexp <- terra::rast(system.file("extdata/LExpAB2020.tif", package = "fireexposuR"))
+#' WHITstruc <- terra::vect(system.file("extdata/WHITstruc.shp", package = "fireexposuR"))
+#'
+#' # summary table of structures in each class (local classification)
+#' extractexp(lexp, WHITstruc, method = "mean", classify = "local", summary = TRUE)
+#'
+#' # map structures in each class (local classification)
+#' extractexp(lexp, WHITstruc, method = "mean", classify = "local", map = TRUE)
+#'
 extractexp <- function(exposure,
                        values,
                        method = c("max", "mean"),
@@ -71,10 +81,14 @@ extractexp <- function(exposure,
         )
       )
   }
+
   lut <- 0:5
   names(lut) <- c("Nil", "Low", "Moderate", "High", "Very High", "Extreme")
   ext <- ext %>%
     dplyr::mutate(class = names(lut)[match(.data$classexp, lut)])
+
+  ext$class <- factor(ext$class, levels = names(lut))
+
 
   if (summary == TRUE) {
     df <- as.data.frame(ext) %>%
@@ -122,7 +136,7 @@ extractexp <- function(exposure,
     if (terra::geomtype(v) == "points") {
       plt <- plt +
         tidyterra::geom_spatvector(data = v,
-                                   ggplot2::aes(color = factor(class)),
+                                   ggplot2::aes(color = factor(.data$class)),
                                    size = 1) +
         ggplot2::scale_color_manual(values = cols) +
         ggplot2::labs(color = paste("Exposure Class (", classify, ")",
@@ -131,9 +145,9 @@ extractexp <- function(exposure,
     } else {
       plt <- plt +
         tidyterra::geom_spatvector(data = v,
-                                   ggplot2::aes(fill = factor(.data$classexp)),
+                                   ggplot2::aes(fill = factor(.data$class)),
                                    color = NA) +
-        ggplot2::scale_fill_manual(values = cols, labels = names(cols)) +
+        ggplot2::scale_fill_manual(values = cols) +
         ggplot2::labs(fill = paste("Exposure Class (", classify, ")",
                                    sep = "")) +
         ggplot2::coord_sf(expand = FALSE)

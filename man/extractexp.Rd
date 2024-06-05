@@ -5,30 +5,45 @@
 \title{Title}
 \usage{
 extractexp(
-  exp,
+  exposure,
   values,
   method = c("max", "mean"),
   classify = c("landscape", "local"),
-  summary = F,
-  map = F
+  summary = FALSE,
+  map = FALSE
 )
 }
 \arguments{
-\item{exp}{spatraster from exposure()}
+\item{exposure}{spatraster from exposure()}
 
 \item{values}{spatvector of points or polygons}
 
-\item{method}{character, either "max" or "mean". required when values are polygons}
+\item{method}{character, either "max" or "mean". required when values are
+polygons}
 
-\item{classify}{character, either "local" or "landscape" to specify classification style}
+\item{classify}{character, either "local" or "landscape" to specify
+classification style}
 
 \item{summary}{logical, if True returns a summary table}
 
-\item{map}{logical, if true returns a ggplot map of values coloured by classification}
+\item{map}{logical, if true returns a ggplot map of values coloured by
+classification}
 }
 \value{
 spatvector unless summary or map = T
 }
 \description{
 Title
+}
+\examples{
+
+lexp <- terra::rast(system.file("extdata/LExpAB2020.tif", package = "fireexposuR"))
+WHITstruc <- terra::vect(system.file("extdata/WHITstruc.shp", package = "fireexposuR"))
+
+# summary table of structures in each class (local classification)
+extractexp(lexp, WHITstruc, method = "mean", classify = "local", summary = TRUE)
+
+# map structures in each class (local classification)
+extractexp(lexp, WHITstruc, method = "mean", classify = "local", map = TRUE)
+
 }

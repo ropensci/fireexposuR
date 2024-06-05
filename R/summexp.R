@@ -1,13 +1,27 @@
-#' Title
+#' Summarize Exposure
 #'
-#' @param exp spat raster from exposure()
-#' @param aoi spatvector to mask exposure to for summaries
+#' @param exp SpatRaster from exposure()
+#' @param aoi SpatVector to mask exposure to for summary
 #' @param classify character, either "landscape" or "local"
 #'
-#' @return ggplot object
+#' @return data frame
 #' @export
 #'
 #' @examples
+#'
+#' lexp <- terra::rast(system.file("extdata/LExpAB2020.tif", package = "fireexposuR"))
+#' fpa <- terra::vect(system.file("extdata/fpa.shp", package = "fireexposuR"))
+#' WHITpoly <- terra::vect(system.file("extdata/WHITpoly.shp", package = "fireexposuR"))
+#'
+#' #summary table for landscape classification, entire extent
+#' summexp(lexp, classify = "landscape")
+#'
+#' #summary table for landscape classification, for forest protection area
+#' summexp(lexp, fpa, classify = "landscape")
+#'
+#' # summary table for local classification, built enviro of a community
+#' summexp(lexp, WHITpoly, classify = "local")
+#'
 summexp <- function(exp, aoi, classify = c("landscape", "local")) {
   if (terra::linearUnits(exp) != 1) {
     stop("Linear units of exposure layer must be in meters")
@@ -20,6 +34,8 @@ summexp <- function(exp, aoi, classify = c("landscape", "local")) {
   names(lut) <- c("Nil", "Low", "Moderate", "High", "Very High", "Extreme")
 
   if (!missing(aoi)) {
+    aoi <- terra::project(aoi, exp)
+
     exp <- exp %>%
       terra::crop(aoi) %>%
       terra::mask(aoi)
