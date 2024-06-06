@@ -1,16 +1,51 @@
-#' Title
+#' Extract exposure values to features
 #'
-#' @param exposure spatraster from exposure()
-#' @param values spatvector of points or polygons
-#' @param method character, either "max" or "mean". required when values are
-#'      polygons
-#' @param classify character, either "local" or "landscape" to specify
-#'      classification style
-#' @param summary logical, if True returns a summary table
-#' @param map logical, if true returns a ggplot map of values coloured by
-#'      classification
+#' @description
+#' `extractexp()` extracts the underlying exposure value for each feature in
+#' the values provided. Values can be provided as either points or polygons, and
+#' must be singlepart features (i.e. the attribute table has one row per value).
+#' If the values are polygon features the method parameter must be set to "max"
+#' or "mean", the method parameter is ignored if values are points. The function
+#' retuns a SpatVector with an added exposure field. If the classify parameter
+#' is provided, an additional field "classexp" is added.
 #'
-#' @return spatvector unless summary or map = T
+#' Landscape classification breaks are:
+#' * Low (0-20%)
+#' * Moderate (20-40%)
+#' * High (40-60%),
+#' * Very High (60-80%)
+#' * Extreme (80-100%)
+#'
+#' Local classification breaks are:
+#' * Nil (0%)
+#' * Low (>0-15%)
+#' * Moderate (15-30%)
+#' * High (30-45%)
+#' * Extreme (45%+)
+#'
+#' When either summary or map are set to `TRUE`, the classify parameter is required.
+#' Setting `summary = TRUE` will return a summary table of exposure by the user
+#' specified classification scheme. The table reports the number of values and
+#' proportions by class. Setting `map = TRUE` will return a standardized map of
+#' the values with a neutral base map and values symbolized by the user specified
+#' classification scheme. The ggplot object returned can be further modified
+#' with ggplot functions.
+#'
+#' @param exposure SpatRaster from [exposure()]
+#' @param values Spatvector of points or polygons
+#' @param method character, either `"max"` or `"mean"`. required when values are
+#'      polygons. Default is `"max"`.
+#' @param classify character, either `"local"` or `"landscape"` to specify
+#'      classification scheme to use.
+#' @param summary boolean, if `TRUE`: returns a summary table as a data frame.
+#'      Default is `FALSE`.
+#' @param map boolean, if `TRUE`: returns a ggplot map of values coloured by
+#'      class. Default is `FALSE`.
+#'
+#' @return a SpatVector object with added fields. Unless:
+#'      * `summary = TRUE`: a summary table is returned as a data frame object
+#'      * `map = TRUE`: a map is returned as a ggplot object
+#' @seealso [exposure()], [summexp()], [ggplot()]
 #' @export
 #'
 #' @examples
@@ -27,35 +62,39 @@
 extractexp <- function(exposure,
                        values,
                        method = c("max", "mean"),
-                       classify = c("landscape", "local"),
+                       classify = c("local", "landscape"),
                        summary = FALSE,
                        map = FALSE) {
+  stopifnot("`exposure` must be a SpatRaster object" = class(exposure) == "SpatRaster")
+  stopifnot("`values` must be a SpatVector object of point or polygon features" =
+              (class(values) == "SpatVector" && terra::geomtype(values) %in% c("points", "polygons")))
+  stopifnot("only one of `summary` or `map` can be set to `TRUE`" = (map == TRUE && summary == TRUE) == FALSE)
+  if (missing(classify)) {
+    stopifnot("must provide `classify` argument if `summary` or `map` = `TRUE`" =
+                                        (summary == TRUE || map == TRUE) == FALSE)
+  } else {
+    classify <- match.arg(classify)
+  }
+
+
   exp <- exposure
   if (terra::geomtype(values) == "points") {
     ext <- terra::extract(exp, values, bind = TRUE)
   } else {
-    if (terra::geomtype(values) != "polygons") {
-      stop("Values feature must be points or polygons")
-    }
-    if (missing(method)) {
-      stop("Must specify a method if values are polygon features")
-    }
+    method <- match.arg(method)
     if (method == "mean") {
-      ext <- terra::extract(exp, values, fun = mean, bind = TRUE)
+      ext <- terra::extract(exp, values, fun = mean, bind = TRUE) %>%
+        dplyr::mutate(method = "mean exposure")
     } else {
-      ext <- terra::extract(exp, values, fun = max, bind = TRUE)
+      ext <- terra::extract(exp, values, fun = max, bind = TRUE) %>%
+        dplyr::mutate(maxexp = "max exposure")
     }
   }
   if (missing(classify)) {
-    if (summary == FALSE && map == FALSE) {
       return(ext)
       stop()
-    } else {
-      return(ext)
-      stop("Must set classify parameter to 'local' or 'landscape' if
-           either summary or map are true")
-    }
   }
+  classify <- match.arg(classify)
   if (classify == "landscape") {
     ext <- ext %>%
       dplyr::mutate(scale = classify) %>%
@@ -68,7 +107,8 @@ extractexp <- function(exposure,
           exposure >= 0 ~ 1
         )
       )
-  } else if (classify == "local") {
+  }
+  if (classify == "local") {
     ext <- ext %>%
       dplyr::mutate(scale = classify) %>%
       dplyr::mutate(
