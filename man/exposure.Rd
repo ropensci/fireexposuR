@@ -2,7 +2,7 @@
 % Please edit documentation in R/exposure.R
 \name{exposure}
 \alias{exposure}
-\title{Calculate Exposure}
+\title{Compute the wildfire exposure metric}
 \usage{
 exposure(hazard, tdist = c("l", "s", "r"), nonburnable)
 }
@@ -10,23 +10,41 @@ exposure(hazard, tdist = c("l", "s", "r"), nonburnable)
 \item{hazard}{a SpatRaster that represents hazardous fuels for the
 transmission distance specified in tdist}
 
-\item{tdist}{a character vector, can be 'l' for long-range embers, 's' for
-short-range embers, or 'r' for radiant heat}
+\item{tdist}{a character vector, can be:
+* `"l"` for long-range embers (Default)
+* `"s"` for short-range embers
+* `"r"` for radiant heat}
 
-\item{nonburnable}{(optional) a spatRaster that represents the burnable
-landscape. Any cells that cannot receive wildfire (e.g. open water,
-rocks) should be of value 1, all other cells should be NODATA}
+\item{nonburnable}{(optional) a SpatRaster that represents the burnable
+landscape. Any cells that cannot receive wildfire (e.g. open water, rock)
+should be of value 1, all other cells should be NODATA. This parameter
+should be provided if preparing data for [validateexp()]}
 }
 \value{
-a SpatRaster
+A SpatRaster object of exposure values
 }
 \description{
-Calculate Exposure
+`exposure()` computes the wildfire exposure metric from a hazard fuel raster.
+The hazard fuel raster must be prepared by the user. Forbes and Beverly 2024
+details suggestions for data acquisition and preparation in accordance with
+various budget limitations and user experience levels. Computing wildfire
+exposure for different transmission distances may require unique hazard
+rasters for each distance. See Beverly et al. 2021, Beverly et al. 2010, and
+Schmidt et al. 2024 for further references for hazard raster preparation.
 }
 \examples{
-lhaz <- terra::rast(system.file("extdata/LHazAB2020.tif", package = "fireexposuR"))
-nonburnable <- terra::rast(system.file("extdata/nonburnableAB2020.tif", package = "fireexposuR"))
-lexp <- exposure(lhaz, tdist = "l")
-lexpburnable <- exposure(lhaz, tdist = "l", nonburnable)
+# generate example hazard data
+set.seed(0)
+r <- terra::rast(ymin = 0, xmin = 0, ymax = 30000, xmax = 30000)
+terra::res(r) <- 100
+terra::values(r) <- sample(c(0,1), terra::ncell(r), replace = TRUE)
+haz <- terra::sieve(r, threshold = 50, directions = 4)
+
+expl <- exposure(haz, tdist = "l")
+expl
+
+# each transmission distance has a resolution requirement and exposure() will
+# not run if resolution is too coarse
+try(exposure(haz, tdist = "r"))
 
 }

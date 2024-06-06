@@ -1,40 +1,63 @@
-#' Directional Exposure
-#'exposu
-#' @param exposure Spatraster from exposure()
-#' @param value Spatvector of value as a point or simplified polygon
-#' @param plot logical. if true, returns a directional plot
-#' @param map logical, if true, returns a map of the viable transects
-#' @param table logical, if true, returns a table of viable transects
+#' Conduct a directional exposure assessment
 #'
-#' @return a spatvector of transects unless plot, map, or table are set to TRUE
+#' @description `direxp()` automates the directional vulnerability assessment
+#'   methods from Beverly and Forbes 2023. This function can return the
+#'   assessment transects as:
+#'  * a spatial feature of transect segments
+#'  * a standardized map with a satellite imagery base map as a ggplot object
+#'  * a standardized radial plot as a ggplot object
+#'  * a table of each transect segment as a data frame
+#'
+#' @param exposure SpatRaster from [exposure()]
+#' @param value Spatvector of value as a point or simplified polygon
+#' @param plot Boolean, when `TRUE`: returns a standardized directional plot.
+#'   The default is `FALSE`.
+#' @param map Boolean, when `TRUE`: returns a map of the viable transects. The
+#'   default is `FALSE`.
+#' @param table Boolean, when `TRUE`: returns a table of viable transects. The
+#'   default is `FALSE`.
+#'
+#' @return a SpatVector of the transects with a attributes: degree, segment,
+#'   viable. Unless:
+#'      * `plot = TRUE`: a standardized plot as a ggplot object
+#'      * `map = TRUE`: a standardized map as a ggplot object
+#'      * `table = TRUE`: a data frame with attributes
 #' @export
 #'
 #' @examples
-#'
-#' lexp <- terra::rast(system.file("extdata/LExpAB2020.tif", package = "fireexposuR"))
-#' WHITpoly <- terra::vect(system.file("extdata/WHITpoly.shp", package = "fireexposuR"))
+#' filepath <- "extdata/LExpAB2020.tif"
+#' lexp <- terra::rast(system.file(filepath, package = "fireexposuR"))
+#' filepath <- "extdata/WHITpoly.shp"
+#' WHITpoly <- terra::vect(system.file(filepath, package = "fireexposuR"))
 #' WHITpt <- terra::centroids(WHITpoly)
 #'
 #' # return a SpatVector that can be used in R or exported
 #' direxp(lexp, WHITpoly)
 #'
-#' # generate a map in R using a polygon
+#' # generate a map in R using a polygon value
 #' direxp(lexp, WHITpoly, map = TRUE)
 #'
-#' # generate a map in R using a point
+#' # generate a map in R using a point value
 #' direxp(lexp, WHITpt, map = TRUE)
 #'
-#' # or generate plots
+#' # or generate as a standardized plot for the same polygon and point
 #' direxp(lexp, WHITpoly, plot = TRUE)
 #' direxp(lexp, WHITpt, plot = TRUE)
 
 
 direxp <- function(exposure, value, plot = FALSE, map = FALSE, table = FALSE) {
+  stopifnot("`exposure` must be a SpatRaster object"
+            = class(exposure) == "SpatRaster")
+  stopifnot("`value` must be a SpatVector object"
+            = class(value) == "SpatVector")
+  stopifnot("only one of `table`, `plot`, or `map` can be set to `TRUE`"
+            = (sum(c(map, table, plot)) <= 1))
+
   expl <- exposure
   if (length(value) > 1) {
     value <- value[1]
-    print("Value object provided has more than one feature, only the first
-          point or polygon will be used.")
+    message("Value object provided has more than one feature, only the first
+            point or polygon will be used.")
   }
   wgs <- terra::project(value, "EPSG:4326")
   if (terra::geomtype(value) == "points") {
@@ -125,9 +148,9 @@ direxp <- function(exposure, value, plot = FALSE, map = FALSE, table = FALSE) {
   interslength <- terra::perim(inters)
   intdt <- cbind(as.data.frame(inters), interslength) # append lengths to data
   transects2 <- terra::merge(transects,
-                      intdt,
-                      by = c("deg", "seg"),
-                      all = TRUE) %>%
+                             intdt,
+                             by = c("deg", "seg"),
+                             all = TRUE) %>%
     dplyr::mutate(interslength = tidyr::replace_na(interslength, 0)) %>%
     dplyr::mutate(viable = ifelse(interslength / 5000 >= 0.8, 1, 0)) %>%
     dplyr::select(-interslength)

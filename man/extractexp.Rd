@@ -2,48 +2,84 @@
 % Please edit documentation in R/extractexp.R
 \name{extractexp}
 \alias{extractexp}
-\title{Title}
+\title{Extract exposure values to features}
 \usage{
 extractexp(
   exposure,
   values,
   method = c("max", "mean"),
-  classify = c("landscape", "local"),
+  classify = c("local", "landscape"),
   summary = FALSE,
   map = FALSE
 )
 }
 \arguments{
-\item{exposure}{spatraster from exposure()}
+\item{exposure}{SpatRaster from [exposure()]}
 
-\item{values}{spatvector of points or polygons}
+\item{values}{Spatvector of points or polygons}
 
-\item{method}{character, either "max" or "mean". required when values are
-polygons}
+\item{method}{character, either `"max"` or `"mean"`. required when values are
+polygons. Default is `"max"`.}
 
-\item{classify}{character, either "local" or "landscape" to specify
-classification style}
+\item{classify}{character, either `"local"` or `"landscape"` to specify
+classification scheme to use.}
 
-\item{summary}{logical, if True returns a summary table}
+\item{summary}{boolean, if `TRUE`: returns a summary table as a data frame.
+Default is `FALSE`.}
 
-\item{map}{logical, if true returns a ggplot map of values coloured by
-classification}
+\item{map}{boolean, if `TRUE`: returns a ggplot map of values coloured by
+class. Default is `FALSE`.}
 }
 \value{
-spatvector unless summary or map = T
+a SpatVector object with added fields. Unless:
+     * `summary = TRUE`: a summary table is returned as a data frame object
+     * `map = TRUE`: a map is returned as a ggplot object
 }
 \description{
-Title
+`extractexp()` extracts the underlying exposure value for each
+feature in the values provided. Values can be provided as either points or
+polygons, and must be singlepart features (i.e. the attribute table has one
+row per value). If the values are polygon features the method parameter must
+be set to "max" or "mean", the method parameter is ignored if values are
+points. The function retuns a SpatVector with an added exposure field. If the
+classify parameter is provided, an additional field "classexp" is added.
+
+Landscape classification breaks are:
+* Low (0-20%)
+* Moderate (20-40%)
+* High (40-60%),
+* Very High (60-80%)
+* Extreme (80-100%)
+
+Local classification breaks are:
+* Nil (0%)
+* Low (>0-15%)
+* Moderate (15-30%)
+* High (30-45%)
+* Extreme (45%+)
+
+When either summary or map are set to `TRUE`, the classify parameter is
+required. Setting `summary = TRUE` will return a summary table of exposure by
+the user specified classification scheme. The table reports the number of
+values and proportions by class. Setting `map = TRUE` will return a
+standardized map of the values with a neutral base map and values symbolized
+by the user specified classification scheme. The ggplot object returned can
+be further modified with ggplot functions.
 }
 \examples{
-
-lexp <- terra::rast(system.file("extdata/LExpAB2020.tif", package = "fireexposuR"))
-WHITstruc <- terra::vect(system.file("extdata/WHITstruc.shp", package = "fireexposuR"))
+filepath <- "extdata/LExpAB2020.tif"
+lexp <- terra::rast(system.file(filepath, package = "fireexposuR"))
+filepath <- "extdata/WHITstruc.shp"
+WHITstruc <- terra::vect(system.file(filepath, package = "fireexposuR"))
 
 # summary table of structures in each class (local classification)
-extractexp(lexp, WHITstruc, method = "mean", classify = "local", summary = TRUE)
+extractexp(lexp, WHITstruc, method = "mean",
+    classify = "local", summary = TRUE)
 
 # map structures in each class (local classification)
 extractexp(lexp, WHITstruc, method = "mean", classify = "local", map = TRUE)
 
+}
+\seealso{
+[exposure()], [summexp()], [ggplot()]
 }
