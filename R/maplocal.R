@@ -1,4 +1,35 @@
-maplocal <- function(exposure, aoi, tdist = c("l", "s", "r")) {
+#' Map classified exposure for a localized area
+#'
+#' @description
+#' `maplocal()` is a helper function to produce a standardized map of
+#' exposure within a localized area with exposure classes. The ggplot object
+#' returned can be further modified with the ggplot library.
+#'
+#' #' Local classification breaks are:
+#' * Nil (0%)
+#' * Low (>0-15%)
+#' * Moderate (15-30%)
+#' * High (30-45%)
+#' * Extreme (45%+)
+#'
+#' @param exposure SpatRaster from [exposure()]
+#' @param aoi SpatVector of an area of interest to mask exposure for summary
+#'
+#' @return a standardized map is returned as a ggplot object
+#' @export
+#' @seealso [exposure()], [ggplot()]
+#'
+#' @examples
+#' lexp <- terra::rast(system.file("extdata/LExpAB2020.tif", package = "fireexposuR"))
+#' WHITbuilt <- terra::vect(system.file("extdata/WHITbuilt.shp", package = "fireexposuR"))
+#'
+#' maplocal(lexp, WHITbuilt)
+#'
+
+maplocal <- function(exposure, aoi) {
+  stopifnot("`exposure` must be a SpatRaster object" = class(exposure) == "SpatRaster")
+  stopifnot("`aoi` must be a SpatVector object" = class(aoi) == "SpatVector")
+
   exp <- exposure
   built <- aoi
   # project built for mapping
@@ -22,25 +53,20 @@ maplocal <- function(exposure, aoi, tdist = c("l", "s", "r")) {
 
   # reclassify with local classified reclass matrix
   expbc <- terra::classify(expb, rcmats, include.lowest = TRUE)
+  levels(expbc) <- data.frame(id=0:4, expclass = c("Nil", "Low", "Moderate", "High", "Extreme"))
 
   cols <- c("grey", "yellow", "orange", "red", "darkred")
-  labs <- c("Nil", "Low", "Moderate", "High", "Extreme")
 
-  tstr <- ifelse(tdist == "l", "Long-Range Ember Spotting",
-                 ifelse(tdist == "s", "Short-Range Ember Spotting",
-                        "Radiant Heat"))
 
-  title <- paste("Classified", tstr, "Transmission Exposure")
   cred <- maptiles::get_credit("Esri.WorldImagery")
   caption <- paste("Basemap", substr(cred, 1, 63), "\n",
                    substr(cred, 63, nchar(cred)))
 
   plt <- ggplot2::ggplot(b) +
     tidyterra::geom_spatraster_rgb(data = tile, alpha = 0.9) +
-    tidyterra::geom_spatraster(data = as.factor(expbc)) +
+    tidyterra::geom_spatraster(data = expbc, alpha = 0.8) +
     tidyterra::geom_spatvector(fill = NA, linewidth = 0.6) +
     ggplot2::scale_fill_manual(values = cols,
-                               labels = labs,
                                na.value = NA,
                                na.translate = FALSE) +
     ggplot2::theme_void() +
@@ -50,7 +76,7 @@ maplocal <- function(exposure, aoi, tdist = c("l", "s", "r")) {
                                       pad_y = grid::unit(0.3, "in"),
                                       height = grid::unit(0.3, "in"),
                                       width = grid::unit(0.3, "in")) +
-    ggplot2::labs(title = title,
+    ggplot2::labs(title = "Classified Exposure",
                   subtitle = "Map generated with fireexposuR()",
                   fill = "Exposure Class",
                   caption = caption) +

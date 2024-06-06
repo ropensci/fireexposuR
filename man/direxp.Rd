@@ -2,28 +2,35 @@
 % Please edit documentation in R/direxp.R
 \name{direxp}
 \alias{direxp}
-\title{Directional Exposure
-exposu}
+\title{Conduct a directional exposure assessment}
 \usage{
 direxp(exposure, value, plot = FALSE, map = FALSE, table = FALSE)
 }
 \arguments{
-\item{exposure}{Spatraster from exposure()}
+\item{exposure}{SpatRaster from [exposure()]}
 
 \item{value}{Spatvector of value as a point or simplified polygon}
 
-\item{plot}{logical. if true, returns a directional plot}
+\item{plot}{Boolean, when `TRUE`: returns a standardized directional plot. The default is `FALSE`.}
 
-\item{map}{logical, if true, returns a map of the viable transects}
+\item{map}{Boolean, when `TRUE`: returns a map of the viable transects. The default is `FALSE`.}
 
-\item{table}{logical, if true, returns a table of viable transects}
+\item{table}{Boolean, when `TRUE`: returns a table of viable transects. The default is `FALSE`.}
 }
 \value{
-a spatvector of transects unless plot, map, or table are set to TRUE
+a SpatVector of the transects with a attributes: degree, segment, viable. Unless:
+     * `plot = TRUE`: a standardized plot as a ggplot object
+     * `map = TRUE`: a standardized map as a ggplot object
+     * `table = TRUE`: a data frame with attributes: degree, segment, viable, WKT string
 }
 \description{
-Directional Exposure
-exposu
+`direxp()` automates the directional vulnerability assessment methods from
+ Beverly and Forbes 2023. This function can return the assessment transects
+ as:
+ * a spatial feature of transect segments
+ * a standardized map with a satellite imagery base map as a ggplot object
+ * a standardized radial plot as intruduced in Beverly and Forbes 2023 as a ggplot object
+ * a table of each transect segment with viability and a WKT string as a data frame
 }
 \examples{
 
@@ -34,13 +41,13 @@ WHITpt <- terra::centroids(WHITpoly)
 # return a SpatVector that can be used in R or exported
 direxp(lexp, WHITpoly)
 
-# generate a map in R using a polygon
+# generate a map in R using a polygon value
 direxp(lexp, WHITpoly, map = TRUE)
 
-# generate a map in R using a point
+# generate a map in R using a point value
 direxp(lexp, WHITpt, map = TRUE)
 
-# or generate plots
+# or generate as a standardized plot for the same polygon and point
 direxp(lexp, WHITpoly, plot = TRUE)
 direxp(lexp, WHITpt, plot = TRUE)
 }

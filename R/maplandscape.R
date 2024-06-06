@@ -1,7 +1,33 @@
-maplandscape <- function(exp, aoi) {
+#' Map continuous exposure across a landscape
+#'
+#' @description
+#' `maplandscape()` is a helper function to produce a standardized map of
+#' exposure across a landscape with a continuous scale. The ggplot object
+#' returned can be further modified with the ggplot library.
+#'
+#' @param exposure SpatRaster from [exposure()]
+#' @param aoi (optional) SpatVector of an area of interest to mask exposure for summary
+#'
+#' @return a map is returned as a ggplot object
+#' @export
+#' @seealso [exposure()], [ggplot()]
+#'
+#' @examples
+#' lexp <- terra::rast(system.file("extdata/LExpAB2020.tif", package = "fireexposuR"))
+#' fpa <- terra::vect(system.file("extdata/fpa.shp", package = "fireexposuR"))
+#'
+#' maplandscape(lexp, fpa)
+#'
+#'
+#'
+maplandscape <- function(exposure, aoi) {
+  stopifnot("`exposure` must be a SpatRaster object" = class(exposure) == "SpatRaster")
+
+  exp <- exposure
   if (missing(aoi)) {
     r <- exp
   } else {
+    stopifnot("`aoi` must be a SpatVector object" = class(aoi) == "SpatVector")
     r <- terra::crop(exp, aoi) %>%
       terra::mask(aoi)
   }
