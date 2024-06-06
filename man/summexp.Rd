@@ -2,36 +2,55 @@
 % Please edit documentation in R/summexp.R
 \name{summexp}
 \alias{summexp}
-\title{Summarize Exposure}
+\title{Summarize exposure by class}
 \usage{
-summexp(exp, aoi, classify = c("landscape", "local"))
+summexp(exposure, aoi, classify = c("landscape", "local"))
 }
 \arguments{
-\item{exp}{SpatRaster from exposure()}
+\item{exposure}{SpatRaster from [exposure()]}
 
-\item{aoi}{SpatVector to mask exposure to for summary}
+\item{aoi}{(optional) SpatVector of an area of interest to mask exposure for
+summary}
 
-\item{classify}{character, either "landscape" or "local"}
+\item{classify}{character, either `"landscape"` or `"local"`. default is
+`"landscape"`.}
 }
 \value{
-data frame
+a summary table as a data frame object
 }
 \description{
-Summarize Exposure
+`summexp()` creates a summary table of exposure by the user
+specified classification scheme. The table reports the number of pixels, the
+proportion, and area in hectares and meters squared by class.
+
+Landscape classification breaks are:
+* Low (0-20%)
+* Moderate (20-40%)
+* High (40-60%),
+* Very High (60-80%)
+* Extreme (80-100%)
+
+Local classification breaks are:
+* Nil (0%)
+* Low (>0-15%)
+* Moderate (15-30%)
+* High (30-45%)
+* Extreme (45%+)
 }
 \examples{
+filepath <- "extdata/LExpAB2020.tif"
+lexp <- terra::rast(system.file(filepath, package = "fireexposuR"))
 
-lexp <- terra::rast(system.file("extdata/LExpAB2020.tif", package = "fireexposuR"))
-fpa <- terra::vect(system.file("extdata/fpa.shp", package = "fireexposuR"))
-WHITpoly <- terra::vect(system.file("extdata/WHITpoly.shp", package = "fireexposuR"))
+filepath <- "extdata/WHITbuilt.shp"
+aoi <- terra::vect(system.file(filepath, package = "fireexposuR"))
 
-#summary table for landscape classification, entire extent
+# summary table for landscape classification, entire extent of exposure map
 summexp(lexp, classify = "landscape")
 
-#summary table for landscape classification, for forest protection area
-summexp(lexp, fpa, classify = "landscape")
-
 # summary table for local classification, built enviro of a community
-summexp(lexp, WHITpoly, classify = "local")
+summexp(lexp, aoi, classify = "local")
 
+}
+\seealso{
+[exposure()]
 }

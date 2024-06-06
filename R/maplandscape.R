@@ -1,14 +1,45 @@
-maplandscape <- function(exp, aoi) {
+#' Map continuous exposure across a landscape
+#'
+#' @description `maplandscape()` is a helper function to produce a standardized
+#' map of exposure across a landscape with a continuous scale. The ggplot object
+#' returned can be further modified with the ggplot library.
+#'
+#' @param exposure SpatRaster from [exposure()]
+#' @param aoi (optional) SpatVector of an area of interest to mask exposure for
+#'   summary
+#'
+#' @return a map is returned as a ggplot object
+#' @export
+#' @seealso [exposure()], [ggplot()]
+#'
+#' @examples
+#' filepath <- "extdata/LExpAB2020.tif"
+#' lexp <- terra::rast(system.file(filepath, package = "fireexposuR"))
+#' filepath <- "extdata/fpa.shp"
+#' fpa <- terra::vect(system.file(filepath, package = "fireexposuR"))
+#'
+#' maplandscape(lexp, fpa)
+#'
+#'
+#'
+maplandscape <- function(exposure, aoi) {
+  stopifnot("`exposure` must be a SpatRaster object"
+            = class(exposure) == "SpatRaster")
+
+  exp <- exposure
   if (missing(aoi)) {
     r <- exp
   } else {
+    stopifnot("`aoi` must be a SpatVector object"
+              = class(aoi) == "SpatVector")
     r <- terra::crop(exp, aoi) %>%
       terra::mask(aoi)
   }
   plt <- ggplot2::ggplot() +
     tidyterra::geom_spatraster(data = r) +
     tidyterra::geom_spatvector(fill = NA) +
-    tidyterra::scale_fill_whitebox_c(palette = "bl_yl_rd") +
+    tidyterra::scale_fill_whitebox_c(palette = "bl_yl_rd",
+                                     limits = c(0,1)) +
     ggplot2::theme_void() +
     ggplot2::labs(title = "Landscape Fire Exposure",
                   subtitle = "Map generated with fireexposuR()",

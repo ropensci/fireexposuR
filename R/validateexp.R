@@ -1,7 +1,29 @@
-
+#' Title
+#'
+#' @param burnableexposure exposure
+#' @param fires fires
+#' @param sampleper sample percent
+#' @param aoi aoi
+#' @param plot boolean
+#'
+#' @return table or plots
+#' @export
+#'
+#' @examples
+#' # coming soon
+#'
 validateexp <- function(burnableexposure, fires, sampleper = 0.001,
                         aoi, plot = FALSE) {
   expb <- burnableexposure
+  stopifnot("`burnableexposure` must be a SpatRaster object"
+            = class(expb) == "SpatRaster")
+  stopifnot("`fires` must be a SpatVector object"
+            = class(fires) == "SpatVector")
+  if (!missing(aoi)) {
+    stopifnot("`aoi` must be a SpatRaster object"
+              = class(aoi) == "SpatRaster")
+  }
+
   rcmat <- matrix(c(0, 0.2, 1,
                     0.2, 0.4, 2,
                     0.4, 0.6, 3,
