@@ -68,7 +68,7 @@ exposure <- function(hazard, tdist = c("l", "s", "r"), nonburnable) {
     window <- MultiscaleDTM::annulus_window(annulus, "map", res)
   }
   #stopifnot("Extent of hazard raster too small for exposure assessment"
-  #          = nrow(window < 2 * nrow(haz)))
+  #          = nrow(window <= 2 * nrow(haz)))
   wgtwindow <- window / sum(window, na.rm = TRUE)
   exp <- terra::focal(haz, wgtwindow, fun = sum) %>%
     tidyterra::rename(exposure = .data$focal_sum)
