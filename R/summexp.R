@@ -29,17 +29,28 @@
 #' @export
 #'
 #' @examples
-#' filepath <- "extdata/LExpAB2020.tif"
-#' lexp <- terra::rast(system.file(filepath, package = "fireexposuR"))
+#' # generate example hazard data -----------------------------
+#' set.seed(0)
+#' e <- c(45,55,495,505) * 10000
+#' r <- terra::rast(resolution = 100, extent = terra::ext(e))
+#' terra::values(r) <- sample(c(0,1), terra::ncell(r), replace = TRUE)
+#' terra::crs(r) <- "EPSG:32608"
+#' r <- terra::sieve(r, threshold = 50, directions = 4)
+#' haz <- terra::sieve(r, threshold = 500, directions = 4)
+#' # generate example AOI polygon -----------------------------
+#' filepath <- "extdata/builtsimpleexamplegeom.csv"
+#' g <- read.csv(system.file(filepath, package = "fireexposuR"))
+#' m <- as.matrix(g)
+#' v <- terra::vect(m, "polygons", crs = haz)
+#' # ----------------------------------------------------------
 #'
-#' filepath <- "extdata/WHITbuilt.shp"
-#' aoi <- terra::vect(system.file(filepath, package = "fireexposuR"))
+#' exp <- exposure(haz)
 #'
-#' # summary table for landscape classification, entire extent of exposure map
-#' summexp(lexp, classify = "landscape")
+#' # for full extent of data
+#' summexp(exp, classify = "landscape")
 #'
-#' # summary table for local classification, built enviro of a community
-#' summexp(lexp, aoi, classify = "local")
+#' # for a masked area
+#' summexp(exp, v, classify = "landscape")
 #'
 summexp <- function(exposure, aoi, classify = c("landscape", "local")) {
   stopifnot("`exposure` must be a SpatRaster object"

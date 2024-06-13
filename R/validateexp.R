@@ -1,4 +1,4 @@
-#' Title
+#' DOESNT WORK YET :P
 #'
 #' @param burnableexposure exposure
 #' @param fires fires
@@ -10,7 +10,7 @@
 #' @export
 #'
 #' @examples
-#' # coming soon
+#' # coming soon?
 #'
 validateexp <- function(burnableexposure, fires, sampleper = 0.001,
                         aoi, plot = FALSE) {

@@ -25,15 +25,18 @@
 #' @importFrom rlang .data
 #'
 #' @examples
-#' # generate example hazard data
+#' # generate example hazard data -----------------------------
 #' set.seed(0)
-#' r <- terra::rast(ymin = 0, xmin = 0, ymax = 30000, xmax = 30000)
-#' terra::res(r) <- 100
+#' e <- c(45,55,495,505) * 10000
+#' r <- terra::rast(resolution = 100, extent = terra::ext(e))
 #' terra::values(r) <- sample(c(0,1), terra::ncell(r), replace = TRUE)
-#' haz <- terra::sieve(r, threshold = 50, directions = 4)
+#' r <- terra::sieve(r, threshold = 50, directions = 4)
+#' haz <- terra::sieve(r, threshold = 500, directions = 4)
+#' # -----------------------------------------------------------
 #'
-#' expl <- exposure(haz, tdist = "l")
-#' expl
+#' # compute long range eposure from
+#' exp <- exposure(haz, tdist = "l")
+#' exp
 #'
 #' # each transmission distance has a resolution requirement and exposure() will
 #' # not run if resolution is too coarse
@@ -45,6 +48,11 @@ exposure <- function(hazard, tdist = c("l", "s", "r"), nonburnable) {
   stopifnot("`hazard` layer must have values between 0-1"
             = (terra::minmax(hazard)[1] >= 0 && terra::minmax(hazard)[2] <= 1))
   tdist <- match.arg(tdist)
+
+  if(terra::crs(hazard, describe = TRUE)$name == "unknown"){
+    message("Input CRS is undefined: If exposure() output will be used in
+            other fireexposur() functions a CRS must be defined")
+  }
 
   haz <- hazard
   res <- terra::res(haz)[1]
