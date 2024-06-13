@@ -1,6 +1,7 @@
 #' Generate a directional load plot or table for multiple values
 #'
-#' @description `direxp()` automates the directional vulnerability assessment
+#' @description UNTESTED!!!!!!!!! `direxp()` automates the directional
+#' vulnerability assessment
 #' methods from Beverly and Forbes 2023. This function can return directional
 #' loads as:
 #'  * a standardized radial plot as a ggplot object
