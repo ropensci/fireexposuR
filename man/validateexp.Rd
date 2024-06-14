@@ -2,7 +2,7 @@
 % Please edit documentation in R/validateexp.R
 \name{validateexp}
 \alias{validateexp}
-\title{Title}
+\title{DOESNT WORK YET :P}
 \usage{
 validateexp(burnableexposure, fires, sampleper = 0.001, aoi, plot = FALSE)
 }
@@ -21,9 +21,9 @@ validateexp(burnableexposure, fires, sampleper = 0.001, aoi, plot = FALSE)
 table or plots
 }
 \description{
-Title
+DOESNT WORK YET :P
 }
 \examples{
-# coming soon
+# coming soon?
 
 }
