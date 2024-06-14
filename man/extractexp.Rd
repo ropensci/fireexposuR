@@ -67,17 +67,32 @@ by the user specified classification scheme. The ggplot object returned can
 be further modified with ggplot functions.
 }
 \examples{
-filepath <- "extdata/LExpAB2020.tif"
-lexp <- terra::rast(system.file(filepath, package = "fireexposuR"))
-filepath <- "extdata/WHITstruc.shp"
-WHITstruc <- terra::vect(system.file(filepath, package = "fireexposuR"))
+# EXAMPLES IN PROGRESS
 
-# summary table of structures in each class (local classification)
-extractexp(lexp, WHITstruc, method = "mean",
-    classify = "local", summary = TRUE)
+# generate example hazard data -----------------------------
+set.seed(0)
+e <- c(45,55,495,505) * 10000
+r <- terra::rast(resolution = 100, extent = terra::ext(e))
+terra::values(r) <- sample(c(0,1), terra::ncell(r), replace = TRUE)
+terra::crs(r) <- "EPSG:32608"
+r <- terra::sieve(r, threshold = 50, directions = 4)
+haz <- terra::sieve(r, threshold = 500, directions = 4)
+# generate example AOI polygon -----------------------------
+filepath <- "extdata/builtsimpleexamplegeom.csv"
+g <- read.csv(system.file(filepath, package = "fireexposuR"))
+m <- as.matrix(g)
+v <- terra::vect(m, "polygons", crs = haz)
+# generate example point values within polygon -------------
+pts <- terra::spatSample(v, 200)
+# ----------------------------------------------------------
 
-# map structures in each class (local classification)
-extractexp(lexp, WHITstruc, method = "mean", classify = "local", map = TRUE)
+exp <- exposure(haz)
+
+# summarize values by class in a table ---------------------
+extractexp(exp, pts, classify = "local", summary = TRUE)
+
+# map example points with local classification -------------
+extractexp(exp, pts, classify = "local", map = TRUE)
 
 }
 \seealso{

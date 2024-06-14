@@ -33,15 +33,18 @@ rasters for each distance. See Beverly et al. 2021, Beverly et al. 2010, and
 Schmidt et al. 2024 for further references for hazard raster preparation.
 }
 \examples{
-# generate example hazard data
+# generate example hazard data -----------------------------
 set.seed(0)
-r <- terra::rast(ymin = 0, xmin = 0, ymax = 30000, xmax = 30000)
-terra::res(r) <- 100
+e <- c(45,55,495,505) * 10000
+r <- terra::rast(resolution = 100, extent = terra::ext(e))
 terra::values(r) <- sample(c(0,1), terra::ncell(r), replace = TRUE)
-haz <- terra::sieve(r, threshold = 50, directions = 4)
+r <- terra::sieve(r, threshold = 50, directions = 4)
+haz <- terra::sieve(r, threshold = 500, directions = 4)
+# -----------------------------------------------------------
 
-expl <- exposure(haz, tdist = "l")
-expl
+# compute long range eposure from
+exp <- exposure(haz, tdist = "l")
+exp
 
 # each transmission distance has a resolution requirement and exposure() will
 # not run if resolution is too coarse

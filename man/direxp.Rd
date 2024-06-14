@@ -37,22 +37,28 @@ a SpatVector of the transects with a attributes: degree, segment,
  * a table of each transect segment as a data frame
 }
 \examples{
-filepath <- "extdata/LExpAB2020.tif"
-lexp <- terra::rast(system.file(filepath, package = "fireexposuR"))
-filepath <- "extdata/WHITpoly.shp"
-WHITpoly <- terra::vect(system.file(filepath, package = "fireexposuR"))
-WHITpt <- terra::centroids(WHITpoly)
+# generate example hazard data -----------------------------
+set.seed(0)
+e <- c(45,55,495,505) * 10000
+r <- terra::rast(resolution = 100, extent = terra::ext(e))
+terra::values(r) <- sample(c(0,1), terra::ncell(r), replace = TRUE)
+terra::crs(r) <- "EPSG:32608"
+r <- terra::sieve(r, threshold = 50, directions = 4)
+haz <- terra::sieve(r, threshold = 500, directions = 4)
+# generate an example point ---------------------------------
+wkt <- "POINT (500000 5000000)"
+pt <- terra::vect(wkt, crs = haz)
+# -----------------------------------------------------------
+
+exp <- exposure(haz)
 
 # return a SpatVector that can be used in R or exported
-direxp(lexp, WHITpoly)
-
-# generate a map in R using a polygon value
-direxp(lexp, WHITpoly, map = TRUE)
+direxp(exp, pt)
 
 # generate a map in R using a point value
-direxp(lexp, WHITpt, map = TRUE)
+# note: example data is drawn in the ocean so basemap is not representative
+direxp(exp, pt, map = TRUE)
 
-# or generate as a standardized plot for the same polygon and point
-direxp(lexp, WHITpoly, plot = TRUE)
-direxp(lexp, WHITpt, plot = TRUE)
+# or generate as a standardized plot for the same point
+direxp(exp, pt, plot = TRUE)
 }

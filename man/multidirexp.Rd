@@ -26,7 +26,8 @@ a SpatVector of the transects with a attributes: degree, segment,
      * `table = TRUE`: a data frame with attributes by transect segment
 }
 \description{
-`direxp()` automates the directional vulnerability assessment
+UNTESTED!!!!!!!!! `direxp()` automates the directional
+vulnerability assessment
 methods from Beverly and Forbes 2023. This function can return directional
 loads as:
  * a standardized radial plot as a ggplot object
