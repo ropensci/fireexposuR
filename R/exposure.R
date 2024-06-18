@@ -10,10 +10,8 @@
 #'
 #' @param hazard a SpatRaster that represents hazardous fuels for the
 #'   transmission distance specified in tdist
-#' @param tdist a character vector, can be:
-#'      * `"l"` for long-range embers (Default)
-#'      * `"s"` for short-range embers
-#'      * `"r"` for radiant heat
+#' @param tdist a character vector, can be: "l" for long-range
+#'   embers (Default), "s" for short-range embers or, "r" for radiant heat
 #' @param nonburnable (optional) a SpatRaster that represents the burnable
 #'   landscape. Any cells that cannot receive wildfire (e.g. open water, rock)
 #'   should be of value 1, all other cells should be NODATA. This parameter
@@ -58,13 +56,13 @@ exposure <- function(hazard, tdist = c("l", "s", "r"), nonburnable) {
   res <- terra::res(haz)[1]
 
   if (tdist == "l") {
-    stopifnot("Insufficient resolution for long-range ember exposure assessment"
+    stopifnot("Insufficient resolution for longrange ember exposure assessment"
               = res < 150)
     annulus <- c(res, 500)
     window <- MultiscaleDTM::annulus_window(annulus, "map", res)
   }
   if (tdist == "s") {
-    stopifnot("Resolution insufficient for short-range ember exposure assessment"
+    stopifnot("Insuffucient resolution for shortrange ember exposure assessment"
               = res < 33)
     annulus <- c(res, 100)
     window <- MultiscaleDTM::annulus_window(annulus, "map", res)

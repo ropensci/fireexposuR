@@ -58,7 +58,7 @@ direxp <- function(exposure, value, plot = FALSE, map = FALSE, table = FALSE) {
             = class(value) == "SpatVector")
   stopifnot("only one of `table`, `plot`, or `map` can be set to `TRUE`"
             = (sum(c(map, table, plot)) <= 1))
-
+  names(exposure) <- 'exposure'
   expl <- exposure
   if (length(value) > 1) {
     value <- value[1]

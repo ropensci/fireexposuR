@@ -95,8 +95,9 @@ extractexp <- function(exposure,
     classify <- match.arg(classify)
   }
 
-
+  names(exposure) <- 'exposure'
   exp <- exposure
+
   if (terra::geomtype(values) == "points") {
     ext <- terra::extract(exp, values, bind = TRUE)
   } else {
