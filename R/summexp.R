@@ -59,7 +59,7 @@ summexp <- function(exposure, aoi, classify = c("landscape", "local")) {
             = terra::linearUnits(exposure) == 1)
   classify <- match.arg(classify)
 
-
+  names(exposure) <- 'exposure'
   exp <- exposure
   res <- terra::res(exp)[1]
   lut <- 0:5

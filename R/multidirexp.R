@@ -31,7 +31,7 @@ multidirexp <- function(exposure, values, plot = FALSE, all = FALSE) {
   stopifnot("`values` must be a SpatVector object of point or polygon features"
             = (class(values) == "SpatVector" &&
                  terra::geomtype(values) %in% c("points", "polygons")))
-
+  names(exposure) <- 'exposure'
   expl <- exposure
   fts <- values
 

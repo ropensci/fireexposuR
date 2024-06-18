@@ -43,7 +43,7 @@ maplocal <- function(exposure, aoi) {
             = class(exposure) == "SpatRaster")
   stopifnot("`aoi` must be a SpatVector object"
             = class(aoi) == "SpatVector")
-
+  names(exposure) <- 'exposure'
   exp <- exposure
   built <- aoi
   # project built for mapping
