@@ -2,26 +2,31 @@
 % Please edit documentation in R/validateexp.R
 \name{validateexp}
 \alias{validateexp}
-\title{DOESNT WORK YET :P}
+\title{Validate exposure with observed fires}
 \usage{
-validateexp(burnableexposure, fires, sampleper = 0.001, aoi, plot = FALSE)
+validateexp(burnableexposure, fires, aoi, samplesize = 0.005, plot = FALSE)
 }
 \arguments{
-\item{burnableexposure}{exposure}
+\item{burnableexposure}{A SpatRaster of exposure, non-burnable cells should
+be removed}
 
-\item{fires}{fires}
+\item{fires}{A SpatVector of observed fire perimeters}
 
-\item{sampleper}{sample percent}
+\item{aoi}{(Optional) A SpatVector that delineates an area of interest}
 
-\item{aoi}{aoi}
+\item{samplesize}{Proportion of area to sample (the default is 0.005)}
 
-\item{plot}{boolean}
+\item{plot}{Boolean, when `TRUE`: returns a plot of expected and observed
+exposure class proportions within entire extent and sampled areas. The
+default is `FALSE`.}
 }
 \value{
 table or plots
 }
 \description{
-DOESNT WORK YET :P
+`validateexp()` compares the proportion of exposure classes in
+  a the study area to the proportion of exposure classes within burned areas.
+  A random sample is taken to account for spatial autocorrelation.
 }
 \examples{
 # coming soon?

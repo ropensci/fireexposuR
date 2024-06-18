@@ -1,10 +1,17 @@
-#' DOESNT WORK YET :P
+#' Validate exposure with observed fires
 #'
-#' @param burnableexposure exposure
-#' @param fires fires
-#' @param sampleper sample percent
-#' @param aoi aoi
-#' @param plot boolean
+#' @description `validateexp()` compares the proportion of exposure classes in
+#'   a the study area to the proportion of exposure classes within burned areas.
+#'   A random sample is taken to account for spatial autocorrelation.
+#'
+#' @param burnableexposure A SpatRaster of exposure, non-burnable cells should
+#'    be removed
+#' @param fires A SpatVector of observed fire perimeters
+#' @param aoi (Optional) A SpatVector that delineates an area of interest
+#' @param samplesize Proportion of area to sample (the default is 0.005)
+#' @param plot Boolean, when `TRUE`: returns a plot of expected and observed
+#'   exposure class proportions within entire extent and sampled areas. The
+#'   default is `FALSE`.
 #'
 #' @return table or plots
 #' @export
@@ -12,16 +19,17 @@
 #' @examples
 #' # coming soon?
 #'
-validateexp <- function(burnableexposure, fires, sampleper = 0.001,
-                        aoi, plot = FALSE) {
+validateexp <- function(burnableexposure, fires, aoi, samplesize = 0.005,
+                        plot = FALSE) {
+  names(burnableexposure) <- "exposure"
   expb <- burnableexposure
   stopifnot("`burnableexposure` must be a SpatRaster object"
             = class(expb) == "SpatRaster")
   stopifnot("`fires` must be a SpatVector object"
             = class(fires) == "SpatVector")
   if (!missing(aoi)) {
-    stopifnot("`aoi` must be a SpatRaster object"
-              = class(aoi) == "SpatRaster")
+    stopifnot("`aoi` must be a SpatVector object"
+              = class(aoi) == "SpatVector")
   }
 
   rcmat <- matrix(c(0, 0.2, 1,
@@ -44,58 +52,79 @@ validateexp <- function(burnableexposure, fires, sampleper = 0.001,
   firesarea <- terra::crop(studyarea, studyareafires, overwrite = TRUE) %>%
     terra::mask(studyareafires)
 
-
-  totalstudyarea <- dplyr::count(as.data.frame(studyarea), .data$exposure) %>%
-    dplyr::mutate(proptotstudyarea = .data$n / sum(.data$n))
-  totalfirearea <- dplyr::count(as.data.frame(firesarea), .data$exposure) %>%
-    dplyr::mutate(proptotfiresarea = .data$n / sum(.data$n)) %>%
-    dplyr::left_join(totalstudyarea, by = "exposure")
+  df1 <- dplyr::count(as.data.frame(studyarea), .data$exposure) %>%
+    dplyr::mutate(of = "Total") %>%
+    dplyr::mutate(group = "Expected") %>%
+    dplyr::mutate(prop = .data$n / sum(.data$n))
 
 
-  samplestudyareasize <- round(sum(totalstudyarea$n) * sampleper)
-  samplefiresareasize <- round(sum(totalfirearea$n.x) * sampleper)
+  df2 <- dplyr::count(as.data.frame(firesarea), .data$exposure) %>%
+    dplyr::mutate(of = "Total") %>%
+    dplyr::mutate(group = "Observed") %>%
+    dplyr::mutate(prop = .data$n / sum(.data$n))
 
-  samplestudyarea <- dplyr::count(terra::spatSample(studyarea,
+  samplestudyareasize <- round(sum(df1$n) * samplesize)
+  samplefiresareasize <- round(sum(df2$n) * samplesize)
+
+  props <- rbind(df1, df2)
+
+  df3 <- dplyr::count(terra::spatSample(studyarea,
                                                     samplestudyareasize,
                                                     na.rm = TRUE,
                                                     as.df = TRUE,
                                                     method = "random"),
                                   .data$exposure) %>%
-    dplyr::mutate(propsampstudyarea = .data$n / sum(.data$n)) %>%
-    dplyr::select(-.data$n) %>%
-    dplyr::left_join(totalfirearea, by = "exposure")
+    dplyr::mutate(of = "Sample") %>%
+    dplyr::mutate(group = "Expected") %>%
+    dplyr::mutate(prop = .data$n / sum(.data$n))
 
-  samplefiresarea <- dplyr::count(terra::spatSample(firesarea,
+  props <- rbind(props, df3)
+
+  df4 <- dplyr::count(terra::spatSample(firesarea,
                                                     samplefiresareasize,
                                                     na.rm = TRUE,
                                                     as.df = TRUE,
                                                     method = "random"),
                                   .data$exposure) %>%
-    dplyr::mutate(propsampfiresarea = .data$n / sum(.data$n)) %>%
-    dplyr::select(-.data$n) %>%
-    dplyr::left_join(samplestudyarea, by = "exposure")
+    dplyr::mutate(of = "Sample") %>%
+    dplyr::mutate(group = "Observed") %>%
+    dplyr::mutate(prop = .data$n / sum(.data$n))
 
-  props <- samplefiresarea %>%
-    dplyr::select(c(.data$exposure,
-                    .data$proptotstudyarea,
-                    .data$proptotfiresarea,
-                    .data$propsampstudyarea,
-                    .data$propsampfiresarea))
+  lut <- 1:5
+  names(lut) <- c("Low", "Moderate", "High", "Very High", "Extreme")
+
+  props <- rbind(props, df4) %>%
+    dplyr::mutate(classexp = names(lut)[match(.data$exposure, lut)]) %>%
+    dplyr::select(.data$exposure, .data$classexp,
+                  .data$of, .data$group, .data$n, .data$prop)
+
+
   if (plot == TRUE) {
-    plt1 <- ggplot2::ggplot(props, ggplot2::aes(x = .data$exposure)) +
-      ggplot2::geom_col(mapping = ggplot2::aes(y = .data$proptotfiresarea),
-                        fill = "grey") +
-      ggplot2::geom_col(mapping = ggplot2::aes(y = .data$proptotstudyarea),
-                        fill = NA, col = "black", linetype = 2)
+    props <- dplyr::arrange(props, dplyr::desc(.data$group))
 
-    plt2 <- ggplot2::ggplot(props, ggplot2::aes(x = .data$exposure)) +
-      ggplot2::geom_col(mapping = ggplot2::aes(y = .data$propsampfiresarea),
-                        fill = "grey") +
-      ggplot2::geom_col(mapping = ggplot2::aes(y = .data$propsampstudyarea),
-                        fill = NA, col = "black", linetype = 2)
+    props$exposure <- as.factor(props$exposure)
 
-    plts <- cowplot::plot_grid(plt1, plt2)
-    return(plts)
+    labs <- unique(props$classexp)
+    brks <- unique(props$exposure)
+
+
+    plt <- ggplot2::ggplot(props, ggplot2::aes(x = .data$exposure,
+                                                y = .data$prop,
+                                                fill = .data$group,
+                                                color = .data$group)) +
+      ggplot2::geom_col(position = "identity", linetype = 2, size = 0.8) +
+      ggplot2::facet_grid(~.data$of) +
+      ggplot2::scale_fill_manual(values = c("transparent", "gray")) +
+      ggplot2::scale_color_manual(values = c("black", "transparent")) +
+      ggplot2::scale_y_continuous(expand =
+                                    ggplot2::expansion(mult = c(0,0.1))) +
+      ggplot2::scale_x_discrete(name ="Exposure Class",
+                       breaks = brks,
+                       labels = labs) +
+      ggplot2::labs(y = "Proportion") +
+      ggplot2::theme_classic() +
+      ggplot2::theme(legend.title=ggplot2::element_blank())
+    return(plt)
   } else {
     return(props)
   }
