@@ -10,10 +10,8 @@ exposure(hazard, tdist = c("l", "s", "r"), nonburnable)
 \item{hazard}{a SpatRaster that represents hazardous fuels for the
 transmission distance specified in tdist}
 
-\item{tdist}{a character vector, can be:
-* `"l"` for long-range embers (Default)
-* `"s"` for short-range embers
-* `"r"` for radiant heat}
+\item{tdist}{a character vector, can be: "l" for long-range
+embers (Default), "s" for short-range embers or, "r" for radiant heat}
 
 \item{nonburnable}{(optional) a SpatRaster that represents the burnable
 landscape. Any cells that cannot receive wildfire (e.g. open water, rock)
