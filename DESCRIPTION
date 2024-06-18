@@ -13,7 +13,6 @@ Description: This package computes wildfire exposure using methods from
     (2024).
 License: GPL (>= 3)
 Imports: 
-    cowplot,
     dplyr,
     geosphere,
     ggplot2,
