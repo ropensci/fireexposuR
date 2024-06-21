@@ -8,16 +8,13 @@
 #'    be removed
 #' @param fires A SpatVector of observed fire perimeters
 #' @param aoi (Optional) A SpatVector that delineates an area of interest
-#' @param samplesize Proportion of area to sample (the default is 0.005)
+#' @param samplesize Proportion of area to sample. The default is `0.005` (0.5%)
 #' @param plot Boolean, when `TRUE`: returns a plot of expected and observed
 #'   exposure class proportions within entire extent and sampled areas. The
 #'   default is `FALSE`.
 #'
 #' @return table or plots
 #' @export
-#'
-#' @examples
-#' # coming soon?
 #'
 validateexp <- function(burnableexposure, fires, aoi, samplesize = 0.005,
                         plot = FALSE) {
@@ -69,11 +66,11 @@ validateexp <- function(burnableexposure, fires, aoi, samplesize = 0.005,
   props <- rbind(df1, df2)
 
   df3 <- dplyr::count(terra::spatSample(studyarea,
-                                                    samplestudyareasize,
-                                                    na.rm = TRUE,
-                                                    as.df = TRUE,
-                                                    method = "random"),
-                                  .data$exposure) %>%
+                                        samplestudyareasize,
+                                        na.rm = TRUE,
+                                        as.df = TRUE,
+                                        method = "random"),
+                      .data$exposure) %>%
     dplyr::mutate(of = "Sample") %>%
     dplyr::mutate(group = "Expected") %>%
     dplyr::mutate(prop = .data$n / sum(.data$n))
@@ -81,11 +78,11 @@ validateexp <- function(burnableexposure, fires, aoi, samplesize = 0.005,
   props <- rbind(props, df3)
 
   df4 <- dplyr::count(terra::spatSample(firesarea,
-                                                    samplefiresareasize,
-                                                    na.rm = TRUE,
-                                                    as.df = TRUE,
-                                                    method = "random"),
-                                  .data$exposure) %>%
+                                        samplefiresareasize,
+                                        na.rm = TRUE,
+                                        as.df = TRUE,
+                                        method = "random"),
+                      .data$exposure) %>%
     dplyr::mutate(of = "Sample") %>%
     dplyr::mutate(group = "Observed") %>%
     dplyr::mutate(prop = .data$n / sum(.data$n))
@@ -109,21 +106,21 @@ validateexp <- function(burnableexposure, fires, aoi, samplesize = 0.005,
 
 
     plt <- ggplot2::ggplot(props, ggplot2::aes(x = .data$exposure,
-                                                y = .data$prop,
-                                                fill = .data$group,
-                                                color = .data$group)) +
+                                               y = .data$prop,
+                                               fill = .data$group,
+                                               color = .data$group)) +
       ggplot2::geom_col(position = "identity", linetype = 2, size = 0.8) +
       ggplot2::facet_grid(~.data$of) +
       ggplot2::scale_fill_manual(values = c("transparent", "gray")) +
       ggplot2::scale_color_manual(values = c("black", "transparent")) +
       ggplot2::scale_y_continuous(expand =
-                                    ggplot2::expansion(mult = c(0,0.1))) +
-      ggplot2::scale_x_discrete(name ="Exposure Class",
-                       breaks = brks,
-                       labels = labs) +
+                                    ggplot2::expansion(mult = c(0, 0.1))) +
+      ggplot2::scale_x_discrete(name = "Exposure Class",
+                                breaks = brks,
+                                labels = labs) +
       ggplot2::labs(y = "Proportion") +
       ggplot2::theme_classic() +
-      ggplot2::theme(legend.title=ggplot2::element_blank())
+      ggplot2::theme(legend.title = ggplot2::element_blank())
     return(plt)
   } else {
     return(props)

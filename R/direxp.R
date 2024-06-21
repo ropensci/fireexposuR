@@ -7,8 +7,12 @@
 #'  * a standardized map with a satellite imagery base map as a ggplot object
 #'  * a standardized radial plot as a ggplot object
 #'  * a table of each transect segment as a data frame
+#'   The exposure layer and value layer must have a CRS defined.
+#'   If a polygon is used, it must be a simple feature without holes or complex
+#'   geometry. The function will not run if the polygon should be simplified
+#'   further. See Forbes and Beverly 2024 for data preparation advice.
 #'
-#' @param exposure SpatRaster from [exposure()]
+#' @param exposure SpatRaster (e.g. from [exposure()])
 #' @param value Spatvector of value as a point or simplified polygon
 #' @param plot Boolean, when `TRUE`: returns a standardized directional plot.
 #'   The default is `FALSE`.
@@ -19,11 +23,10 @@
 #'
 #' @return a SpatVector of the transects with a attributes: degree, segment,
 #'   viable. Unless:
-#'      * `plot = TRUE`: a standardized plot as a ggplot object
-#'      * `map = TRUE`: a standardized map as a ggplot object
-#'      * `table = TRUE`: a data frame with attributes
+#'    * `plot = TRUE`: a standardized plot as a ggplot object
+#'    * `map = TRUE`: a standardized map as a ggplot object
+#'    * `table = TRUE`: a data frame with attributes
 #' @export
-#'
 #' @examples
 #' # generate example hazard data -----------------------------
 #' set.seed(0)
@@ -58,7 +61,7 @@ direxp <- function(exposure, value, plot = FALSE, map = FALSE, table = FALSE) {
             = class(value) == "SpatVector")
   stopifnot("only one of `table`, `plot`, or `map` can be set to `TRUE`"
             = (sum(c(map, table, plot)) <= 1))
-  names(exposure) <- 'exposure'
+  names(exposure) <- "exposure"
   expl <- exposure
   if (length(value) > 1) {
     value <- value[1]

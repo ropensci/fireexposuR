@@ -7,35 +7,39 @@
 summexp(exposure, aoi, classify = c("landscape", "local"))
 }
 \arguments{
-\item{exposure}{SpatRaster from [exposure()]}
+\item{exposure}{SpatRaster from \code{\link[=exposure]{exposure()}}}
 
 \item{aoi}{(optional) SpatVector of an area of interest to mask exposure for
 summary}
 
-\item{classify}{character, either `"landscape"` or `"local"`. default is
-`"landscape"`.}
+\item{classify}{character, either \code{"landscape"} or \code{"local"}. default is
+\code{"landscape"}.}
 }
 \value{
 a summary table as a data frame object
 }
 \description{
-`summexp()` creates a summary table of exposure by the user
+\code{summexp()} creates a summary table of exposure by the user
 specified classification scheme. The table reports the number of pixels, the
 proportion, and area in hectares and meters squared by class.
 
 Landscape classification breaks are:
-* Low (0-20%)
-* Moderate (20-40%)
-* High (40-60%),
-* Very High (60-80%)
-* Extreme (80-100%)
+\itemize{
+\item Low (0-20\%)
+\item Moderate (20-40\%)
+\item High (40-60\%),
+\item Very High (60-80\%)
+\item Extreme (80-100\%)
+}
 
 Local classification breaks are:
-* Nil (0%)
-* Low (>0-15%)
-* Moderate (15-30%)
-* High (30-45%)
-* Extreme (45%+)
+\itemize{
+\item Nil (0\%)
+\item Low (>0-15\%)
+\item Moderate (15-30\%)
+\item High (30-45\%)
+\item Extreme (45\%+)
+}
 }
 \examples{
 # generate example hazard data -----------------------------
@@ -63,5 +67,5 @@ summexp(exp, v, classify = "landscape")
 
 }
 \seealso{
-[exposure()]
+\code{\link[=exposure]{exposure()}}
 }

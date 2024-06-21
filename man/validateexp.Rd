@@ -14,21 +14,17 @@ be removed}
 
 \item{aoi}{(Optional) A SpatVector that delineates an area of interest}
 
-\item{samplesize}{Proportion of area to sample (the default is 0.005)}
+\item{samplesize}{Proportion of area to sample. The default is \code{0.005} (0.5\%)}
 
-\item{plot}{Boolean, when `TRUE`: returns a plot of expected and observed
+\item{plot}{Boolean, when \code{TRUE}: returns a plot of expected and observed
 exposure class proportions within entire extent and sampled areas. The
-default is `FALSE`.}
+default is \code{FALSE}.}
 }
 \value{
 table or plots
 }
 \description{
-`validateexp()` compares the proportion of exposure classes in
-  a the study area to the proportion of exposure classes within burned areas.
-  A random sample is taken to account for spatial autocorrelation.
-}
-\examples{
-# coming soon?
-
+\code{validateexp()} compares the proportion of exposure classes in
+a the study area to the proportion of exposure classes within burned areas.
+A random sample is taken to account for spatial autocorrelation.
 }

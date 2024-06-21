@@ -30,10 +30,10 @@
 #' by the user specified classification scheme. The ggplot object returned can
 #' be further modified with ggplot functions.
 #'
-#' @param exposure SpatRaster from [exposure()]
+#' @param exposure SpatRaster (e.g. from [exposure()])
 #' @param values Spatvector of points or polygons
 #' @param method character, either `"max"` or `"mean"`. required when values are
-#'   polygons. Default is `"max"`.
+#'   polygons. The default is `"max"`.
 #' @param classify character, either `"local"` or `"landscape"` to specify
 #'   classification scheme to use.
 #' @param summary boolean, if `TRUE`: returns a summary table as a data frame.
@@ -42,14 +42,13 @@
 #'   class. Default is `FALSE`.
 #'
 #' @return a SpatVector object with added fields. Unless:
-#'      * `summary = TRUE`: a summary table is returned as a data frame object
-#'      * `map = TRUE`: a map is returned as a ggplot object
-#' @seealso [exposure()], [summexp()], [ggplot()]
+#' * `summary = TRUE`: a summary table is returned as a data frame object
+#' * `map = TRUE`: a map is returned as a ggplot object
+#' @seealso [exposure()], [summexp()], [ggplot2::ggplot()]
+#'
 #' @export
 #'
 #' @examples
-#' # EXAMPLES IN PROGRESS
-#'
 #'# generate example hazard data -----------------------------
 #' set.seed(0)
 #' e <- c(45,55,495,505) * 10000
@@ -95,7 +94,7 @@ extractexp <- function(exposure,
     classify <- match.arg(classify)
   }
 
-  names(exposure) <- 'exposure'
+  names(exposure) <- "exposure"
   exp <- exposure
 
   if (terra::geomtype(values) == "points") {
