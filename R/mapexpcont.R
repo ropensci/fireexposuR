@@ -1,17 +1,15 @@
-#' Map continuous exposure across a landscape
+#' Map exposure with a continuous scale
 #'
-#' @description `maplandscape()` is a helper function to produce a standardized
-#' map of exposure across a landscape with a continuous scale. The ggplot object
-#' returned can be further modified with the ggplot library.
+#' @description `mapexpcont()` produces a standardized map of exposure with a
+#'   continuous scale. An optional area of interest can be used as a mask. The
+#'   ggplot object returned can be further modified with the ggplot library.
 #'
 #' @param exposure SpatRaster from [exposure()]
-#' @param aoi (optional) SpatVector of an area of interest to mask exposure for
-#'   summary
+#' @param aoi (optional) SpatVector of an area of interest to mask the exposure
 #'
 #' @return a map is returned as a ggplot object
 #' @export
 #' @seealso [exposure()], [ggplot()]
-#'
 #' @examples
 #'
 #' #' # generate example hazard data -----------------------------
@@ -25,15 +23,9 @@
 #' # -------------------------------------------------------------
 #'
 #' exp <- exposure(haz)
-#' maplandscape(exp)
+#' mapexpcont(exp)
 #'
-#' # IGNORE BELOW
-#' # filepath <- "extdata/LExpAB2020.tif"
-#' # lexp <- terra::rast(system.file(filepath, package = "fireexposuR"))
-#' # filepath <- "extdata/fpa.shp"
-#' # fpa <- terra::vect(system.file(filepath, package = "fireexposuR"))
-#'
-maplandscape <- function(exposure, aoi) {
+mapexpcont <- function(exposure, aoi) {
   stopifnot("`exposure` must be a SpatRaster object"
             = class(exposure) == "SpatRaster")
 
@@ -50,7 +42,7 @@ maplandscape <- function(exposure, aoi) {
     tidyterra::geom_spatraster(data = r) +
     tidyterra::geom_spatvector(fill = NA) +
     tidyterra::scale_fill_whitebox_c(palette = "bl_yl_rd",
-                                     limits = c(0,1)) +
+                                     limits = c(0, 1)) +
     ggplot2::theme_void() +
     ggplot2::labs(title = "Landscape Fire Exposure",
                   subtitle = "Map generated with fireexposuR()",
