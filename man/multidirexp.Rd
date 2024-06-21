@@ -7,31 +7,32 @@
 multidirexp(exposure, values, plot = FALSE, all = FALSE)
 }
 \arguments{
-\item{exposure}{SpatRaster from [exposure()]}
+\item{exposure}{SpatRaster from \code{\link[=exposure]{exposure()}}}
 
 \item{values}{Spatvector of value as a point or simplified polygon}
 
-\item{plot}{Boolean, when `TRUE`: returns a standardized directional plot.
-The default is `FALSE`.}
+\item{plot}{Boolean, when \code{TRUE}: returns a standardized directional plot.
+The default is \code{FALSE}.}
 
-\item{all}{Boolean, when `TRUE`: considers all 3 segments (0-15km) of
-directional transects. when `FALSE`: only the segments from 5-15 km are
+\item{all}{Boolean, when \code{TRUE}: considers all 3 segments (0-15km) of
+directional transects. when \code{FALSE}: only the segments from 5-15 km are
 included (Default)}
 }
 \value{
 a SpatVector of the transects with a attributes: degree, segment,
-  viable. Unless:
-     * `plot = TRUE`: a standardized plot as a ggplot object
-     * `map = TRUE`: a standardized map as a ggplot object
-     * `table = TRUE`: a data frame with attributes by transect segment
+viable. Unless:
+* \code{plot = TRUE}: a standardized plot as a ggplot object
+* \code{map = TRUE}: a standardized map as a ggplot object
+* \code{table = TRUE}: a data frame with attributes by transect segment
 }
 \description{
-UNTESTED!!!!!!!!! `direxp()` automates the directional
-vulnerability assessment
-methods from Beverly and Forbes 2023. This function can return directional
-loads as:
- * a standardized radial plot as a ggplot object
- * a table summarizing if each degree is included by feature
+\code{multidirexp()} automates the directional vulnerability
+assessment methods from Beverly and Forbes 2023. This function can return
+directional loads as:
+\itemize{
+\item a standardized radial plot as a ggplot object
+\item a table summarizing if each degree is included by feature
+}
 }
 \examples{
 #coming soon

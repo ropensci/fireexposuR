@@ -21,7 +21,6 @@
 #' @export
 #'
 #' @importFrom rlang .data
-#'
 #' @examples
 #' # generate example hazard data -----------------------------
 #' set.seed(0)
@@ -47,7 +46,7 @@ exposure <- function(hazard, tdist = c("l", "s", "r"), nonburnable) {
             = (terra::minmax(hazard)[1] >= 0 && terra::minmax(hazard)[2] <= 1))
   tdist <- match.arg(tdist)
 
-  if(terra::crs(hazard, describe = TRUE)$name == "unknown"){
+  if (terra::crs(hazard, describe = TRUE)$name == "unknown") {
     message("Input CRS is undefined: If exposure() output will be used in
             other fireexposur() functions a CRS must be defined")
   }

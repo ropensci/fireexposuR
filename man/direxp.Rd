@@ -7,34 +7,42 @@
 direxp(exposure, value, plot = FALSE, map = FALSE, table = FALSE)
 }
 \arguments{
-\item{exposure}{SpatRaster from [exposure()]}
+\item{exposure}{SpatRaster (e.g. from \code{\link[=exposure]{exposure()}})}
 
 \item{value}{Spatvector of value as a point or simplified polygon}
 
-\item{plot}{Boolean, when `TRUE`: returns a standardized directional plot.
-The default is `FALSE`.}
+\item{plot}{Boolean, when \code{TRUE}: returns a standardized directional plot.
+The default is \code{FALSE}.}
 
-\item{map}{Boolean, when `TRUE`: returns a map of the viable transects. The
-default is `FALSE`.}
+\item{map}{Boolean, when \code{TRUE}: returns a map of the viable transects. The
+default is \code{FALSE}.}
 
-\item{table}{Boolean, when `TRUE`: returns a table of viable transects. The
-default is `FALSE`.}
+\item{table}{Boolean, when \code{TRUE}: returns a table of viable transects. The
+default is \code{FALSE}.}
 }
 \value{
 a SpatVector of the transects with a attributes: degree, segment,
-  viable. Unless:
-     * `plot = TRUE`: a standardized plot as a ggplot object
-     * `map = TRUE`: a standardized map as a ggplot object
-     * `table = TRUE`: a data frame with attributes
+viable. Unless:
+\itemize{
+\item \code{plot = TRUE}: a standardized plot as a ggplot object
+\item \code{map = TRUE}: a standardized map as a ggplot object
+\item \code{table = TRUE}: a data frame with attributes
+}
 }
 \description{
-`direxp()` automates the directional vulnerability assessment
-  methods from Beverly and Forbes 2023. This function can return the
-  assessment transects as:
- * a spatial feature of transect segments
- * a standardized map with a satellite imagery base map as a ggplot object
- * a standardized radial plot as a ggplot object
- * a table of each transect segment as a data frame
+\code{direxp()} automates the directional vulnerability assessment
+methods from Beverly and Forbes 2023. This function can return the
+assessment transects as:
+\itemize{
+\item a spatial feature of transect segments
+\item a standardized map with a satellite imagery base map as a ggplot object
+\item a standardized radial plot as a ggplot object
+\item a table of each transect segment as a data frame
+The exposure layer and value layer must have a CRS defined.
+If a polygon is used, it must be a simple feature without holes or complex
+geometry. The function will not run if the polygon should be simplified
+further. See Forbes and Beverly 2024 for data preparation advice.
+}
 }
 \examples{
 # generate example hazard data -----------------------------

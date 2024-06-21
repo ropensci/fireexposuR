@@ -16,13 +16,13 @@ embers (Default), "s" for short-range embers or, "r" for radiant heat}
 \item{nonburnable}{(optional) a SpatRaster that represents the burnable
 landscape. Any cells that cannot receive wildfire (e.g. open water, rock)
 should be of value 1, all other cells should be NODATA. This parameter
-should be provided if preparing data for [validateexp()]}
+should be provided if preparing data for \code{\link[=validateexp]{validateexp()}}}
 }
 \value{
 A SpatRaster object of exposure values
 }
 \description{
-`exposure()` computes the wildfire exposure metric from a hazard fuel raster.
+\code{exposure()} computes the wildfire exposure metric from a hazard fuel raster.
 The hazard fuel raster must be prepared by the user. Forbes and Beverly 2024
 details suggestions for data acquisition and preparation in accordance with
 various budget limitations and user experience levels. Computing wildfire
