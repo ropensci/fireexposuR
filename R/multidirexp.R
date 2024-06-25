@@ -22,7 +22,24 @@
 #' @export
 #'
 #' @examples
-#' #coming soon
+#' # generate example hazard data -----------------------------
+#' set.seed(0)
+#' e <- c(45, 55, 495, 505) * 10000
+#' r <- terra::rast(resolution = 100, extent = terra::ext(e))
+#' terra::values(r) <- sample(c(0, 1), terra::ncell(r), replace = TRUE)
+#' terra::crs(r) <- "EPSG:32608"
+#' r <- terra::sieve(r, threshold = 50, directions = 4)
+#' haz <- terra::sieve(r, threshold = 500, directions = 4)
+#' # example points across the landscape ----------------------
+#' e <- terra::buffer(terra::vect(terra::ext(haz), crs = haz), -15500)
+#' pts <- terra::spatSample(e, 200)
+#' # ----------------------------------------------------------
+#'
+#' exp <- exposure(haz, tdist = "l")
+#' # this example will take a while to run
+#' \dontrun{
+#' multidirexp(exp, pts, plot = TRUE)
+#' }
 
 multidirexp <- function(exposure, values, plot = FALSE, all = FALSE) {
   stopifnot("`exposure` must be a SpatRaster object"
@@ -78,6 +95,7 @@ multidirexp <- function(exposure, values, plot = FALSE, all = FALSE) {
         axis.title.x = ggplot2::element_blank(),
         panel.grid = ggplot2::element_blank()
       )  +
+      ggplot2::scale_y_continuous(breaks = seq(0, axismax, by = 2)) +
       ggplot2::scale_x_continuous(breaks = c(90, 180, 270, 360),
                                   labels = c("E", "S", "W", "N")) +
       ggplot2::labs(title = "Directional Exposure Load for Multiple Values",
