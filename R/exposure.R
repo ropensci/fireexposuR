@@ -56,19 +56,19 @@ exposure <- function(hazard, tdist = c("l", "s", "r"), nonburnable) {
 
   if (tdist == "l") {
     stopifnot("Insufficient resolution for longrange ember exposure assessment"
-              = res < 150)
+              = res <= 150)
     annulus <- c(res, 500)
     window <- MultiscaleDTM::annulus_window(annulus, "map", res)
   }
   if (tdist == "s") {
     stopifnot("Insuffucient resolution for shortrange ember exposure assessment"
-              = res < 33)
+              = res <= 33)
     annulus <- c(res, 100)
     window <- MultiscaleDTM::annulus_window(annulus, "map", res)
   }
   if (tdist == "r") {
     stopifnot("Insufficient resolution for radiant heat exposure assessment"
-              = res < 10)
+              = res <= 10)
     annulus <- c(res, 30)
     window <- MultiscaleDTM::annulus_window(annulus, "map", res)
   }
