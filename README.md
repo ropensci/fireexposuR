@@ -4,6 +4,11 @@
 # fireexposuR
 
 <!-- badges: start -->
+
+[![Project Status: WIP – Initial development is in progress, but there
+has not yet been a stable, usable release suitable for the
+public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
+
 <!-- badges: end -->
 
 The goal of fireexposuR is to provide a standardized and accessible
@@ -43,10 +48,7 @@ First, some example data will be generated for a make-believe town:
 
 ``` r
 library(terra)
-#> terra 1.7.78
-```
-
-``` r
+#> terra 1.7.71
 # generate example hazard data -----------------------------
 set.seed(0)
 e <- c(45,55,495,505) * 10000
@@ -148,10 +150,10 @@ extractexp(exp, pts, classify = "local", map = TRUE)
 # summary table 
 extractexp(exp, pts, classify = "local", summary = TRUE)
 #>      class   n  prop
-#> 1      Nil 130 0.650
-#> 2      Low  25 0.125
-#> 3 Moderate  23 0.115
-#> 4     High  10 0.050
+#> 1      Nil 142 0.710
+#> 2      Low  27 0.135
+#> 3 Moderate   6 0.030
+#> 4     High  13 0.065
 #> 5  Extreme  12 0.060
 ```
 
