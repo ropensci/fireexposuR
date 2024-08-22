@@ -2,6 +2,7 @@
 #'
 #' `exposure()` computes the wildfire exposure metric from a hazard fuel raster.
 #' The hazard fuel raster must be prepared by the user. Forbes and Beverly 2024
+#' (manuscript in preparation)
 #' details suggestions for data acquisition and preparation in accordance with
 #' various budget limitations and user experience levels. Computing wildfire
 #' exposure for different transmission distances may require unique hazard
@@ -18,6 +19,13 @@
 #'   should be provided if preparing data for [validateexp()]
 #'
 #' @return A SpatRaster object of exposure values
+#'
+#' @details
+#' There are minimum raster resolution requirements for each transmission distance.
+#' Radiant heat requires data of 10 m or finer, short-range embers 90 m or finer, and
+#' long-range embers requires 150 m or finer.
+#'
+#'
 #' @export
 #'
 #' @importFrom rlang .data
