@@ -41,7 +41,8 @@ assessment transects as:
 The exposure layer and value layer must have a CRS defined.
 If a polygon is used, it must be a simple feature without holes or complex
 geometry. The function will not run if the polygon should be simplified
-further. See Forbes and Beverly 2024 for data preparation advice.
+further. See Forbes and Beverly 2024 (Manuscript in preparation) for data
+preparation advice.
 }
 }
 \examples{
