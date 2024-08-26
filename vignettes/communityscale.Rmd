@@ -6,7 +6,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
-  markdown: TRUE
+  markdown: 
     wrap: 72
 ---
 
@@ -19,11 +19,15 @@ knitr::opts_chunk$set(
 
 ## Usage example
 
-This is a basic example which shows a workflow to assess wildfire exposure to a community using multiple functions from the fireexposuR package. The package automates the methods within various research products which can be accessed through the following links:
+This is a basic example which shows a workflow to assess wildfire
+exposure to a community using multiple functions from the fireexposuR
+package. The package automates the methods within various research
+products which can be accessed through the following links:
 
 -   [Beverly et al. 2010](https://doi.org/10.1071/WF09071)
 -   [Beverly et al. 2021](https://doi.org/10.1007/s10980-020-01173-8)
--   [Beverly and Forbes 2023](https://doi.org/10.1007/s11069-023-05885-3)
+-   [Beverly and Forbes
+    2023](https://doi.org/10.1007/s11069-023-05885-3)
 
 ```{r setup}
 library(fireexposuR)
@@ -53,11 +57,14 @@ pts <- spatSample(aoi, 200)
 # ----------------------------------------------------------
 ```
 
-This example data represents the sort of data that would be pre-prepared by a user for the assessment.
+This example data represents the sort of data that would be pre-prepared
+by a user for the assessment.
 
 #### Hazard data
 
-The `haz` layer is a binary raster that represents wildland fuels that are able to generate long-range embers up to a transmission distance of 500 meters:
+The `haz` layer is a binary raster that represents wildland fuels that
+are able to generate long-range embers up to a transmission distance of
+500 meters:
 
 ```{r hazardvis, echo = FALSE}
 plot(haz)
@@ -65,7 +72,9 @@ plot(haz)
 
 #### Area of interest and values data
 
-The `aoi` layer is a polygon representing the built environment of our imaginary town. The `pts` feature represents the centroids of homes and structures within the community.
+The `aoi` layer is a polygon representing the built environment of our
+imaginary town. The `pts` feature represents the centroids of homes and
+structures within the community.
 
 ```{r aoivis, echo = FALSE}
 plot(aoi)
@@ -74,7 +83,8 @@ plot(pts, add = T)
 
 ### Compute exposure
 
-Now, we will use the hazard data to compute the exposure to long-range ember transmission.
+Now, we will use the hazard data to compute the exposure to long-range
+ember transmission.
 
 ```{r exposureexample}
 library(fireexposuR)
@@ -83,27 +93,35 @@ exp <- exposure(haz, tdist = "l")
 
 ### Visualize exposure
 
-Once we have an exposure raster the rest of the package functions can be used to visualize it in different ways. For a landscape, we can map exposure with a continuous scale with `mapexpcont()`:
+Once we have an exposure raster the rest of the package functions can be
+used to visualize it in different ways. For a landscape, we can map
+exposure with a continuous scale with `mapexpcont()`:
 
 ```{r maplandscape}
 mapexpcont(exp)
 ```
 
-We can also see how that exposure is distributed within the built environment with exposure classifications in an area of interest with `mapexpclass()`.
+We can also see how that exposure is distributed within the built
+environment with exposure classifications in an area of interest with
+`mapexpclass()`.
 
-*Note: our imaginary town is in the middle of the Pacific Ocean so the base map does not provide further reference.*
+*Note: our imaginary town is in the middle of the Pacific Ocean so the
+base map does not provide further reference.*
 
 ```{r maplocal}
 mapexpclass(exp, classify = "local", aoi)
 ```
 
-This map gives us a better understanding of areas of the town that could be fire entry points. We can also summarize the area with `summexp()` if we want to know the proportional distributions of each class.
+This map gives us a better understanding of areas of the town that could
+be fire entry points. We can also summarize the area with `summexp()` if
+we want to know the proportional distributions of each class.
 
 ```{r summlocal}
 summexp(exp, classify = "local", aoi)
 ```
 
-We also have data for the values within the built environment, for which we can map or summarize in a table as well.
+We also have data for the values within the built environment, for which
+we can map or summarize in a table as well.
 
 ```{r mapvalues}
 # map the values
@@ -113,17 +131,33 @@ extractexp(exp, pts, classify = "local", summary = TRUE)
 
 ```
 
-With this information, the community has now identified 12 structures that are extremely exposed to long-range embers from the landscape in the northwest of the community. This could be a potential area to prioritize wildfire mitigation strategies.
+With this information, the community has now identified 12 structures
+that are extremely exposed to long-range embers from the landscape in
+the northwest of the community. This could be a potential area to
+prioritize wildfire mitigation strategies.
 
 #### Directional vulnerability
 
-Our make believe town may also wish to assess the directional vulnerability to wildfire towards their community. This assessment identifies linear pathways of exposure from the landscape toward a value.
+Our make believe town may also wish to assess the directional
+vulnerability to wildfire towards their community. This assessment
+identifies linear pathways of exposure from the landscape toward a
+value.
 
-*Note: our imaginary town is in the middle of the Pacific Ocean so the base map does not provide further reference.*
+*Note: our imaginary town is in the middle of the Pacific Ocean so the
+base map does not provide further reference.*
 
 ```{r mapdir}
 direxp(exp, aoi, map = TRUE)
 
 ```
 
-Now we can see that although the northwest corner of the town is a potential entry point, the pathway to that location is only viable from 5 kilometers out. The southeast pathway might be a more concerning pathway because it covers the full 15 kilometers. Depending on local knowledge, this assessment could identify further areas of concern. For example, if the region has consistent patterns of southwest winds it may be a priority area for fuel reduction treatments. Or perhaps there is a popular outdoor recreation area to the northwest close to the community, in which case the shorter pathway might be more of a concern if there is increased human ignition potential in that area.
+Now we can see that although the northwest corner of the town is a
+potential entry point, the pathway to that location is only viable from
+5 kilometers out. The southeast pathway might be a more concerning
+pathway because it covers the full 15 kilometers. Depending on local
+knowledge, this assessment could identify further areas of concern. For
+example, if the region has consistent patterns of southwest winds it may
+be a priority area for fuel reduction treatments. Or perhaps there is a
+popular outdoor recreation area to the northwest close to the community,
+in which case the shorter pathway might be more of a concern if there is
+increased human ignition potential in that area.
