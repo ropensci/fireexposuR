@@ -55,7 +55,7 @@ multidirexp <- function(exposure, values, plot = FALSE, all = FALSE) {
 
   for (i in 1:length(fts)) {
     dat <- direxp(expl, fts[i], table = TRUE) %>%
-      dplyr::select(-.data$wkt) %>%
+      tidyterra::select(-.data$wkt) %>%
       dplyr::mutate(featureID = i) %>%
       tidyr::pivot_wider(names_from = .data$seg, values_from = .data$viable) %>%
       dplyr::select(.data$featureID, tidyselect::everything())
