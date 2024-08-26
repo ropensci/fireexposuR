@@ -18,7 +18,7 @@
 #'   should be of value 1, all other cells should be NODATA. This parameter
 #'   should be provided if preparing data for [validateexp()]
 #'
-<<<<<<< HEAD
+
 #' @return A SpatRaster object of exposure values between 0-1
 =======
 #' @return A SpatRaster object of exposure values
@@ -29,7 +29,6 @@
 #' long-range embers requires 150 m or finer.
 #'
 #'
->>>>>>> c6c2262e18f136e87f06c245a49cc5934e660c78
 #' @export
 #'
 #' @importFrom rlang .data
