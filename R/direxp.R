@@ -163,7 +163,7 @@ direxp <- function(exposure, value, plot = FALSE, map = FALSE, table = FALSE) {
                              all = TRUE) %>%
     dplyr::mutate(interslength = tidyr::replace_na(interslength, 0)) %>%
     dplyr::mutate(viable = ifelse(interslength / 5000 >= 0.8, 1, 0)) %>%
-    dplyr::select(-interslength)
+    tidyterra::select(-interslength)
 
   if (table == TRUE) {
     return(as.data.frame(transects2))

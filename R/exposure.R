@@ -10,14 +10,14 @@
 #'
 #' @param hazard a SpatRaster that represents hazardous fuels for the
 #'   transmission distance specified in tdist
-#' @param tdist a character vector, can be: "l" for long-range
-#'   embers (Default), "s" for short-range embers or, "r" for radiant heat
+#' @param tdist a character vector, can be: `"l"` for long-range
+#'   embers (Default), `"s"` for short-range embers or, `"r"` for radiant heat
 #' @param nonburnable (optional) a SpatRaster that represents the burnable
 #'   landscape. Any cells that cannot receive wildfire (e.g. open water, rock)
 #'   should be of value 1, all other cells should be NODATA. This parameter
 #'   should be provided if preparing data for [validateexp()]
 #'
-#' @return A SpatRaster object of exposure values
+#' @return A SpatRaster object of exposure values between 0-1
 #' @export
 #'
 #' @importFrom rlang .data
