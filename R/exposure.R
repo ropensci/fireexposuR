@@ -18,10 +18,8 @@
 #'   should be of value 1, all other cells should be NODATA. This parameter
 #'   should be provided if preparing data for [validateexp()]
 #'
-
 #' @return A SpatRaster object of exposure values between 0-1
-=======
-#' @return A SpatRaster object of exposure values
+
 #'
 #' @details
 #' There are minimum raster resolution requirements for each transmission distance.
