@@ -19,8 +19,6 @@
 #'   should be provided if preparing data for [validateexp()]
 #'
 #' @return A SpatRaster object of exposure values between 0-1
-
-#'
 #' @details
 #' There are minimum raster resolution requirements for each transmission distance.
 #' Radiant heat requires data of 10 m or finer, short-range embers 90 m or finer, and
