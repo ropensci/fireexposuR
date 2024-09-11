@@ -10,8 +10,8 @@ exposure(hazard, tdist = c("l", "s", "r"), nonburnable)
 \item{hazard}{a SpatRaster that represents hazardous fuels for the
 transmission distance specified in tdist}
 
-\item{tdist}{a character vector, can be: "l" for long-range
-embers (Default), "s" for short-range embers or, "r" for radiant heat}
+\item{tdist}{a character vector, can be: \code{"l"} for long-range
+embers (Default), \code{"s"} for short-range embers or, \code{"r"} for radiant heat}
 
 \item{nonburnable}{(optional) a SpatRaster that represents the burnable
 landscape. Any cells that cannot receive wildfire (e.g. open water, rock)
@@ -19,7 +19,7 @@ should be of value 1, all other cells should be NODATA. This parameter
 should be provided if preparing data for \code{\link[=validateexp]{validateexp()}}}
 }
 \value{
-A SpatRaster object of exposure values
+A SpatRaster object of exposure values between 0-1
 }
 \description{
 \code{exposure()} computes the wildfire exposure metric from a hazard fuel raster.

@@ -16,7 +16,7 @@ m <- as.matrix(g)
 v <- terra::vect(m, "polygons", crs = haz)
 # generate example point values within polygon -------------
 pts <- terra::spatSample(v, 200)
-# or example points across the landscape -------------------
+# random points across the landscape -----------------------
 e <- terra::buffer(terra::vect(terra::ext(haz), crs = haz), -15500)
 pts <- terra::spatSample(e, 200)
 # ----------------------------------------------------------
