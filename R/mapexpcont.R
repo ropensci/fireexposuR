@@ -28,13 +28,18 @@
 mapexpcont <- function(exposure, aoi) {
   stopifnot("`exposure` must be a SpatRaster object"
             = class(exposure) == "SpatRaster")
-
+  stopifnot("`exposure` layer must have values between 0-1"
+            = (terra::minmax(exposure)[1] >= 0 && terra::minmax(exposure)[2] <= 1))
   exp <- exposure
   if (missing(aoi)) {
     r <- exp
   } else {
     stopifnot("`aoi` must be a SpatVector object"
               = class(aoi) == "SpatVector")
+    stopifnot("`aoi` extent must be within `exposure` extent"
+              = terra::relate(aoi, exposure, "within"))
+    stopifnot("`exposure` and `aoi` must have same CRS"
+              = terra::same.crs(exposure, aoi))
     r <- terra::crop(exp, aoi) %>%
       terra::mask(aoi)
   }

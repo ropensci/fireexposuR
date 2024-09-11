@@ -55,7 +55,7 @@ exposure <- function(hazard, tdist = c("l", "s", "r"), nonburnable) {
 
   if (terra::crs(hazard, describe = TRUE)$name == "unknown") {
     message("Input CRS is undefined: If exposure() output will be used in
-            other fireexposur() functions a CRS must be defined")
+            other fireexposuR functions a CRS must be defined")
   }
 
   haz <- hazard
@@ -83,12 +83,18 @@ exposure <- function(hazard, tdist = c("l", "s", "r"), nonburnable) {
             = terra::nrow(window) < 2 * terra::nrow(haz))
   wgtwindow <- window / sum(window, na.rm = TRUE)
   exp <- terra::focal(haz, wgtwindow, fun = sum) %>%
-    tidyterra::rename(exposure = .data$focal_sum)
+    tidyterra::rename(exposure = "focal_sum")
   if (missing(nonburnable)) {
     return(exp)
   } else {
     stopifnot("`nonburnable` must be a SpatRaster object"
               = class(nonburnable) == "SpatRaster")
+    stopifnot("`nonburnable` and `hazard` must have same CRS"
+              = terra::same.crs(hazard, nonburnable))
+    stopifnot("`nonburnable` must only contain values of 1 or NA"
+              = unique(terra::values(nonburnable) %in% c(NA,1)))
+    stopifnot("`nonburnable` extent must be within `hazard` extent"
+              = terra::relate(nonburnable, hazard, "within"))
     expb <- terra::mask(exp, nonburnable, inverse = TRUE)
     return(expb)
   }

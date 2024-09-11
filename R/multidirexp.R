@@ -47,9 +47,20 @@ multidirexp <- function(exposure, values, plot = FALSE, all = FALSE) {
   stopifnot("`values` must be a SpatVector object of point or polygon features"
             = (class(values) == "SpatVector" &&
                  terra::geomtype(values) %in% c("points", "polygons")))
+  stopifnot("`values` and `exposure` must have the same crs"
+            = terra::same.crs(values, exposure) == TRUE)
+
   names(exposure) <- "exposure"
   expl <- exposure
   fts <- values
+
+  # test that values features are within exposure extent before running
+  buff <- terra::buffer(fts, 15000) %>%
+    terra::aggregate()
+  explext <- terra::classify(expl, c(-Inf,Inf,1)) %>%
+    terra::as.polygons()
+  stopifnot("Values features must be within extent of the exposure layer"
+            = terra::relate(buff, explext, "coveredby") == TRUE)
 
   df <- data.frame()
 

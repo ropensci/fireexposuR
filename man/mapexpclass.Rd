@@ -18,7 +18,7 @@ classification scheme to use.}
 on the extent of your data if defaults are not appropriate. Defaults if:
 \itemize{
 \item \code{classify = "local"} the zoom level default is \code{13}
-\item \code{classify = landscape} the zoom level default is \code{6}
+\item \code{classify = "landscape"} the zoom level default is \code{6}
 }}
 }
 \value{

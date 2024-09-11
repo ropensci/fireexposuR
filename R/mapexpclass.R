@@ -35,7 +35,7 @@
 #' @param zoom (Optional). numeric, set the zoom level for the basemap based
 #' on the extent of your data if defaults are not appropriate. Defaults if:
 #' * `classify = "local"` the zoom level default is `13`
-#' * `classify = landscape` the zoom level default is `6`
+#' * `classify = "landscape"` the zoom level default is `6`
 #'
 #'
 #' @return a standardized map is returned as a ggplot object
@@ -66,8 +66,14 @@ mapexpclass <- function(exposure, classify = c("local", "landscape"),
                         aoi, zoom) {
   stopifnot("`exposure` must be a SpatRaster object"
             = class(exposure) == "SpatRaster")
+  stopifnot("`exposure` layer must have values between 0-1"
+            = (terra::minmax(exposure)[1] >= 0 && terra::minmax(exposure)[2] <= 1))
   stopifnot("`aoi` must be a SpatVector object"
             = class(aoi) == "SpatVector")
+  stopifnot("`aoi` extent must be within `exposure` extent"
+            = terra::relate(aoi, exposure, "within"))
+  stopifnot("`exposure` and `aoi` must have same CRS"
+            = terra::same.crs(exposure, aoi))
   classify <- match.arg(classify)
 
   names(exposure) <- "exposure"
