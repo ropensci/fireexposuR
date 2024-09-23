@@ -98,11 +98,11 @@ direxp <- function(exposure, value, plot = FALSE, map = FALSE, table = FALSE) {
         dplyr::mutate(deg = .data$geom) %>%
         dplyr::mutate(loc = rep(c(1, 0), times = 360)) %>%
         tidyr::pivot_wider(
-          names_from = .data$loc,
+          names_from = "loc",
           values_from = c(x, y),
           names_sep = ""
         ) %>%
-        dplyr::select(.data$deg, .data$x0, .data$y0)
+        dplyr::select("deg", "x0", "y0")
     } else {
       stop("Polygon shape too irregular, please simplify further and try again")
     }
@@ -132,8 +132,8 @@ direxp <- function(exposure, value, plot = FALSE, map = FALSE, table = FALSE) {
                                .data$x15, " ", .data$y15, ")", sep = ""))
 
   linegeomlong <- linegeom %>%
-    dplyr::select(c(.data$deg, .data$to5, .data$to10, .data$to15)) %>%
-    tidyr::pivot_longer(cols = c(.data$to5, .data$to10, .data$to15),
+    dplyr::select(c("deg", "to5", "to10", "to15")) %>%
+    tidyr::pivot_longer(cols = c("to5", "to10", "to15"),
                         names_to = "seg", values_to = "wkt")
 
   transects <- terra::vect(linegeomlong,
@@ -152,7 +152,7 @@ direxp <- function(exposure, value, plot = FALSE, map = FALSE, table = FALSE) {
 
   #intersect and calculate length
   inters <- terra::crop(transects, highexppoly) %>%
-    tidyterra::select(-.data$wkt)
+    tidyterra::select(-"wkt")
   interslength <- terra::perim(inters)
   intdt <- cbind(as.data.frame(inters), interslength) # append lengths to data
 
@@ -341,7 +341,7 @@ direxp <- function(exposure, value, plot = FALSE, map = FALSE, table = FALSE) {
     return(plt)
   } else {
     transects3 <- transects2 %>%
-      dplyr::select(-.data$wkt)
+      dplyr::select(-"wkt")
     return(transects3)
   }
 

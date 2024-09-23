@@ -92,8 +92,8 @@ validateexp <- function(burnableexposure, fires, aoi, samplesize = 0.005,
 
   props <- rbind(props, df4) %>%
     dplyr::mutate(classexp = names(lut)[match(.data$exposure, lut)]) %>%
-    dplyr::select(.data$exposure, .data$classexp,
-                  .data$of, .data$group, .data$n, .data$prop)
+    dplyr::select("exposure", "classexp",
+                  "of", "group", "n", "prop")
 
 
   if (plot == TRUE) {
@@ -109,7 +109,7 @@ validateexp <- function(burnableexposure, fires, aoi, samplesize = 0.005,
                                                y = .data$prop,
                                                fill = .data$group,
                                                color = .data$group)) +
-      ggplot2::geom_col(position = "identity", linetype = 2, size = 0.8) +
+      ggplot2::geom_col(position = "identity", linetype = 2, linewidth = 0.8) +
       ggplot2::facet_grid(~.data$of) +
       ggplot2::scale_fill_manual(values = c("transparent", "gray")) +
       ggplot2::scale_color_manual(values = c("black", "transparent")) +

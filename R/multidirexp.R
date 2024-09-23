@@ -14,11 +14,11 @@
 #'   directional transects. when `FALSE`: only the segments from 5-15 km are
 #'   included (Default)
 #'
-#' @return a SpatVector of the transects with a attributes: degree, segment,
-#'   viable. Unless:
+#' @return a data.frame of the features with attributes: value featureID,
+#'   degree, to5 (binary), to10(binary), t015(binary), full(binary),
+#'   outer (binary). Unless:
 #'      * `plot = TRUE`: a standardized plot as a ggplot object
-#'      * `map = TRUE`: a standardized map as a ggplot object
-#'      * `table = TRUE`: a data frame with attributes by transect segment
+
 #' @export
 #'
 #' @examples
@@ -66,10 +66,10 @@ multidirexp <- function(exposure, values, plot = FALSE, all = FALSE) {
 
   for (i in 1:length(fts)) {
     dat <- direxp(expl, fts[i], table = TRUE) %>%
-      dplyr::select(-.data$wkt) %>%
+      dplyr::select(-"wkt") %>%
       dplyr::mutate(featureID = i) %>%
-      tidyr::pivot_wider(names_from = .data$seg, values_from = .data$viable) %>%
-      dplyr::select(.data$featureID, tidyselect::everything())
+      tidyr::pivot_wider(names_from = "seg", values_from = "viable") %>%
+      dplyr::select("featureID", tidyselect::everything())
     df <- rbind(df, dat)
   }
 
@@ -87,9 +87,9 @@ multidirexp <- function(exposure, values, plot = FALSE, all = FALSE) {
 
     plt <- ggplot2::ggplot(dfsums, ggplot2::aes(.data$deg, .data$freq)) +
       ggplot2::geom_hline(yintercept = seq(0, axismax, by = 2),
-                          colour = "grey90", size = 0.2) +
+                          colour = "grey90", linewidth = 0.2) +
       ggplot2::geom_vline(xintercept = seq(0, 359, by = 45),
-                          colour = "grey90", size = 0.2) +
+                          colour = "grey90", linewidth = 0.2) +
       ggplot2::geom_bar(stat = "identity",
                         width = 1,
                         fill = "grey50",
