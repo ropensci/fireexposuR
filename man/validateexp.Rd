@@ -28,3 +28,30 @@ table or plots
 a the study area to the proportion of exposure classes within burned areas.
 A random sample is taken to account for spatial autocorrelation.
 }
+\examples{
+
+# generate example hazard data -----------------------------
+set.seed(0)
+e <- c(45,55,495,505) * 10000
+r <- terra::rast(resolution = 100, extent = terra::ext(e))
+terra::values(r) <- sample(c(0,1), terra::ncell(r), replace = TRUE)
+terra::crs(r) <- "EPSG:32608"
+r <- terra::sieve(r, threshold = 50, directions = 4)
+haz <- terra::sieve(r, threshold = 500, directions = 4)
+# generate example non-burn data -----------------------------
+nb <- terra::rast(resolution = 100, extent = terra::ext(e))
+terra::crs(nb) <- "EPSG:32608"
+terra::values(nb) <- suppressWarnings(sample(c(NA, 1),
+                                             terra::ncell(nb),
+                                             replace = TRUE,
+                                             prob = c(0.9,0.1)))
+# generate example fire polygon -----------------------------
+filepath <- "extdata/builtsimpleexamplegeom.csv"
+g <- read.csv(system.file(filepath, package = "fireexposuR"))
+m <- as.matrix(g)
+fires <- terra::vect(m, "polygons", crs = haz)
+# ----------------------------------------------------------
+
+exp <- exposure(haz, nonburnable = nb)
+validateexp(exp, fires)
+}
