@@ -1,4 +1,4 @@
-# generate test data ===========================================================
+# test data ====================================================================
 set.seed(0)
 e <- c(45,55,495,505) * 10000
 r <- terra::rast(resolution = 100, extent = terra::ext(e))
@@ -25,6 +25,8 @@ aoi <- terra::vect(m, "polygons")
 # input, aoi, with crs
 aoicrs <- aoi
 terra::crs(aoicrs) <- "EPSG:32608"
+
+# tests ========================================================================
 
 test_that("mapexpclass() input checks and function messages work", {
   expect_condition(mapexplass(2, "loc", aoicrs)) # stopifnot() L67
