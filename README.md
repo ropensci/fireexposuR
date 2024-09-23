@@ -9,6 +9,7 @@
 has not yet been a stable, usable release suitable for the
 public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
 
+[![R-CMD-check](https://github.com/heyairf/fireexposuR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/heyairf/fireexposuR/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The goal of fireexposuR is to provide a standardized and accessible
@@ -54,7 +55,7 @@ First, some example data will be generated:
 
 ``` r
 library(terra)
-#> terra 1.7.71
+#> terra 1.7.78
 # generate example hazard data -----------------------------
 set.seed(0)
 e <- c(45,55,495,505) * 10000
@@ -121,74 +122,3 @@ mapexpclass(exp, classify = "local", aoi)
 ```
 
 <img src="man/figures/README-maplocal-1.png" width="100%" />
-<<<<<<< HEAD
-=======
-
-This map gives us a better understanding of areas of the town that could
-be fire entry points. We can also summarize the area with `summexp()` if
-we want to know the proportional distributions of each class.
-
-``` r
-summexp(exp, classify = "local", aoi)
-#>      class npixels       prop  aream2 areaha
-#> 1      Nil     595 0.70749108 5950000    595
-#> 2      Low      90 0.10701546  900000     90
-#> 3 Moderate      54 0.06420927  540000     54
-#> 4     High      58 0.06896552  580000     58
-#> 5  Extreme      44 0.05231867  440000     44
-```
-
-We also have data for the values within the built environment, for which
-we can map or summarize in a table as well.
-
-``` r
-# map the values
-extractexp(exp, pts, classify = "local", map = TRUE)
-```
-
-<img src="man/figures/README-mapvalues-1.png" width="100%" />
-
-``` r
-# summary table 
-extractexp(exp, pts, classify = "local", summary = TRUE)
-#>      class   n  prop
-#> 1      Nil 142 0.710
-#> 2      Low  27 0.135
-#> 3 Moderate   6 0.030
-#> 4     High  13 0.065
-#> 5  Extreme  12 0.060
-```
-
-With this information, the community has now identified 12 structures
-that are extremely exposed to long-range embers from the landscape in
-the northwest of the community. This could be a potential area to
-prioritize wildfire mitigation strategies.
-
-#### Directional vulnerability
-
-Our make believe town may also wish to assess the directional
-vulnerability to wildfire towards their community. This assessment
-identifies linear pathways of exposure from the landscape toward a
-value.
-
-Note: our imaginary town is in the middle of the Pacific Ocean so the
-base map does not provide further reference.
-
-``` r
-direxp(exp, aoi, map = TRUE)
-#> <SpatRaster> resampled to 501120 cells.
-```
-
-<img src="man/figures/README-mapdir-1.png" width="100%" />
-
-Now we can see that although the northwest corner of the town is a
-potential entry point, the pathway to that location is only viable from
-5 kilometers out. The southeast pathway might be a more concerning
-pathway because it covers the full 15 kilometers. Depending on local
-knowledge, this assessment could identify further areas of concern. For
-example, if the region has consistent patterns of southwest winds it may
-be a priority area for fuel reduction treatments. Or perhaps there is a
-popular outdoor recreation area to the northwest close to the community,
-in which case the shorter pathway might be more concerning if there is
-increased human ignition potential in that area.
->>>>>>> c6c2262e18f136e87f06c245a49cc5934e660c78

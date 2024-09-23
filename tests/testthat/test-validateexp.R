@@ -19,7 +19,7 @@ expnb <- exposure(haz, nonburnable = nbcrs)
 filepath <- "extdata/builtsimpleexamplegeom.csv"
 g <- read.csv(system.file(filepath, package = "fireexposuR"))
 m <- as.matrix(g)
-fire <- terra::vect(m, "polygons", crs = haz)
+fires <- terra::vect(m, "polygons", crs = haz)
 
 e2 <- c(46,54,496,504) * 10000
 aoi <- terra::as.polygons(terra::ext(e2), crs = haz)
@@ -27,19 +27,19 @@ aoi <- terra::as.polygons(terra::ext(e2), crs = haz)
 # tests ========================================================================
 
 test_that("validateexp() input checks and function messages work", {
-  expect_error(validateexp(2, fire))
+  expect_error(validateexp(2, fires))
   expect_error(validateexp(expnb, 2))
-  expect_error(validateexp(expnb, fire, 2))
+  expect_error(validateexp(expnb, fires, 2))
 })
 
 test_that("valdiateexp() returns object with correct class", {
-  expect_s3_class(validateexp(expnb, fire), "data.frame")
-  expect_s3_class(validateexp(expnb, fire, plot = T), "ggplot")
+  expect_s3_class(validateexp(expnb, fires), "data.frame")
+  expect_s3_class(validateexp(expnb, fires, plot = T), "ggplot")
 })
 
 test_that("validateexp() runs when input conditions are met", {
-  expect_no_error(validateexp(expnb, fire))
-  expect_no_error(validateexp(expnb, fire, aoi))
-  expect_no_error(validateexp(expnb, fire, plot = T))
-  expect_no_error(validateexp(expnb, fire, aoi, plot = T))
+  expect_no_error(validateexp(expnb, fires))
+  expect_no_error(validateexp(expnb, fires, aoi))
+  expect_no_error(validateexp(expnb, fires, plot = T))
+  expect_no_error(validateexp(expnb, fires, aoi, plot = T))
 })
