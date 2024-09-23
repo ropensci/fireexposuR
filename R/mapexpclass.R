@@ -6,8 +6,8 @@
 #' need to be adjusted based on the extent of your data; see
 #' [OpenStreetMap Wiki](https://wiki.openstreetmap.org/wiki/Zoom_levels) for
 #' more information on zoom levels.
-#' For mapping large extents if will be faster to use [mapexpcont()] which does
-#' not use base maps.
+#' For mapping large extents it is recommended (and will be faster) to use
+#' [mapexpcont()] which does not use base maps.
 #'
 #' Scales and colors are determined by the parameter `classify`
 #' which can be set to `"local"` or `"landscape"`.

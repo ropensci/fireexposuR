@@ -6,7 +6,7 @@
 \alias{fireexposuR-package}
 \title{fireexposuR: Compute and Visualize Wildfire Exposure}
 \description{
-This package computes wildfire exposure using methods from Beverly et al. (2010), Beverly et al. (2021), and Beverly and Forbes (2023). It provides functions to standardize the mapping and visualization of wildfire exposure. This package requires pre-processing of data which is docomented in Forbes and Beverly (2024).
+This package computes wildfire exposure using methods from Beverly et al. (2010), Beverly et al. (2021), and Beverly and Forbes (2023). It provides functions to standardize the mapping and visualization of wildfire exposure. This package requires pre-processing of data which is docomented in Forbes and Beverly (in preparation).
 }
 \seealso{
 Useful links:

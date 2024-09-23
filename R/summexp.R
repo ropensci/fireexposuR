@@ -108,7 +108,7 @@ summexp <- function(exposure, aoi, classify = c("landscape", "local")) {
     dplyr::mutate(prop = .data$npixels / sum(.data$npixels)) %>%
     dplyr::mutate(aream2 = .data$npixels * res * res) %>%
     dplyr::mutate(areaha = .data$aream2 / 10000) %>%
-    dplyr::select(-c(.data$classexp, .data$n))
+    dplyr::select(-c("classexp", "n"))
 
   return(df)
 }

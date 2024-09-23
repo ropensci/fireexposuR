@@ -19,11 +19,11 @@ r2 <- terra::rast(resolution = 100, extent = terra::ext(e2), crs = "EPSG:32608")
 terra::values(r2) <- sample(c(0,1), terra::ncell(r2), replace = TRUE)
 # input : hazard with proportional hazard vals
 hazalt <- terra::rast(resolution = 100, extent = terra::ext(e), crs = "EPSG:32608")
-terra::values(hazalt) <- (0:5)/5
+suppressWarnings(terra::values(hazalt) <- (0:5)/5)
 # input : nonburnable, with no CRS
 nb <- terra::rast(resolution = 100, extent = terra::ext(e))
-terra::values(nb) <- sample(c(NA, 1), terra::ncell(nb),
-                            replace = TRUE, prob = c(0.9,0.1))
+terra::values(nb) <- suppressWarnings(sample(c(NA, 1), terra::ncell(nb),
+                            replace = TRUE, prob = c(0.9,0.1)))
 # input: nonburnable, with CRS
 nbcrs <- nb
 terra::crs(nbcrs) <- "EPSG:32608"

@@ -10,7 +10,7 @@ Description: This package computes wildfire exposure using methods from
     (2023).  It provides functions to standardize the mapping and
     visualization of wildfire exposure. This package requires
     pre-processing of data which is docomented in Forbes and Beverly
-    (2024).
+    (in preparation).
 License: GPL (>= 3)
 Imports: 
     dplyr,
