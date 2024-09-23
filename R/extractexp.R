@@ -153,7 +153,7 @@ extractexp <- function(exposure,
     df <- as.data.frame(ext) %>%
       dplyr::count(class) %>%
       dplyr::mutate(prop = .data$n / sum(.data$n)) %>%
-      dplyr::select(c(.data$class, .data$n, .data$prop))
+      dplyr::select(c("class", "n", "prop"))
     return(df)
     if (map == TRUE) {
       stop("Only one of summary or map can be set to true")

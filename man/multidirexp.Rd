@@ -19,11 +19,10 @@ directional transects. when \code{FALSE}: only the segments from 5-15 km are
 included (Default)}
 }
 \value{
-a SpatVector of the transects with a attributes: degree, segment,
-viable. Unless:
+a data.frame of the features with attributes: value featureID,
+degree, to5 (binary), to10(binary), t015(binary), full(binary),
+outer (binary). Unless:
 * \code{plot = TRUE}: a standardized plot as a ggplot object
-* \code{map = TRUE}: a standardized map as a ggplot object
-* \code{table = TRUE}: a data frame with attributes by transect segment
 }
 \description{
 \code{multidirexp()} automates the directional vulnerability
