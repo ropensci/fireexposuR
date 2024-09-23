@@ -67,7 +67,4 @@ direxp(exp, pt)
 # generate a map in R using a point value
 # note: example data is drawn in the ocean so basemap is not representative
 direxp(exp, pt, map = TRUE)
-
-# or generate as a standardized plot for the same point
-direxp(exp, pt, plot = TRUE)
 }

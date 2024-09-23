@@ -9,7 +9,6 @@ haz <- terra::sieve(r, threshold = 500, directions = 4)
 
 # input: exposure
 exp <- exposure(haz)
-mapexpcont(exp)
 
 # input: exposure, values out of range
 expvals <- exp * 10

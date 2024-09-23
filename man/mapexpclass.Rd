@@ -31,8 +31,8 @@ so it is recommended the area of interest is localized. The zoom level may
 need to be adjusted based on the extent of your data; see
 \href{https://wiki.openstreetmap.org/wiki/Zoom_levels}{OpenStreetMap Wiki} for
 more information on zoom levels.
-For mapping large extents if will be faster to use \code{\link[=mapexpcont]{mapexpcont()}} which does
-not use base maps.
+For mapping large extents it is recommended (and will be faster) to use
+\code{\link[=mapexpcont]{mapexpcont()}} which does not use base maps.
 
 Scales and colors are determined by the parameter \code{classify}
 which can be set to \code{"local"} or \code{"landscape"}.

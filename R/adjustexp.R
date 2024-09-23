@@ -55,7 +55,7 @@ adjustexp <- function(hazard, tdist, nonburnable) {
   window <- MultiscaleDTM::annulus_window(annulus, "map", res)
   wgtwindow <- window / sum(window, na.rm = TRUE)
   exp <- terra::focal(hazard, wgtwindow, fun = sum) %>%
-    tidyterra::rename(exposure = .data$focal_sum)
+    tidyterra::rename(exposure = "focal_sum")
   if (missing(nonburnable)) {
     return(exp)
   } else {

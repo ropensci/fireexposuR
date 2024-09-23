@@ -50,9 +50,7 @@
 #' # generate a map in R using a point value
 #' # note: example data is drawn in the ocean so basemap is not representative
 #' direxp(exp, pt, map = TRUE)
-#'
-#' # or generate as a standardized plot for the same point
-#' direxp(exp, pt, plot = TRUE)
+
 
 
 direxp <- function(exposure, value, plot = FALSE, map = FALSE, table = FALSE) {
@@ -96,7 +94,7 @@ direxp <- function(exposure, value, plot = FALSE, map = FALSE, table = FALSE) {
 
     if (length(terra::geom(transects0)) == 3600) {
       linestart <- as.data.frame(terra::geom(transects0)) %>%
-        dplyr::select(.data$geom, x, y) %>%
+        dplyr::select("geom", x, y) %>%
         dplyr::mutate(deg = .data$geom) %>%
         dplyr::mutate(loc = rep(c(1, 0), times = 360)) %>%
         tidyr::pivot_wider(
@@ -230,8 +228,8 @@ direxp <- function(exposure, value, plot = FALSE, map = FALSE, table = FALSE) {
     return(plt)
   } else if (plot == TRUE) {
     dffinal <- as.data.frame(transects2) %>%
-      dplyr::select(-.data$wkt) %>%
-      tidyr::pivot_wider(names_from = .data$seg, values_from = .data$viable) %>%
+      dplyr::select(-"wkt") %>%
+      tidyr::pivot_wider(names_from = "seg", values_from = "viable") %>%
       dplyr::mutate(in15 = .data$to15) %>%
       dplyr::mutate(blank15 = 1) %>%
       dplyr::mutate(in10 = .data$to10 * 2 / 3) %>%
