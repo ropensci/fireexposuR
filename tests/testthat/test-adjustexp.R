@@ -1,4 +1,4 @@
-# generate example hazard data -----------------------------
+# test data ====================================================================
 set.seed(0)
 e <- c(45,55,495,505) * 10000
 r <- terra::rast(resolution = 100, extent = terra::ext(e))
@@ -7,6 +7,8 @@ r <- terra::sieve(r, threshold = 50, directions = 4)
 haz <- terra::sieve(r, threshold = 500, directions = 4)
 
 hazvals <- haz *10
+
+# tests ========================================================================
 
 test_that("adjustexp() input checks work", {
   expect_error(adjustexp(2))
