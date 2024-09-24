@@ -1,5 +1,5 @@
 ---
-title: "A community scale assessment example"
+title: "communityscale"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{communityscale}
