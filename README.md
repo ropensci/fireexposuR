@@ -55,7 +55,7 @@ First, some example data will be generated:
 
 ``` r
 library(terra)
-#> terra 1.7.78
+#> terra 1.7.71
 # generate example hazard data -----------------------------
 set.seed(0)
 e <- c(45,55,495,505) * 10000
@@ -75,8 +75,8 @@ aoi <- vect(m, "polygons", crs = haz)
 #### Hazard data
 
 The `haz` layer is a binary raster that represents wildland fuels that
-are able to generate long-range embers up to a transmission distance of
-500 meters with a value of 1.
+have the potential to generate embers up to a distance of 500 meters
+with a value of 1.
 
 #### Area of interest
 
