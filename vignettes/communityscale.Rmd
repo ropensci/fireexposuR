@@ -39,22 +39,16 @@ First, some example data will be generated for an imaginary town:
 
 ```{r data}
 library(terra)
-# generate example hazard data -----------------------------
-set.seed(0)
-e <- c(45,55,495,505) * 10000
-r <- rast(resolution = 100, extent = ext(e))
-values(r) <- sample(c(0,1), ncell(r), replace = TRUE)
-crs(r) <- "EPSG:32608"
-r <- sieve(r, threshold = 50, directions = 4)
-haz <- sieve(r, threshold = 500, directions = 4)
-# generate example AOI polygon -----------------------------
+# read example hazard data ----------------------------------
+filepath <- "extdata/hazard.tif"
+haz <- terra::rast(system.file(filepath, package = "fireexposuR"))
+# read example AOI
 filepath <- "extdata/builtsimpleexamplegeom.csv"
 g <- read.csv(system.file(filepath, package = "fireexposuR"))
-m <- as.matrix(g)
-aoi <- vect(m, "polygons", crs = haz)
-# generate example point values within polygon -------------
-pts <- spatSample(aoi, 200)
-# ----------------------------------------------------------
+aoi <- terra::vect(as.matrix(g), "polygons", crs = haz)
+# generate random points
+pts <- terra::spatSample(aoi, 200)
+#' # ----------------------------------------------------------
 ```
 
 This example data represents the sort of data that would be pre-prepared
@@ -86,48 +80,51 @@ plot(pts, add = T)
 Now, we will use the hazard data to compute the exposure to long-range
 ember transmission.
 
-```{r exposureexample}
+```{r computeexposure}
 library(fireexposuR)
-exp <- exposure(haz, tdist = "l")
+exp <- fire_exp(haz, tdist = "l")
 ```
 
 ### Visualize exposure
 
 Once we have an exposure raster the rest of the package functions can be
 used to visualize it in different ways. For a landscape, we can map
-exposure with a continuous scale with `mapexpcont()`:
+exposure with a continuous scale with `fire_exp_map_cont()`:
 
 ```{r maplandscape}
-mapexpcont(exp)
+fire_exp_map_cont(exp)
 ```
 
 We can also see how that exposure is distributed within the built
 environment with exposure classifications in an area of interest with
-`mapexpclass()`.
+`fire_exp_map_class()`.
 
 *Note: our imaginary town is in the middle of the Pacific Ocean so the
 base map does not provide further reference.*
 
 ```{r maplocal}
-mapexpclass(exp, classify = "local", aoi)
+fire_exp_map_class(exp, classify = "local", aoi)
 ```
 
 This map gives us a better understanding of areas of the town that could
-be fire entry points. We can also summarize the area with `summexp()` if
-we want to know the proportional distributions of each class.
+be fire entry points. We can also summarize the area with `fire_exp_summary()` 
+if we want to know the proportional distributions of each class.
 
 ```{r summlocal}
-summexp(exp, classify = "local", aoi)
+fire_exp_summary(exp, classify = "local", aoi)
 ```
 
 We also have data for the values within the built environment, for which
 we can map or summarize in a table as well.
 
 ```{r mapvalues}
-# map the values
-extractexp(exp, pts, classify = "local", map = TRUE)
+# extract exposure to the values feature
+vals_ext <- fire_exp_extract(exp, pts)
 # summary table 
-extractexp(exp, pts, classify = "local", summary = TRUE)
+fire_exp_extract_vis(vals_ext, classify = "local")
+
+# map
+fire_exp_extract_vis(vals_ext, classify = "local", map = TRUE)
 
 ```
 
@@ -147,7 +144,8 @@ value.
 base map does not provide further reference.*
 
 ```{r mapdir}
-direxp(exp, aoi, map = TRUE)
+transects <- fire_exp_dir(exp, aoi)
+fire_exp_dir_plot(transects, aoi, map = TRUE)
 
 ```
 

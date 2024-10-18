@@ -1,13 +1,13 @@
 #' Map exposure with a classified scale
 #'
-#' @description `mapexpclass()` produces a standardized map of exposure with
+#' @description `fire_exp_map_class()` produces a standardized map of exposure with
 #' exposure classes. This function dynamically pulls map tiles for a base map,
 #' so it is recommended the area of interest is localized. The zoom level may
 #' need to be adjusted based on the extent of your data; see
 #' [OpenStreetMap Wiki](https://wiki.openstreetmap.org/wiki/Zoom_levels) for
 #' more information on zoom levels.
 #' For mapping large extents it is recommended (and will be faster) to use
-#' [mapexpcont()] which does not use base maps.
+#' [fire_exp_map_cont()] which does not use base maps.
 #'
 #' Scales and colors are determined by the parameter `classify`
 #' which can be set to `"local"` or `"landscape"`.
@@ -28,7 +28,7 @@
 #'
 #'
 #'
-#' @param exposure SpatRaster (e.g. from [exposure()])
+#' @param exposure SpatRaster (e.g. from [fire_exp()])
 #' @param classify character, either `"local"` or `"landscape"` to specify
 #'   classification scheme to use.
 #' @param aoi SpatVector of an area of interest to mask exposure
@@ -40,29 +40,22 @@
 #'
 #' @return a standardized map is returned as a ggplot object
 #' @export
-#' @seealso [exposure()], [ggplot2::ggplot()]
 #'
 #' @examples
-#' # generate example hazard data -----------------------------
-#' set.seed(0)
-#' e <- c(45,55,495,505) * 10000
-#' r <- terra::rast(resolution = 100, extent = terra::ext(e))
-#' terra::values(r) <- sample(c(0,1), terra::ncell(r), replace = TRUE)
-#' terra::crs(r) <- "EPSG:32608"
-#' r <- terra::sieve(r, threshold = 50, directions = 4)
-#' haz <- terra::sieve(r, threshold = 500, directions = 4)
+#' # read example hazard data ----------------------------------
+#' filepath <- "extdata/hazard.tif"
+#' haz <- terra::rast(system.file(filepath, package = "fireexposuR"))
 #' # generate example AOI polygon -----------------------------
 #' filepath <- "extdata/builtsimpleexamplegeom.csv"
 #' g <- read.csv(system.file(filepath, package = "fireexposuR"))
-#' m <- as.matrix(g)
-#' v <- terra::vect(m, "polygons", crs = haz)
+#' v <- terra::vect(as.matrix(g), "polygons", crs = haz)
 #' # ----------------------------------------------------------
 #'
-#' exp <- exposure(haz)
-#' mapexpclass(exp, classify = "local", v)
+#' exp <- fire_exp(haz)
+#' fire_exp_map_class(exp, classify = "local", v)
 #'
 
-mapexpclass <- function(exposure, classify = c("local", "landscape"),
+fire_exp_map_class <- function(exposure, classify = c("local", "landscape"),
                         aoi, zoom) {
   stopifnot("`exposure` must be a SpatRaster object"
             = class(exposure) == "SpatRaster")

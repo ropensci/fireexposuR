@@ -1,31 +1,26 @@
 #' Map exposure with a continuous scale
 #'
-#' @description `mapexpcont()` produces a standardized map of exposure with a
+#' @description `fire_exp_map_cont()` produces a standardized map of exposure with a
 #'   continuous scale. An optional area of interest can be used as a mask. The
 #'   ggplot object returned can be further modified with the ggplot library.
 #'
-#' @param exposure SpatRaster from [exposure()]
+#' @param exposure SpatRaster from [fire_exp()]
 #' @param aoi (optional) SpatVector of an area of interest to mask the exposure
 #'
 #' @return a map is returned as a ggplot object
 #' @export
-#' @seealso [exposure()], [ggplot()]
 #' @examples
 #'
-#' #' # generate example hazard data -----------------------------
-#' set.seed(0)
-#' e <- c(45,55,495,505) * 10000
-#' r <- terra::rast(resolution = 100, extent = terra::ext(e))
-#' terra::values(r) <- sample(c(0,1), terra::ncell(r), replace = TRUE)
-#' terra::crs(r) <- "EPSG:32608"
-#' r <- terra::sieve(r, threshold = 50, directions = 4)
-#' haz <- terra::sieve(r, threshold = 500, directions = 4)
+#' # read example hazard data ----------------------------------
+#' filepath <- "extdata/hazard.tif"
+#' haz <- terra::rast(system.file(filepath, package = "fireexposuR"))
 #' # -------------------------------------------------------------
 #'
-#' exp <- exposure(haz)
-#' mapexpcont(exp)
+#' exp <- fire_exp(haz)
 #'
-mapexpcont <- function(exposure, aoi) {
+#' fire_exp_map_cont(exp)
+#'
+fire_exp_map_cont <- function(exposure, aoi) {
   stopifnot("`exposure` must be a SpatRaster object"
             = class(exposure) == "SpatRaster")
   stopifnot("`exposure` layer must have values between 0-1"

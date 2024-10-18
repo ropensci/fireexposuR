@@ -1,12 +1,12 @@
 #' Generate a directional load plot or table for multiple values
 #'
-#' @description `multidirexp()` automates the directional vulnerability
+#' @description `fire_exp_dir_multi()` automates the directional vulnerability
 #'   assessment methods from Beverly and Forbes 2023. This function can return
 #'   directional loads as:
 #'  * a standardized radial plot as a ggplot object
 #'  * a table summarizing if each degree is included by feature
 #'
-#' @param exposure SpatRaster from [exposure()]
+#' @param exposure SpatRaster from [fire_exp()]
 #' @param values Spatvector of value as a point or simplified polygon
 #' @param plot Boolean, when `TRUE`: returns a standardized directional plot.
 #'   The default is `FALSE`.
@@ -22,26 +22,21 @@
 #' @export
 #'
 #' @examples
-#' # generate example hazard data -----------------------------
-#' set.seed(0)
-#' e <- c(45, 55, 495, 505) * 10000
-#' r <- terra::rast(resolution = 100, extent = terra::ext(e))
-#' terra::values(r) <- sample(c(0, 1), terra::ncell(r), replace = TRUE)
-#' terra::crs(r) <- "EPSG:32608"
-#' r <- terra::sieve(r, threshold = 50, directions = 4)
-#' haz <- terra::sieve(r, threshold = 500, directions = 4)
-#' # example points across the landscape ----------------------
+#' #' # read example hazard data ----------------------------------
+#' filepath <- "extdata/hazard.tif"
+#' haz <- terra::rast(system.file(filepath, package = "fireexposuR"))
+#' # example points across the landscape
 #' e <- terra::buffer(terra::vect(terra::ext(haz), crs = haz), -15500)
-#' pts <- terra::spatSample(e, 200)
+#' pts <- terra::spatSample(e, 20)
 #' # ----------------------------------------------------------
 #'
-#' exp <- exposure(haz, tdist = "l")
+#' exp <- fire_exp(haz, tdist = "l")
 #' # this example will take a while to run
 #' \dontrun{
-#' multidirexp(exp, pts, plot = TRUE)
+#' fire_exp_dir_multi(exp, pts, plot = TRUE)
 #' }
 
-multidirexp <- function(exposure, values, plot = FALSE, all = FALSE) {
+fire_exp_dir_multi <- function(exposure, values, plot = FALSE, all = FALSE) {
   stopifnot("`exposure` must be a SpatRaster object"
             = class(exposure) == "SpatRaster")
   stopifnot("`values` must be a SpatVector object of point or polygon features"
@@ -64,8 +59,10 @@ multidirexp <- function(exposure, values, plot = FALSE, all = FALSE) {
 
   df <- data.frame()
 
+  stopifnot("`values` must have more than 1 feature" = length(fts) > 1)
+
   for (i in 1:length(fts)) {
-    dat <- direxp(expl, fts[i], table = TRUE) %>%
+    dat <- fire_exp_dir(expl, fts[i], table = TRUE) %>%
       dplyr::select(-"wkt") %>%
       dplyr::mutate(featureID = i) %>%
       tidyr::pivot_wider(names_from = "seg", values_from = "viable") %>%

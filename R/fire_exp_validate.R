@@ -1,11 +1,12 @@
 #' Validate exposure with observed fires
 #'
-#' @description `validateexp()` compares the proportion of exposure classes in
-#'   a the study area to the proportion of exposure classes within burned areas.
-#'   A random sample is taken to account for spatial autocorrelation.
+#' @description For advanced users. `fire_exp_validate()` compares the
+#'   proportion of exposure classes in a the study area to the proportion of
+#'   exposure classes within burned areas. A random sample is taken to account
+#'   for spatial autocorrelation.
 #'
 #' @param burnableexposure A SpatRaster of exposure, non-burnable cells should
-#'    be removed
+#'    be removed using optional parameter in [fire_exp()].
 #' @param fires A SpatVector of observed fire perimeters
 #' @param aoi (Optional) A SpatVector that delineates an area of interest
 #' @param samplesize Proportion of area to sample. The default is `0.005` (0.5%)
@@ -14,36 +15,30 @@
 #'   default is `FALSE`.
 #'
 #' @return table or plots
+#'
 #' @export
 #'
 #' @examples
 #'
-#' # generate example hazard data -----------------------------
-#' set.seed(0)
-#' e <- c(45,55,495,505) * 10000
-#' r <- terra::rast(resolution = 100, extent = terra::ext(e))
-#' terra::values(r) <- sample(c(0,1), terra::ncell(r), replace = TRUE)
-#' terra::crs(r) <- "EPSG:32608"
-#' r <- terra::sieve(r, threshold = 50, directions = 4)
-#' haz <- terra::sieve(r, threshold = 500, directions = 4)
+#' # read example hazard data ----------------------------------
+#' filepath <- "extdata/hazard.tif"
+#' haz <- terra::rast(system.file(filepath, package = "fireexposuR"))
 #' # generate example non-burn data -----------------------------
-#' nb <- terra::rast(resolution = 100, extent = terra::ext(e))
-#' terra::crs(nb) <- "EPSG:32608"
-#' terra::values(nb) <- suppressWarnings(sample(c(NA, 1),
-#'                                              terra::ncell(nb),
-#'                                              replace = TRUE,
-#'                                              prob = c(0.9,0.1)))
-#' # generate example fire polygon -----------------------------
 #' filepath <- "extdata/builtsimpleexamplegeom.csv"
 #' g <- read.csv(system.file(filepath, package = "fireexposuR"))
-#' m <- as.matrix(g)
-#' fires <- terra::vect(m, "polygons", crs = haz)
+#' v <- terra::vect(as.matrix(g), "polygons", crs = haz)
+#' nb <- terra::rasterize(v, haz)
+#' # generate example fire polygons -----------------------------
+#' pts <- terra::spatSample(terra::rescale(haz, 0.8), 30, as.points = TRUE)
+#' fires <- terra::buffer(pts, 800)
 #' # ----------------------------------------------------------
+#' # PLEASE NOTE THIS RANDOMLY GENERATED DATA DOES NOT GIVE MEANINGFUL RESULTS
+#' exp <- fire_exp(haz, nonburnable = nb)
+#' fire_exp_validate(exp, fires)
+#' #' fire_exp_validate(exp, fires, plot = TRUE)
 #'
-#' exp <- exposure(haz, nonburnable = nb)
-#' validateexp(exp, fires)
 
-validateexp <- function(burnableexposure, fires, aoi, samplesize = 0.005,
+fire_exp_validate <- function(burnableexposure, fires, aoi, samplesize = 0.005,
                         plot = FALSE) {
   names(burnableexposure) <- "exposure"
   expb <- burnableexposure

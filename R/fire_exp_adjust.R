@@ -5,35 +5,32 @@
 #' in your area of interest, this function can be used to change the
 #' transmission distance to a custom distance. It is highly recommended that
 #' any exposure layers produced with this function are validated with observed
-#' fire history using the [validateexp()] function.
+#' fire history using the [fire_exp_validate()] function.
 #'
 #'
 #' @param hazard a SpatRaster that represents hazardous fuels for the
 #'   transmission distance specified in `tdist`
 #' @param tdist Numeric, transmission distance in meters
-#' @param nonburnable (Optional) a SpatRaster that represents the burnable
+#' @param nonburnable (Optional)  SpatRaster that represents the non-burnable
 #'   landscape. Any cells that cannot receive wildfire (e.g. open water, rock)
-#'   should be of value 1, all other cells should be NODATA. This parameter
-#'   should be provided if preparing data for [validateexp()]
+#'   and any cells that are not natural (e.g. built environment,
+#'   irrigated agricultural areas) should be of value 1, all other cells
+#'   should be NODATA. This parameter should be provided if preparing data
+#'   for [fire_exp_validate()]
 #'
 #' @return SpatRaster object of exposure values
 #' @export
 #'
 #' @examples
-#' #' # generate example hazard data -----------------------------
-#' set.seed(0)
-#' e <- c(45,55,495,505) * 10000
-#' r <- terra::rast(resolution = 100, extent = terra::ext(e))
-#' terra::values(r) <- sample(c(0,1), terra::ncell(r), replace = TRUE)
-#' r <- terra::sieve(r, threshold = 50, directions = 4)
-#' haz <- terra::sieve(r, threshold = 500, directions = 4)
+#' # read example hazard data ----------------------------------
+#' filepath <- "extdata/hazard.tif"
+#' haz <- terra::rast(system.file(filepath, package = "fireexposuR"))
 #' # -----------------------------------------------------------
 #'
 #' # compute long range exposure with custom disance of 800 m
-#' exp <- adjustexp(haz, tdist = 800)
-#' exp
+#' exp <- fire_exp_adjust(haz, tdist = 800)
 #'
-adjustexp <- function(hazard, tdist, nonburnable) {
+fire_exp_adjust <- function(hazard, tdist, nonburnable) {
   stopifnot("`hazard` must be a SpatRaster object"
             = class(hazard) == "SpatRaster")
   stopifnot("`hazard` layer must have values between 0-1"
@@ -44,9 +41,6 @@ adjustexp <- function(hazard, tdist, nonburnable) {
     stopifnot("`nonburnable` must be a SpatRaster object"
               = class(nonburnable) == "SpatRaster")
   }
-  message("Proceed with caution: any adjustments to transmission distances
-          should be further validated with observed fire history")
-
 
   res <- terra::res(hazard)[1]
   stopifnot("insufficient resolution for chosen exposure transmission distance"

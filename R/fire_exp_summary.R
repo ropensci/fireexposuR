@@ -1,6 +1,6 @@
 #' Summarize exposure by class
 #'
-#' @description `summexp()` creates a summary table of exposure by the user
+#' @description `fire_exp_summary()` creates a summary table of exposure by the
 #' specified classification scheme. The table reports the number of pixels, the
 #' proportion, and area in hectares and meters squared by class.
 #'
@@ -18,41 +18,35 @@
 #' * High (30-45%)
 #' * Extreme (45%+)
 #'
-#' @param exposure SpatRaster from [exposure()]
+#' @param exposure SpatRaster from [fire_exp()]
 #' @param aoi (optional) SpatVector of an area of interest to mask exposure for
 #'   summary
 #' @param classify character, either `"landscape"` or `"local"`. default is
 #'   `"landscape"`.
 #'
 #' @returns a summary table as a data frame object
-#' @seealso [exposure()]
 #' @export
 #'
 #' @examples
-#' # generate example hazard data -----------------------------
-#' set.seed(0)
-#' e <- c(45,55,495,505) * 10000
-#' r <- terra::rast(resolution = 100, extent = terra::ext(e))
-#' terra::values(r) <- sample(c(0,1), terra::ncell(r), replace = TRUE)
-#' terra::crs(r) <- "EPSG:32608"
-#' r <- terra::sieve(r, threshold = 50, directions = 4)
-#' haz <- terra::sieve(r, threshold = 500, directions = 4)
+#' #' # read example hazard data ----------------------------------
+#' filepath <- "extdata/hazard.tif"
+#' haz <- terra::rast(system.file(filepath, package = "fireexposuR"))
 #' # generate example AOI polygon -----------------------------
 #' filepath <- "extdata/builtsimpleexamplegeom.csv"
 #' g <- read.csv(system.file(filepath, package = "fireexposuR"))
-#' m <- as.matrix(g)
-#' v <- terra::vect(m, "polygons", crs = haz)
+#' v <- terra::vect(as.matrix(g), "polygons", crs = haz)
 #' # ----------------------------------------------------------
 #'
-#' exp <- exposure(haz)
+#' exp <- fire_exp(haz)
 #'
 #' # for full extent of data
-#' summexp(exp, classify = "landscape")
+#' fire_exp_summary(exp, classify = "landscape")
 #'
 #' # for a masked area
-#' summexp(exp, v, classify = "landscape")
+#' fire_exp_summary(exp, v, classify = "landscape")
 #'
-summexp <- function(exposure, aoi, classify = c("landscape", "local")) {
+fire_exp_summary <- function(exposure, aoi,
+                             classify = c("landscape", "local")) {
   stopifnot("`exposure` must be a SpatRaster object"
             = class(exposure) == "SpatRaster")
   stopifnot("Linear units of exposure layer must be in meters"

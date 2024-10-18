@@ -1,6 +1,6 @@
 #' Compute the wildfire exposure metric
 #'
-#' `exposure()` computes the wildfire exposure metric from a hazard fuel raster.
+#' `fire_exp()` computes the wildfire exposure metric from a hazard fuel raster.
 #' The hazard fuel raster must be prepared by the user. Forbes and Beverly 2024
 #' (manuscript in preparation)
 #' details suggestions for data acquisition and preparation in accordance with
@@ -13,10 +13,12 @@
 #'   transmission distance specified in tdist
 #' @param tdist a character vector, can be: `"l"` for long-range
 #'   embers (Default), `"s"` for short-range embers or, `"r"` for radiant heat
-#' @param nonburnable (optional) a SpatRaster that represents the burnable
+#' @param nonburnable (optional) a SpatRaster that represents the non-burnable
 #'   landscape. Any cells that cannot receive wildfire (e.g. open water, rock)
-#'   should be of value 1, all other cells should be NODATA. This parameter
-#'   should be provided if preparing data for [validateexp()]
+#'   and any cells that are not natural (e.g. built environment,
+#'   irrigated agricultural areas) should be of value 1, all other cells
+#'   should be NODATA. This parameter should be provided if preparing data
+#'   for [fire_exp_validate()]
 #'
 #' @return A SpatRaster object of exposure values between 0-1
 #' @details
@@ -29,24 +31,20 @@
 #'
 #' @importFrom rlang .data
 #' @examples
-#' # generate example hazard data -----------------------------
-#' set.seed(0)
-#' e <- c(45,55,495,505) * 10000
-#' r <- terra::rast(resolution = 100, extent = terra::ext(e))
-#' terra::values(r) <- sample(c(0,1), terra::ncell(r), replace = TRUE)
-#' r <- terra::sieve(r, threshold = 50, directions = 4)
-#' haz <- terra::sieve(r, threshold = 500, directions = 4)
+#' # read example hazard data ----------------------------------
+#' filepath <- "extdata/hazard.tif"
+#' haz <- terra::rast(system.file(filepath, package = "fireexposuR"))
 #' # -----------------------------------------------------------
 #'
-#' # compute long range eposure from
-#' exp <- exposure(haz, tdist = "l")
+#' # compute long range exposure
+#' exp <- fire_exp(haz, tdist = "l")
 #' exp
 #'
 #' # each transmission distance has a resolution requirement and exposure() will
 #' # not run if resolution is too coarse
-#' try(exposure(haz, tdist = "r"))
+#' try(fire_exp(haz, tdist = "r"))
 #'
-exposure <- function(hazard, tdist = c("l", "s", "r"), nonburnable) {
+fire_exp <- function(hazard, tdist = c("l", "s", "r"), nonburnable) {
   stopifnot("`hazard` must be a SpatRaster object"
             = class(hazard) == "SpatRaster")
   stopifnot("`hazard` layer must have values between 0-1"
@@ -68,7 +66,7 @@ exposure <- function(hazard, tdist = c("l", "s", "r"), nonburnable) {
     window <- MultiscaleDTM::annulus_window(annulus, "map", res)
   }
   if (tdist == "s") {
-    stopifnot("Insuffucient resolution for shortrange ember exposure assessment"
+    stopifnot("Insufficient resolution for shortrange ember exposure assessment"
               = res <= 33)
     annulus <- c(res, 100)
     window <- MultiscaleDTM::annulus_window(annulus, "map", res)
@@ -80,7 +78,7 @@ exposure <- function(hazard, tdist = c("l", "s", "r"), nonburnable) {
     window <- MultiscaleDTM::annulus_window(annulus, "map", res)
   }
   stopifnot("Extent of hazard raster too small for exposure assessment"
-            = terra::nrow(window) < 2 * terra::nrow(haz))
+            = terra::nrow(window) * 2 < terra::nrow(haz))
   wgtwindow <- window / sum(window, na.rm = TRUE)
   exp <- terra::focal(haz, wgtwindow, fun = sum) %>%
     tidyterra::rename(exposure = "focal_sum")
@@ -92,7 +90,7 @@ exposure <- function(hazard, tdist = c("l", "s", "r"), nonburnable) {
     stopifnot("`nonburnable` and `hazard` must have same CRS"
               = terra::same.crs(hazard, nonburnable))
     stopifnot("`nonburnable` must only contain values of 1 or NA"
-              = unique(terra::values(nonburnable) %in% c(NA,1)))
+              = unique(terra::values(nonburnable) %in% c(1,NA,NaN)))
     stopifnot("`nonburnable` extent must be within `hazard` extent"
               = terra::relate(nonburnable, hazard, "within"))
     expb <- terra::mask(exp, nonburnable, inverse = TRUE)
