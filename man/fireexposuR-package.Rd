@@ -12,6 +12,7 @@ This package computes wildfire exposure using methods from Beverly et al. (2010)
 Useful links:
 \itemize{
   \item \url{https://github.com/heyairf/fireexposuR}
+  \item \url{https://heyairf.github.io/fireexposuR/}
   \item Report bugs at \url{https://github.com/heyairf/fireexposuR/issues}
 }
 

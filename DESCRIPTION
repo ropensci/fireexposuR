@@ -29,7 +29,7 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.2
 Roxygen: list(markdown = TRUE)
-URL: https://github.com/heyairf/fireexposuR
+URL: https://github.com/heyairf/fireexposuR, https://heyairf.github.io/fireexposuR/
 BugReports: https://github.com/heyairf/fireexposuR/issues
 Suggests: 
     knitr,
