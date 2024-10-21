@@ -59,9 +59,7 @@ fire_exp_dir_multi <- function(exposure, values, plot = FALSE, all = FALSE) {
 
   df <- data.frame()
 
-  stopifnot("`values` must have more than 1 feature" = length(fts) > 1)
-
-  for (i in 1:length(fts)) {
+  for (i in seq_len(nrow(fts))) {
     dat <- fire_exp_dir(expl, fts[i], table = TRUE) %>%
       dplyr::select(-"wkt") %>%
       dplyr::mutate(featureID = i) %>%
