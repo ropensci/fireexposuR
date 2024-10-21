@@ -10,6 +10,7 @@ has not yet been a stable, usable release suitable for the
 public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
 
 [![R-CMD-check](https://github.com/heyairf/fireexposuR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/heyairf/fireexposuR/actions/workflows/R-CMD-check.yaml)
+
 <!-- badges: end -->
 
 The goal of fireexposuR is to provide a standardized and accessible
@@ -20,19 +21,24 @@ This package automates the methods previously documented in a series of
 scientific publications.
 
 - [Beverly et al. 2010](https://doi.org/10.1071/WF09071)
+  - Introduces wildfire exposure and wildfire transmission distances for
+    community scale assessments
 - [Beverly et al. 2021](https://doi.org/10.1007/s10980-020-01173-8)
+  - Validation of the wildfire exposure metric at a landscape scale with
+    observed fire history
 - [Beverly and Forbes 2023](https://doi.org/10.1007/s11069-023-05885-3)
+  - Directional vulnerability assessment and methodology
 
 The functions in this package require the pre-preparation of data; an
-accompanying paper details suggestions for data acquisition and
-preparation in accordance with various budget limitations and user
-experience levels. The initial release of the package provides a
-collection of functions that assist users with conducting wildfire
-exposure and directional vulnerability assessments for values and
-landscapes, and includes methods for validating the metric for an area
-of interest. Outputs from the functions include spatial data, tables,
-graphics, and maps that can be further analyzed or modified directly in
-R or exported for use in other applications.
+accompanying paper (currently in preparation) details suggestions for
+data acquisition and preparation in accordance with various budget
+limitations and user experience levels. The initial release of the
+package provides a collection of functions that assist users with
+conducting wildfire exposure and directional vulnerability assessments
+for values and landscapes, and includes methods for validating the
+metric for an area of interest. Outputs from the functions include
+spatial data, tables, graphics, and maps that can be further analyzed or
+modified directly in R or exported for use in other applications.
 
 ## Installation
 
@@ -49,26 +55,21 @@ devtools::install_github("heyairf/fireexposuR")
 This is a basic example which shows a workflow to assess wildfire
 exposure on a landscape and within an area of interest.
 
-### Data preperation
+### Data preparation
 
 First, some example data will be generated:
 
 ``` r
 library(terra)
-#> terra 1.7.71
-# generate example hazard data -----------------------------
-set.seed(0)
-e <- c(45,55,495,505) * 10000
-r <- rast(resolution = 100, extent = ext(e))
-values(r) <- sample(c(0,1), ncell(r), replace = TRUE)
-crs(r) <- "EPSG:32608"
-r <- sieve(r, threshold = 50, directions = 4)
-haz <- sieve(r, threshold = 500, directions = 4)
-# generate example AOI polygon -----------------------------
+#> terra 1.7.78
+library(fireexposuR)
+# read example hazard data ---------------------------------
+filepath <- "extdata/hazard.tif"
+haz <- rast(system.file(filepath, package = "fireexposuR"))
+# read example AOI polygon ---------------------------------
 filepath <- "extdata/builtsimpleexamplegeom.csv"
 g <- read.csv(system.file(filepath, package = "fireexposuR"))
-m <- as.matrix(g)
-aoi <- vect(m, "polygons", crs = haz)
+aoi <- vect(as.matrix(g), "polygons", crs = haz)
 # ----------------------------------------------------------
 ```
 
@@ -93,7 +94,7 @@ ember transmission.
 
 ``` r
 library(fireexposuR)
-exp <- exposure(haz, tdist = "l")
+exp <- fire_exp(haz, tdist = "l")
 ```
 
 ### Visualize exposure
@@ -103,7 +104,7 @@ used to visualize it in different ways. For a landscape, we can map
 exposure with a continuous scale with `mapexpcont()`:
 
 ``` r
-mapexpcont(exp)
+fire_exp_map_cont(exp)
 #> <SpatRaster> resampled to 501264 cells.
 ```
 
@@ -118,7 +119,7 @@ Note: our imaginary area of interest is in the middle of the Pacific
 Ocean so the base map does not provide further reference.
 
 ``` r
-mapexpclass(exp, classify = "local", aoi)
+fire_exp_map_class(exp, classify = "local", aoi)
 ```
 
 <img src="man/figures/README-maplocal-1.png" width="100%" />
