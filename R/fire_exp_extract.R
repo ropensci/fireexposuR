@@ -49,8 +49,8 @@ fire_exp_extract <- function(exposure,
     ext1 <- terra::extract(exp, values, fun = mean, bind = TRUE) %>%
            dplyr::rename(mean_exp = exposure)
     ext2 <- terra::extract(exp, values, fun = max, bind = TRUE) %>%
-      dplyr::rename(max_exp = exposure) %>%
-      dplyr::select("exposure")
+      dplyr::select("exposure") %>%
+      dplyr::rename(max_exp = exposure)
     ext <- cbind(ext1, ext2)
   }
   return(ext)
