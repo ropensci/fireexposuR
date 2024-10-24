@@ -3,7 +3,7 @@ pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   communityscale: communityscale.html
-last_built: 2024-10-24T03:14Z
+last_built: 2024-10-24T03:23Z
 urls:
   reference: https://heyairf.github.io/fireexposuR/reference
   article: https://heyairf.github.io/fireexposuR/articles
