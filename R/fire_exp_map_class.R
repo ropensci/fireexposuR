@@ -116,7 +116,8 @@ fire_exp_map_class <- function(exposure, classify = c("local", "landscape"),
     rcmats <- matrix(m, ncol = 3, byrow = TRUE)
     expbc <- terra::classify(expb, rcmats, include.lowest = TRUE)
     levels(expbc) <- data.frame(id = 0:4,
-                                expclass = c("Low (0-20%)", "Moderate (20-40%)",
+                                expclass = c("Low (0-20%)",
+                                             "Moderate (20-40%)",
                                              "High (40-60%)",
                                              "Very High (60-80%)",
                                              "Extreme (80-100%)"))
