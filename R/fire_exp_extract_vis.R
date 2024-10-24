@@ -66,7 +66,7 @@ fire_exp_extract_vis <- function(values_ext,
   stopifnot("`values_ext` missing exposure attributes. Use fire_exp_extract() first"
             = length(terra::names(ext)) > 0)
   stopifnot("`values_ext` missing exposure attributes. Use fire_exp_extract() first"
-            = terra::names(ext) %in% c("exposure", "mean_exp", "max_exp"))
+            = any(terra::names(ext) %in% c("exposure", "mean_exp", "max_exp")))
   if (terra::geomtype(ext) == "polygons") {
     method <- match.arg(method)
     if (method == "mean"){
