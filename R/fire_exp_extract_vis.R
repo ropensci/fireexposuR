@@ -131,7 +131,7 @@ fire_exp_extract_vis <- function(values_ext,
       "Nil" = "grey",
       "Low" = "yellow",
       "Moderate" = "orange",
-      "High" = "darkorange",
+      "High" = "orangered",
       "Very High" = "red",
       "Extreme" = "darkred"
     )

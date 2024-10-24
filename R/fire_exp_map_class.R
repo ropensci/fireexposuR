@@ -60,7 +60,7 @@ fire_exp_map_class <- function(exposure, classify = c("local", "landscape"),
   stopifnot("`exposure` must be a SpatRaster object"
             = class(exposure) == "SpatRaster")
   stopifnot("`exposure` layer must have values between 0-1"
-            = (trunc(terra::minmax(exposure)[1]) >= 0 && trunc(terra::minmax(exposure)[2]) <= 1))
+            = (round(terra::minmax(exposure)[1], 0) >= 0 && round(terra::minmax(exposure)[2], 0) <= 1))
   stopifnot("`aoi` must be a SpatVector object"
             = class(aoi) == "SpatVector")
   stopifnot("`aoi` extent must be within `exposure` extent"
