@@ -97,6 +97,9 @@ fire_exp_extract_vis <- function(values_ext,
           exposure >= 0 ~ 1
         )
       )
+
+    cols <- tidyterra::whitebox.colors(5, palette = "bl_yl_rd")
+
   }
   if (classify == "local") {
     title_str <- "Localized Scale"
@@ -111,10 +114,18 @@ fire_exp_extract_vis <- function(values_ext,
           exposure == 0 ~ 0
         )
       )
+
+    cols <- c("grey", "yellow", "orange", "red", "darkred")
+
   }
 
   lut <- 0:5
-  names(lut) <- c("Nil", "Low", "Moderate", "High", "Very High", "Extreme")
+  names(lut) <- c("Nil",
+                  "Low",
+                  "Moderate",
+                  "High",
+                  "Very High",
+                  "Extreme")
   ext <- ext %>%
     dplyr::mutate(class = names(lut)[match(.data$exp_class, lut)])
 
@@ -122,19 +133,11 @@ fire_exp_extract_vis <- function(values_ext,
 
 
   if (map == TRUE) {
-    v <- terra::project(ext, "EPSG: 3857")
+    v <- terra::project(ext, "EPSG: 3857") %>%
+      tidyr::drop_na(.data$class)
     e <- terra::rescale(v, 1.5)
     tile <- maptiles::get_tiles(e, "Esri.WorldGrayCanvas") %>%
       terra::crop(e)
-
-    cols <- c(
-      "Nil" = "grey",
-      "Low" = "yellow",
-      "Moderate" = "orange",
-      "High" = "orangered",
-      "Very High" = "red",
-      "Extreme" = "darkred"
-    )
 
 
     plt <- ggplot2::ggplot() +
@@ -159,7 +162,8 @@ fire_exp_extract_vis <- function(values_ext,
         tidyterra::geom_spatvector(data = v,
                                    ggplot2::aes(color = factor(.data$class)),
                                    shape = 16) +
-        ggplot2::scale_color_manual(values = cols) +
+        ggplot2::scale_color_manual(values = cols,
+                                    na.value="grey20") +
         ggplot2::labs(color = "Exposure Class") +
         ggplot2::coord_sf(expand = FALSE)
     } else {
