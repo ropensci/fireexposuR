@@ -20,9 +20,9 @@ Useful links:
 \author{
 \strong{Maintainer}: Air Forbes \email{amforbes@ualberta.ca} (\href{https://orcid.org/0000-0002-9842-7648}{ORCID})
 
-Authors:
+Other contributors:
 \itemize{
-  \item Jennifer Beverly
+  \item Jennifer Beverly [thesis advisor]
 }
 
 }
