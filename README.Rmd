@@ -26,6 +26,8 @@ public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostat
 
 [![R-CMD-check](https://github.com/heyairf/fireexposuR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/heyairf/fireexposuR/actions/workflows/R-CMD-check.yaml)
 
+[![Status at rOpenSci Software Peer Review](https://badges.ropensci.org/659_status.svg)](https://github.com/ropensci/software-review/issues/659)
+
 <!-- badges: end -->
 
 The goal of fireexposuR is to provide a standardized and accessible
