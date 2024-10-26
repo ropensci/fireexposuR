@@ -4,7 +4,7 @@ bibentry(
   key      = "fireexposuR",
   bibtype  = "Manual",
   title    = "fireexposuR: Compute and Visualize Wildfire Exposure",
-  author   = c(person("Air M.", "Forbes"), person("Jennifer L.", "Beverly")),
+  author   = "Air M. Forbes [aut], Jennifer L. Beverly [ths]",
   note     = "R Package version xxx",
   year     = "2024",
   url      = "https://github.com/heyairf/fireexposuR"
