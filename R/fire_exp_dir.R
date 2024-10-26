@@ -42,11 +42,22 @@ fire_exp_dir <- function(exposure, value, table = FALSE) {
             = class(value) == "SpatVector")
   names(exposure) <- "exposure"
   expl <- exposure
+
   if (length(value) > 1) {
     value <- value[1]
     message("Value object provided has more than one feature, only the first
             point or polygon will be used.")
   }
+
+  # test that values feature is within exposure extent before running
+  buff <- terra::buffer(value, 15000) %>%
+    terra::aggregate()
+  explext <- terra::classify(expl, c(-Inf,Inf,1)) %>%
+    terra::as.polygons()
+  stopifnot("Values features must be within extent of the exposure layer"
+            = terra::relate(buff, explext, "coveredby") == TRUE)
+
+
   wgs <- terra::project(value, "EPSG:4326")
   if (terra::geomtype(value) == "points") {
     x <- as.data.frame(wgs, geom = "XY")$x
