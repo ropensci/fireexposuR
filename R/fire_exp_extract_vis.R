@@ -134,7 +134,7 @@ fire_exp_extract_vis <- function(values_ext,
 
   if (map == TRUE) {
     v <- terra::project(ext, "EPSG: 3857") %>%
-      tidyr::drop_na(.data$class)
+      tidyr::drop_na("class")
     e <- terra::rescale(v, 1.5)
     tile <- maptiles::get_tiles(e, "Esri.WorldGrayCanvas") %>%
       terra::crop(e)
