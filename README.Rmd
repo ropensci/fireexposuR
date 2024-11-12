@@ -121,14 +121,14 @@ exp <- fire_exp(haz, tdist = "l")
 
 Once we have an exposure raster the rest of the package functions can be
 used to visualize it in different ways. For a landscape, we can map
-exposure with a continuous scale with `mapexpcont()`:
+exposure with a continuous scale with `fire_exp_map_cont()`:
 
 ```{r maplandscape}
 fire_exp_map_cont(exp)
 ```
 
 We can also see how that exposure is distributed within a localized area
-of interest with exposure classifications using `mapexpclass()`. Now we
+of interest with exposure classifications using `fire_exp_map_class()`. Now we
 can see that within our area of interest the northwest corner is a
 potential entry point for long-range embers from the landscape.
 

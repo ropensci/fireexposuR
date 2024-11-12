@@ -11,6 +11,9 @@ public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostat
 
 [![R-CMD-check](https://github.com/heyairf/fireexposuR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/heyairf/fireexposuR/actions/workflows/R-CMD-check.yaml)
 
+[![Status at rOpenSci Software Peer
+Review](https://badges.ropensci.org/659_status.svg)](https://github.com/ropensci/software-review/issues/659)
+
 <!-- badges: end -->
 
 The goal of fireexposuR is to provide a standardized and accessible
@@ -61,7 +64,7 @@ First, some example data will be generated:
 
 ``` r
 library(terra)
-#> terra 1.7.78
+#> terra 1.7.83
 library(fireexposuR)
 # read example hazard data ---------------------------------
 filepath <- "extdata/hazard.tif"
@@ -101,7 +104,7 @@ exp <- fire_exp(haz, tdist = "l")
 
 Once we have an exposure raster the rest of the package functions can be
 used to visualize it in different ways. For a landscape, we can map
-exposure with a continuous scale with `mapexpcont()`:
+exposure with a continuous scale with `fire_exp_map_cont()`:
 
 ``` r
 fire_exp_map_cont(exp)
@@ -111,9 +114,9 @@ fire_exp_map_cont(exp)
 <img src="man/figures/README-maplandscape-1.png" width="100%" />
 
 We can also see how that exposure is distributed within a localized area
-of interest with exposure classifications using `mapexpclass()`. Now we
-can see that within our area of interest the northwest corner is a
-potential entry point for long-range embers from the landscape.
+of interest with exposure classifications using `fire_exp_map_class()`.
+Now we can see that within our area of interest the northwest corner is
+a potential entry point for long-range embers from the landscape.
 
 Note: our imaginary area of interest is in the middle of the Pacific
 Ocean so the base map does not provide further reference.
