@@ -49,15 +49,6 @@ fire_exp_dir <- function(exposure, value, table = FALSE) {
             point or polygon will be used.")
   }
 
-  # test that values feature is within exposure extent before running
-  buff <- terra::buffer(value, 15000) %>%
-    terra::aggregate()
-  explext <- terra::classify(expl, c(-Inf,Inf,1)) %>%
-    terra::as.polygons()
-  stopifnot("Values features must be within extent of the exposure layer"
-            = terra::relate(buff, explext, "coveredby") == TRUE)
-
-
   wgs <- terra::project(value, "EPSG:4326")
   if (terra::geomtype(value) == "points") {
     x <- as.data.frame(wgs, geom = "XY")$x
@@ -141,19 +132,23 @@ fire_exp_dir <- function(exposure, value, table = FALSE) {
   highexp <- terra::classify(exp, rcmat, include.lowest = TRUE)
   highexppoly <- terra::as.polygons(highexp) #convert to polygon for intersect
 
-  #intersect and calculate length
-  inters <- terra::crop(transects, highexppoly) %>%
-    tidyterra::select(-"wkt")
-  interslength <- terra::perim(inters)
-  intdt <- cbind(as.data.frame(inters), interslength) # append lengths to data
-
-  transects2 <- terra::merge(transects,
-                             intdt,
-                             by = c("deg", "seg"),
-                             all = TRUE) %>%
-    dplyr::mutate(interslength = tidyr::replace_na(interslength, 0)) %>%
-    dplyr::mutate(viable = ifelse(interslength / 5000 >= 0.8, 1, 0)) %>%
-    tidyterra::select(-interslength)
+  if (length(highexppoly) > 0){
+    #intersect and calculate length
+    inters <- terra::crop(transects, highexppoly) %>%
+      tidyterra::select(-"wkt")
+    interslength <- terra::perim(inters)
+    intdt <- cbind(as.data.frame(inters), interslength) # append lengths to data
+    transects2 <- terra::merge(transects,
+                               intdt,
+                               by = c("deg", "seg"),
+                               all = TRUE) %>%
+      dplyr::mutate(interslength = tidyr::replace_na(interslength, 0)) %>%
+      dplyr::mutate(viable = ifelse(interslength / 5000 >= 0.8, 1, 0)) %>%
+      tidyterra::select(-interslength)
+  } else {
+    transects2 <- transects %>%
+      dplyr::mutate(viable = 0)
+  }
 
   if (table == TRUE) {
     return(as.data.frame(transects2))
@@ -162,5 +157,4 @@ fire_exp_dir <- function(exposure, value, table = FALSE) {
       dplyr::select(-"wkt")
     return(transects3)
   }
-
 }
