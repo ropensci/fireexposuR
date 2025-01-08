@@ -8,7 +8,7 @@ nb <- terra::rasterize(v, haz)
 pts <- terra::spatSample(v, 20)
 
 exp <- fire_exp(haz)
-wkt <- "POINT (500000 5000000)"
+wkt <- "POINT (400000 6050000)"
 pt <- terra::vect(wkt, crs = haz)
 
 
@@ -21,6 +21,16 @@ test_that("fire_exp_dir() input checks and function messages work", {
                "`value` must be a SpatVector object")
   expect_message(fire_exp_dir(exp, pts),
                  "Value object provided has more than one feature")
+  expect_error(fire_exp_dir(exp, pts, lengths = c("a", 2, 3)),
+                 "`lengths` must be a vector of three numeric values")
+  expect_error(fire_exp_dir(exp, pts, lengths = c(1, 2)),
+               "`lengths` must be a vector of three numeric values")
+  expect_error(fire_exp_dir(exp, pts, interval = "a"),
+               "`interval` must be one of: 0.5, 1, 2, 3, 4, 5, 6, 8, or 10")
+  expect_error(fire_exp_dir(exp, pts, thresh_exp = "a"),
+               "`thresh_exp` must be a numeric value between 0-1")
+  expect_error(fire_exp_dir(exp, pts, thresh_viable = 2),
+               "`thresh_viable` must be a numeric value between 0-1")
 })
 
 
@@ -36,4 +46,8 @@ test_that("fire_exp_dir() runs when input conditions are met", {
   expect_no_error(fire_exp_dir(exp, pt, table = TRUE))
   expect_no_error(suppressMessages(fire_exp_dir(exp, pts, table = TRUE)))
   expect_no_error(fire_exp_dir(exp, v, table = TRUE))
+  expect_no_error(fire_exp_dir(exp, v, lengths = c(2000, 2000, 2000)))
+  expect_no_error(fire_exp_dir(exp, v, interval = 5))
+  expect_no_error(fire_exp_dir(exp, pt, thresh_exp = 0.5))
+  expect_no_error(fire_exp_dir(exp, pt, thresh_viable = 0.5))
 })

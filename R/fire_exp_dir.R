@@ -1,47 +1,172 @@
 #' Conduct a directional exposure assessment
 #'
-#' @description `fire_exp_dir()` automates the directional vulnerability assessment
-#'   methods from Beverly and Forbes 2023. This function can return the
-#'   assessment transects as a spatial feature of transect segments or a table
-#'   of each transect segment as a data frame
-#'   The exposure layer and value layer must have a CRS defined.
-#'   If a polygon is used, it must be a simple feature without holes or complex
-#'   geometry. The function will not run if the polygon should be simplified
-#'   further. See Forbes and Beverly 2024 (Manuscript in preparation) for data
-#'   preparation advice.
+#' @description `fire_exp_dir()` returns a SpatVector of transects that have a
+#'  binary "Viable" attribute that represents if it is a viable linear pathway
+#'  a wildfire could follow toward a value of interest.
+#'
+#'
+#' @details
+#'  `fire_exp_dir()` automates the directional vulnerability assessment
+#'  methods documented in Beverly and Forbes (2023).
+#'
+#'  ## Spatial Reference
+#'
+#'  The inputs for the exposure and value layer must have the same coordinate
+#'  reference system (CRS) defined. The transects will be returned in the same
+#'  CRS as the inputs.
+#'
+#'  This function draws the transects by calculating the end point of a
+#'  transect by finding the shortest path along the WGS84 (EPSG: 4326)
+#'  ellipsoid at a given bearing and distance. The `value` input is reprojected
+#'  from the input CRS to latitude and longitude using WGS84 for the
+#'  calculations. After the transects are created, they are projected to match
+#'  the CRS of the input exposure and value layer. The lengths of the projected
+#'  transects will be effected by the scale factor of the input CRS; however,
+#'  the geodesic lengths are maintained.
+#'
+#'  ## Value feature
+#'
+#'  The value feature can be provided as a point or a simplified polygon.
+#'
+#'  If using a point feature the analysis can be sensitive to the placement
+#'  of a point. For example, if using a point to represent a large town a
+#'. point placed at the centroid will likely have different outputs than a
+#'  point placed at the edge of the community due to the arrangement of lower
+#'  exposure values typical of a built environment.
+#'
+#'  An option to use a simplified polygon has been added to this function for
+#'  values that may be too large to represent with a single point. The polygon
+#'  should be drawn with the consideration of the following or the function
+#'  will not be able to run. The polygon must be a single part polygon with no
+#'  holes. The polygon should have a smooth and simple shape, ideally circular
+#'  or ellipsoidal. The polygon should also have an approximate radius of less
+#'  than 5000 meters from the center. If the area of interest is larger than
+#'  this then consider using multiple assessments.
+#'
+#'  ## Default Values
+#'  The default values are based on the methods used and validated in Alberta,
+#'  Canada by Beverly and Forbes (2023). Options have been added to the
+#'  function to allow these values to be adjusted by the user if required.
+#'  Adjusting these values can lead to unexpected and uncertain results.
+#'
+#'  ## Adjusting the transects
+#'  The drawing of the transects can be customized by varying the intervals and
+#'  segment lengths if desired. Adjustments to the interval and lengths
+#'  parameters will effect how much of the exposure data is being captured by
+#'  the transects. If both parameters are being adjusted some trigonometry might
+#'  be required to find the optimal combination of the parameters to ensure
+#'  distances between the transects make sense for the intended application. The
+#'  resolution of the exposure raster may also be a factor in these decisions.
+#'
+#'  ### Interval
+#'  The interval parameter defines how many transects are drawn. The default of
+#'  `1` draws a transect at every whole degree from 1-360. This outputs a total
+#'  of 1080 transects, 360 for each segment. Increasing the interval will
+#'  output less transects and process faster. When the interval is
+#'  increased, the distance between the ends of the transects will also be
+#'  increased. For example: the terminus of 15000 meter transects (the default)
+#'  drawn every 1 degree (the default) will be approximately 250 meters apart,
+#'  but if drawn at 10 degree intervals will be approximately 2500 meters
+#'  apart. Larger intervals will increase speed and processing time, but might
+#'  not capture potential pathways between transects farther from the value.
+#'
+#'  ### Lengths
+#'  The lengths parameters allows a custom distance to be defined for the three
+#'  transect segments in meters. Lengths can be increased or decreased. The
+#'  segments can also be different lengths if desired.
+#'
+#'  ## Adjusting the thresholds
+#'  Threshold adjustments should only be considered if validation within the
+#'  area of interest have been done. The function [fire_exp_validate()] has been
+#'  included with this package to make the process easier, but still requires
+#'  significant time, data, and understanding.
+#'
+#'  ### High exposure
+#'  The `thresh_exp` parameter can be adjusted to define the minimum exposure
+#'  value to be considered for the directional assessment. The default value of
+#'  `0.6` is based on the findings of Beverly et al. (2021) who showed that
+#'  observed fires burned preferentially in areas where wildfire exposure values
+#'  exceed 60%. Adjusting this value is only recommended after a validation of
+#'  wildfire exposure has been conducted in the area of interest.
+#'
+#'  ### Viability
+#'  The `thresh_viable` parameter defines the minimum intersection with high
+#'  exposure areas to be considered a viable pathway. The default value of
+#'  `0.8` was determined by Beverly and Forbes (2023) by drawing continuous
+#'  linear transects within burned areas to represent observed pathways. It was
+#'  found that the average intersection with patches of pre-fire high exposure
+#'  was 80%. This methodology could be repeated in the users area of interest.
+#'
+#'   ## References
+#'
+#'
 #'
 #' @param exposure SpatRaster (e.g. from [fire_exp()])
 #' @param value Spatvector of value as a point or simplified polygon
+#' @param lengths (Optional) A vector of three numeric values. The length of
+#'  each transect starting from the value in meters. The default is
+#'  `c(5000, 5000, 5000)`.
+#' @param interval (Optional) Numeric. The degree interval at which to draw
+#'  the transects for analysis. Can be one of 0.5, 1, 2, 3, 4, 5, 6, 8, or 10.
+#'  The default is `1`.
+#' @param thresh_exp (optional) Numeric. The exposure value to use to define
+#'  high exposure as a proportion. Must be between 0-1. The default is `0.6`.
+#' @param thresh_viable (optional) Numeric. The minimum intersection of a
+#'  transect with a high exposure patch to be defined as a viable pathway as
+#'  a proportion. Must be between 0-1. The default is `0.8`.
 #' @param table Boolean, when `TRUE`: returns a table instead of a feature. The
-#'   default is `FALSE`.
+#'  default is `FALSE`.
 #'
 #' @return a SpatVector of the transects with a attributes: degree, segment,
-#'   viable. Unless:
+#'  viable. Unless:
 #'    * `table = TRUE`: a data frame
 #' @export
+#' @md
 #' @examples
-#' # read example hazard data ----------------------------------
-#' filepath <- "extdata/hazard.tif"
-#' haz <- terra::rast(system.file(filepath, package = "fireexposuR"))
-#' # generate an example point ---------------------------------
-#' wkt <- "POINT (500000 5000000)"
-#' pt <- terra::vect(wkt, crs = haz)
-#' # -----------------------------------------------------------
+#' # read example hazard data
+#' hazard_file_path <- "extdata/hazard.tif"
+#' hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 #'
-#' exp <- fire_exp(haz)
+#' # generate an example point
+#' point_wkt <- "POINT (400000 6050000)"
+#' point <- terra::vect(point_wkt, crs = hazard)
 #'
-#' fire_exp_dir(exp, pt)
+#' # compute exposure metric
+#' exposure <- fire_exp(hazard)
+#'
+#' # assess directional exposure
+#' fire_exp_dir(exposure, point)
 #'
 
 
 
-fire_exp_dir <- function(exposure, value, table = FALSE) {
+fire_exp_dir <- function(exposure, value,
+                         lengths = c(5000, 5000, 5000),
+                         interval = 1,
+                         thresh_exp = 0.6,
+                         thresh_viable = 0.8,
+                         table = FALSE) {
   stopifnot("`exposure` must be a SpatRaster object"
             = class(exposure) == "SpatRaster")
   stopifnot("`value` must be a SpatVector object"
             = class(value) == "SpatVector")
+  stopifnot("`lengths` must be a vector of three numeric values"
+            = class(lengths) == "numeric" && length(lengths) == 3)
+  stopifnot("`interval` must be one of: 0.5, 1, 2, 3, 4, 5, 6, 8, or 10"
+            = interval %in% c(1, 2, 3, 4, 5, 6, 8, 10, 0.5))
+  stopifnot("`thresh_exp` must be a numeric value between 0-1"
+            = thresh_exp >= 0 && thresh_exp <= 1)
+  stopifnot("`thresh_viable` must be a numeric value between 0-1"
+            = thresh_viable >= 0 && thresh_viable <= 1)
+
   names(exposure) <- "exposure"
   expl <- exposure
+
+  stopifnot("`exposure` layer must have a CRS defined"
+            = terra::crs(expl, describe = TRUE)$name != "unknown")
+  stopifnot("`exposure` and `value` must have the same CRS"
+            = terra::crs(expl) == terra::crs(value))
+
 
   if (length(value) > 1) {
     value <- value[1]
@@ -49,19 +174,23 @@ fire_exp_dir <- function(exposure, value, table = FALSE) {
             point or polygon will be used.")
   }
 
+  degs <- seq(0, 359, interval) + interval
+
+  num_transects <- length(degs)
+
   wgs <- terra::project(value, "EPSG:4326")
   if (terra::geomtype(value) == "points") {
     x <- as.data.frame(wgs, geom = "XY")$x
     y <- as.data.frame(wgs, geom = "XY")$y
     # Table of start points
-    linestart <- data.frame(deg = 1:360) %>%
+    linestart <- data.frame(deg = degs) %>%
       dplyr::mutate(x0 = x) %>%
       dplyr::mutate(y0 = y)
   } else if (terra::geomtype(value) == "polygons") {
     x <- as.data.frame(terra::centroids(wgs), geom = "XY")$x
     y <- as.data.frame(terra::centroids(wgs), geom = "XY")$y
 
-    linegeom0 <- data.frame(deg = 1:360) %>%
+    linegeom0 <- data.frame(deg = degs) %>%
       dplyr::mutate(x0 = x) %>%
       dplyr::mutate(y0 = y) %>%
       dplyr::mutate(x1 = geosphere::destPoint(cbind(.data$x0, .data$y0),
@@ -74,11 +203,11 @@ fire_exp_dir <- function(exposure, value, table = FALSE) {
     transects0 <- terra::vect(linegeom0, geom = "wkt", crs = "EPSG:4326") %>%
       terra::crop(wgs)
 
-    if (length(terra::geom(transects0)) == 3600) {
+    if (length(terra::geom(transects0)) == num_transects *10) {
       linestart <- as.data.frame(terra::geom(transects0)) %>%
         dplyr::select("geom", x, y) %>%
         dplyr::mutate(deg = .data$geom) %>%
-        dplyr::mutate(loc = rep(c(1, 0), times = 360)) %>%
+        dplyr::mutate(loc = rep(c(1, 0), times = num_transects)) %>%
         tidyr::pivot_wider(
           names_from = "loc",
           values_from = c(x, y),
@@ -92,30 +221,34 @@ fire_exp_dir <- function(exposure, value, table = FALSE) {
     stop("value feature must be a point or polygon")
   }
 
+  seg1length <- lengths[1]
+  seg2length <- lengths[2]
+  seg3length <- lengths[3]
+
   # find end points for transects
   linegeom <- linestart %>%
-    dplyr::mutate(x5 = geosphere::destPoint(cbind(.data$x0, .data$y0),
-                                            .data$deg, 5000)[, 1]) %>%
-    dplyr::mutate(y5 = geosphere::destPoint(cbind(.data$x0, .data$y0),
-                                            .data$deg, 5000)[, 2]) %>%
-    dplyr::mutate(to5 = paste("LINESTRING(", .data$x0, " ", .data$y0, ", ",
-                              .data$x5, " ", .data$y5, ")", sep = "")) %>%
-    dplyr::mutate(x10 = geosphere::destPoint(cbind(.data$x5, .data$y5),
-                                             .data$deg, 5000)[, 1]) %>%
-    dplyr::mutate(y10 = geosphere::destPoint(cbind(.data$x5, .data$y5),
-                                             .data$deg, 5000)[, 2]) %>%
-    dplyr::mutate(to10 = paste("LINESTRING(", .data$x5, " ", .data$y5, ", ",
-                               .data$x10, " ", .data$y10, ")", sep = "")) %>%
-    dplyr::mutate(x15 = geosphere::destPoint(cbind(.data$x10, .data$y10),
-                                             .data$deg, 5000)[, 1]) %>%
-    dplyr::mutate(y15 = geosphere::destPoint(cbind(.data$x10, .data$y10),
-                                             .data$deg, 5000)[, 2]) %>%
-    dplyr::mutate(to15 = paste("LINESTRING(", .data$x10, " ", .data$y10, ", ",
-                               .data$x15, " ", .data$y15, ")", sep = ""))
+    dplyr::mutate(x1 = geosphere::destPoint(cbind(.data$x0, .data$y0),
+                                            .data$deg, seg1length)[, 1]) %>%
+    dplyr::mutate(y1 = geosphere::destPoint(cbind(.data$x0, .data$y0),
+                                            .data$deg, seg1length)[, 2]) %>%
+    dplyr::mutate(seg1 = paste("LINESTRING(", .data$x0, " ", .data$y0, ", ",
+                              .data$x1, " ", .data$y1, ")", sep = "")) %>%
+    dplyr::mutate(x2 = geosphere::destPoint(cbind(.data$x1, .data$y1),
+                                             .data$deg, seg2length)[, 1]) %>%
+    dplyr::mutate(y2 = geosphere::destPoint(cbind(.data$x1, .data$y1),
+                                             .data$deg, seg2length)[, 2]) %>%
+    dplyr::mutate(seg2 = paste("LINESTRING(", .data$x1, " ", .data$y1, ", ",
+                               .data$x2, " ", .data$y2, ")", sep = "")) %>%
+    dplyr::mutate(x3 = geosphere::destPoint(cbind(.data$x2, .data$y2),
+                                             .data$deg, seg3length)[, 1]) %>%
+    dplyr::mutate(y3 = geosphere::destPoint(cbind(.data$x2, .data$y2),
+                                             .data$deg, seg3length)[, 2]) %>%
+    dplyr::mutate(seg3 = paste("LINESTRING(", .data$x2, " ", .data$y2, ", ",
+                               .data$x3, " ", .data$y3, ")", sep = ""))
 
   linegeomlong <- linegeom %>%
-    dplyr::select(c("deg", "to5", "to10", "to15")) %>%
-    tidyr::pivot_longer(cols = c("to5", "to10", "to15"),
+    dplyr::select(c("deg", "seg1", "seg2", "seg3")) %>%
+    tidyr::pivot_longer(cols = c("seg1", "seg2", "seg3"),
                         names_to = "seg", values_to = "wkt")
 
   transects <- terra::vect(linegeomlong,
@@ -127,7 +260,7 @@ fire_exp_dir <- function(exposure, value, table = FALSE) {
   # crop to extent of transects
   exp <- terra::crop(expl, terra::rescale(transects, 1.1))
 
-  rcm <- c(0, 0.6, NA, 0.6, 1, 1)
+  rcm <- c(0, thresh_exp, NA, thresh_exp, 1, 1)
   rcmat <- matrix(rcm, ncol = 3, byrow = TRUE)
   highexp <- terra::classify(exp, rcmat, include.lowest = TRUE)
   highexppoly <- terra::as.polygons(highexp) #convert to polygon for intersect
@@ -143,7 +276,8 @@ fire_exp_dir <- function(exposure, value, table = FALSE) {
                                by = c("deg", "seg"),
                                all = TRUE) %>%
       dplyr::mutate(interslength = tidyr::replace_na(interslength, 0)) %>%
-      dplyr::mutate(viable = ifelse(interslength / 5000 >= 0.8, 1, 0)) %>%
+      dplyr::mutate(viable = ifelse(interslength / 5000 >= thresh_viable,
+                                    1, 0)) %>%
       tidyterra::select(-interslength)
   } else {
     transects2 <- transects %>%
