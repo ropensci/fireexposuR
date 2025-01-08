@@ -31,18 +31,17 @@
 #'
 #' @importFrom rlang .data
 #' @examples
-#' # read example hazard data ----------------------------------
-#' filepath <- "extdata/hazard.tif"
-#' haz <- terra::rast(system.file(filepath, package = "fireexposuR"))
-#' # -----------------------------------------------------------
+#' # read example hazard data
+#' hazard_file_path <- "extdata/hazard.tif"
+#' hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 #'
 #' # compute long range exposure
-#' exp <- fire_exp(haz, tdist = "l")
-#' exp
+#' exposure <- fire_exp(hazard, tdist = "l")
+#' exposure
 #'
-#' # each transmission distance has a resolution requirement and exposure() will
+#' # each transmission distance has a resolution requirement and fire_exp() will
 #' # not run if resolution is too coarse
-#' try(fire_exp(haz, tdist = "r"))
+#' try(fire_exp(hazard, tdist = "r"))
 #'
 fire_exp <- function(hazard, tdist = c("l", "s", "r"), nonburnable) {
   stopifnot("`hazard` must be a SpatRaster object"
