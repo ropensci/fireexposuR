@@ -7,11 +7,8 @@ v <- terra::vect(as.matrix(g), "polygons", crs = haz)
 nb <- terra::rasterize(v, haz)
 pts <- terra::spatSample(v, 20)
 pt_wkt <- "POINT (400000 6050000)"
-<<<<<<< HEAD
 pt <- terra::vect(pt_wkt, crs = haz)
-=======
-pt <- terra::vect(point_wkt, crs = hazard)
->>>>>>> eeec67b7ecd3657f5fbebfafac24b69e631eab29
+
 
 
 exp <- fire_exp(haz)
