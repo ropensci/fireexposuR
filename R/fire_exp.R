@@ -1,6 +1,19 @@
 #' Compute the wildfire exposure metric
 #'
-#' `fire_exp()` computes the wildfire exposure metric from a hazard fuel raster.
+#' @description
+#' `fire_exp()` returns a SpatRaster of wildfire exposure values calculated
+#' using the input hazard fuel raster.
+#'
+#'
+#' @details
+#'
+#' **DOCUMENTATION IN DEVELOPMENT**
+#'
+#' There are minimum raster resolution requirements for each transmission distance.
+#' Radiant heat requires data of 10 m or finer, short-range embers 90 m or finer, and
+#' long-range embers requires 150 m or finer.
+#'
+#' #' `fire_exp()` computes the wildfire exposure metric from a hazard fuel raster.
 #' The hazard fuel raster must be prepared by the user. Forbes and Beverly 2024
 #' (manuscript in preparation)
 #' details suggestions for data acquisition and preparation in accordance with
@@ -21,11 +34,6 @@
 #'   for [fire_exp_validate()]
 #'
 #' @return A SpatRaster object of exposure values between 0-1
-#' @details
-#' There are minimum raster resolution requirements for each transmission distance.
-#' Radiant heat requires data of 10 m or finer, short-range embers 90 m or finer, and
-#' long-range embers requires 150 m or finer.
-#'
 #'
 #' @export
 #'

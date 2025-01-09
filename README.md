@@ -16,6 +16,8 @@ Review](https://badges.ropensci.org/659_status.svg)](https://github.com/ropensci
 
 <!-- badges: end -->
 
+**DOCUMENTATION IN DEVELOPMENT**
+
 The goal of fireexposuR is to provide a standardized and accessible
 platform for the computation and analysis of wildfire exposure. Wildfire
 exposure assessments are a decision support tool in wildfire management
@@ -63,17 +65,22 @@ exposure on a landscape and within an area of interest.
 First, some example data will be generated:
 
 ``` r
+library(fireexposuR)
+
+# load terra for spatial data funtions
 library(terra)
 #> terra 1.7.83
-library(fireexposuR)
-# read example hazard data ---------------------------------
-filepath <- "extdata/hazard.tif"
-haz <- rast(system.file(filepath, package = "fireexposuR"))
-# read example AOI polygon ---------------------------------
-filepath <- "extdata/builtsimpleexamplegeom.csv"
-g <- read.csv(system.file(filepath, package = "fireexposuR"))
-aoi <- vect(as.matrix(g), "polygons", crs = haz)
-# ----------------------------------------------------------
+
+# read example hazard data
+hazard_file_path <- "extdata/hazard.tif"
+hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
+
+# read example polygon geometry for area of interest boundary
+geom_file_path <- "extdata/polygon_geometry.csv"
+geom <- read.csv(system.file(geom_file_path, package = "fireexposuR"))
+
+# use geometry to make an area of interest polygon
+aoi <- terra::vect(as.matrix(geom), "polygons", crs = hazard)
 ```
 
 #### Hazard data
@@ -97,7 +104,7 @@ ember transmission.
 
 ``` r
 library(fireexposuR)
-exp <- fire_exp(haz, tdist = "l")
+exposure <- fire_exp(hazard, tdist = "l")
 ```
 
 ### Visualize exposure
@@ -107,7 +114,7 @@ used to visualize it in different ways. For a landscape, we can map
 exposure with a continuous scale with `fire_exp_map_cont()`:
 
 ``` r
-fire_exp_map_cont(exp)
+fire_exp_map_cont(exposure)
 ```
 
 <img src="man/figures/README-maplandscape-1.png" width="100%" />
@@ -121,7 +128,7 @@ Note: our imaginary area of interest is in the middle of the Pacific
 Ocean so the base map does not provide further reference.
 
 ``` r
-fire_exp_map_class(exp, classify = "local", aoi)
+fire_exp_map_class(exposure, classify = "local", aoi)
 ```
 
 <img src="man/figures/README-maplocal-1.png" width="100%" />

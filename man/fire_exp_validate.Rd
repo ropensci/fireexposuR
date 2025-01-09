@@ -27,7 +27,7 @@ exposure class proportions within entire extent and sampled areas. The
 default is \code{FALSE}.}
 }
 \value{
-table or plots
+table or plot
 }
 \description{
 For advanced users. \code{fire_exp_validate()} compares the
@@ -35,23 +35,33 @@ proportion of exposure classes in a the study area to the proportion of
 exposure classes within burned areas. A random sample is taken to account
 for spatial autocorrelation.
 }
+\details{
+\strong{DOCUMENTATION IN DEVELOPMENT}
+}
 \examples{
+# read example hazard data
+hazard_file_path <- "extdata/hazard.tif"
+hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 
-# read example hazard data ----------------------------------
-filepath <- "extdata/hazard.tif"
-haz <- terra::rast(system.file(filepath, package = "fireexposuR"))
-# generate example non-burn data -----------------------------
-filepath <- "extdata/builtsimpleexamplegeom.csv"
-g <- read.csv(system.file(filepath, package = "fireexposuR"))
-v <- terra::vect(as.matrix(g), "polygons", crs = haz)
-nb <- terra::rasterize(v, haz)
-# generate example fire polygons -----------------------------
-pts <- terra::spatSample(terra::rescale(haz, 0.8), 30, as.points = TRUE)
-fires <- terra::buffer(pts, 800)
-# ----------------------------------------------------------
+# generate example non-burnable cells data
+geom_file_path <- "extdata/polygon_geometry.csv"
+geom <- read.csv(system.file(geom_file_path, package = "fireexposuR"))
+polygon <- terra::vect(as.matrix(geom), "polygons", crs = hazard)
+no_burn <- terra::rasterize(polygon, hazard)
+
+# generate example fire polygons by buffering random points
+points <- terra::spatSample(terra::rescale(hazard, 0.8),
+                            30, as.points = TRUE)
+fires <- terra::buffer(points, 800)
 # PLEASE NOTE THIS RANDOMLY GENERATED DATA DOES NOT GIVE MEANINGFUL RESULTS
-exp <- fire_exp(haz, nonburnable = nb)
-fire_exp_validate(exp, fires)
-#' fire_exp_validate(exp, fires, plot = TRUE)
+
+# compute exposure and remove non-burnable cells
+exposure <- fire_exp(hazard, nonburnable = no_burn)
+
+# results as table
+fire_exp_validate(exposure, fires)
+
+# results as bar chart
+fire_exp_validate(exposure, fires, plot = TRUE)
 
 }

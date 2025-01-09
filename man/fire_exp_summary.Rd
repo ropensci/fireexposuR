@@ -19,8 +19,13 @@ summary}
 a summary table as a data frame object
 }
 \description{
-\code{fire_exp_summary()} creates a summary table of exposure by the
-specified classification scheme. The table reports the number of pixels, the
+\code{fire_exp_summary()} creates a summary table of area and
+proportions of exposure in predetermined exposure classes.
+}
+\details{
+\strong{DOCUMENTATION IN DEVELOPMENT}
+
+The table reports the number of pixels, the
 proportion, and area in hectares and meters squared by class.
 
 Landscape classification breaks are:
@@ -42,21 +47,22 @@ Local classification breaks are:
 }
 }
 \examples{
-#' # read example hazard data ----------------------------------
-filepath <- "extdata/hazard.tif"
-haz <- terra::rast(system.file(filepath, package = "fireexposuR"))
-# generate example AOI polygon -----------------------------
-filepath <- "extdata/builtsimpleexamplegeom.csv"
-g <- read.csv(system.file(filepath, package = "fireexposuR"))
-v <- terra::vect(as.matrix(g), "polygons", crs = haz)
-# ----------------------------------------------------------
+# read example hazard data
+hazard_file_path <- "extdata/hazard.tif"
+hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 
-exp <- fire_exp(haz)
+# read example area of interest polygon geometry
+geom_file_path <- "extdata/polygon_geometry.csv"
+geom <- read.csv(system.file(geom_file_path, package = "fireexposuR"))
+aoi <- terra::vect(as.matrix(geom), "polygons", crs = hazard)
 
-# for full extent of data
-fire_exp_summary(exp, classify = "landscape")
+# Compute exposure
+exposure <- fire_exp(hazard)
 
-# for a masked area
-fire_exp_summary(exp, v, classify = "landscape")
+# Summary for full extent of data
+fire_exp_summary(exposure, classify = "landscape")
+
+# Summary masked to an area of interest
+fire_exp_summary(exposure, aoi, classify = "landscape")
 
 }

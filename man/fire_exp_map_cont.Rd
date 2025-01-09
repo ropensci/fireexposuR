@@ -15,19 +15,21 @@ fire_exp_map_cont(exposure, aoi)
 a map is returned as a ggplot object
 }
 \description{
-\code{fire_exp_map_cont()} produces a standardized map of exposure with a
-continuous scale. An optional area of interest can be used as a mask. The
-ggplot object returned can be further modified with the ggplot library.
+\code{fire_exp_map_cont()} produces a standardized map of exposure
+with a continuous scale for the full extent of the data or masked to an area
+of interest.
+}
+\details{
+\strong{DOCUMENTATION IN DEVELOPMENT}
 }
 \examples{
+# read example hazard data
+hazard_file_path <- "extdata/hazard.tif"
+hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 
-# read example hazard data ----------------------------------
-filepath <- "extdata/hazard.tif"
-haz <- terra::rast(system.file(filepath, package = "fireexposuR"))
-# -------------------------------------------------------------
+# Compute exposure
+exposure <- fire_exp(hazard)
 
-exp <- fire_exp(haz)
-
-fire_exp_map_cont(exp)
+fire_exp_map_cont(exposure)
 
 }

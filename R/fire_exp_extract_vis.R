@@ -1,8 +1,12 @@
-#' Visualize by extracted exposure
+#' Summarize or plot exposure to values
 #'
 #' @description `fire_exp_extract_vis()` standardizes the visualization of
 #' outputs from [fire_exp_extract()] as a summary table or a map by classifying
 #' exposure into predetermined exposure classes.
+#'
+#' @details
+#' **DOCUMENTATION IN DEVELOPMENT**
+#'
 #'
 #' Landscape classification breaks are:
 #' * Low (0-20%)
@@ -34,26 +38,28 @@
 #' @export
 #'
 #' @examples
-#' # read example hazard data ----------------------------------
-#' filepath <- "extdata/hazard.tif"
-#' haz <- terra::rast(system.file(filepath, package = "fireexposuR"))
-#' # read example AOI polygon geometry
-#' filepath <- "extdata/builtsimpleexamplegeom.csv"
-#' g <- read.csv(system.file(filepath, package = "fireexposuR"))
-#' v <- terra::vect(as.matrix(g), "polygons", crs = haz)
-#' # generate random points within polygon
-#' pts <- terra::spatSample(v, 200)
-#' # ----------------------------------------------------------
+#' # read example hazard data
+#' hazard_file_path <- "extdata/hazard.tif"
+#' hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 #'
-#' exp <- fire_exp(haz)
+#' # generate example area of interest geometry
+#' geom_file_path <- "extdata/polygon_geometry.csv"
+#' geom <- read.csv(system.file(geom_file_path, package = "fireexposuR"))
+#' aoi <- terra::vect(as.matrix(geom), "polygons", crs = hazard)
 #'
-#' vals_exp <- fire_exp_extract(exp, pts)
+#' # generate random points within the aoi polygon
+#' points <- terra::spatSample(aoi, 200)
+#'
+#' # compute exposure
+#' exposure <- fire_exp(hazard)
+#'
+#' values_exp <- fire_exp_extract(exposure, points)
 #'
 #' # summarize example points in a table
-#' fire_exp_extract_vis(vals_exp, classify = "local")
+#' fire_exp_extract_vis(values_exp, classify = "local")
 #'
 #' # visualize example points in standardized map
-#' fire_exp_extract_vis(vals_exp, map = TRUE)
+#' fire_exp_extract_vis(values_exp, map = TRUE)
 #'
 fire_exp_extract_vis <- function(values_ext,
                        method = c("max", "mean"),

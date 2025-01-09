@@ -2,7 +2,7 @@
 % Please edit documentation in R/fire_exp_dir_plot.R
 \name{fire_exp_dir_plot}
 \alias{fire_exp_dir_plot}
-\title{Visualize directional exposure with a radial plot}
+\title{Plot directional exposure in a radial plot}
 \usage{
 fire_exp_dir_plot(transects, labels, title = "Directional Vulnerability")
 }
@@ -40,7 +40,7 @@ wildfire. \emph{Natural Hazards} \strong{117}, 831-849.
 }
 }
 \examples{
-#' # read example hazard data
+# read example hazard data
 hazard_file_path <- "extdata/hazard.tif"
 hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 

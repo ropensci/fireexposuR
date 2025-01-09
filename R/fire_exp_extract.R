@@ -1,35 +1,40 @@
 #' Extract exposure values to features
 #'
 #' @description `fire_exp_extract()` extracts the underlying exposure value for
-#' each feature in the values layer. Values can be provided as either points or
+#' each feature in the values layer.
+#'
+#'
+#' @details
+#' **DOCUMENTATION IN DEVELOPMENT**
+#' Values can be provided as either points or
 #' polygons, and must be singlepart features (i.e. the attribute table has one
 #' row per value). If the values are polygon features both the maximum and mean
 #' exposure is computed.
 #'
 #' @param exposure SpatRaster (e.g. from [fire_exp()])
 #' @param values Spatvector of points or polygons
-
 #'
 #' @return a SpatVector object with new attributes
 #'
 #' @export
 #'
 #' @examples
-#' # read example hazard data ----------------------------------
-#' filepath <- "extdata/hazard.tif"
-#' haz <- terra::rast(system.file(filepath, package = "fireexposuR"))
-#' # read example AOI
-#' filepath <- "extdata/builtsimpleexamplegeom.csv"
-#' g <- read.csv(system.file(filepath, package = "fireexposuR"))
-#' v <- terra::vect(as.matrix(g), "polygons", crs = haz)
-#' # generate random points
-#' pts <- terra::spatSample(v, 200)
-#' # ----------------------------------------------------------
+#' # read example hazard data
+#' hazard_file_path <- "extdata/hazard.tif"
+#' hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 #'
-#' exp <- fire_exp(haz)
+#' # generate example area of interest geometry
+#' geom_file_path <- "extdata/polygon_geometry.csv"
+#' geom <- read.csv(system.file(geom_file_path, package = "fireexposuR"))
+#' aoi <- terra::vect(as.matrix(geom), "polygons", crs = hazard)
 #'
-#' # extract exposure to point values
-#' fire_exp_extract(exp, pts)
+#' # generate random points within the aoi polygon
+#' points <- terra::spatSample(aoi, 100)
+#'
+#' # compute exposure
+#' exposure <- fire_exp(hazard)
+#'
+#' fire_exp_extract(exposure, points)
 #'
 
 fire_exp_extract <- function(exposure,

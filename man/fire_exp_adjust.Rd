@@ -23,7 +23,13 @@ for \code{\link[=fire_exp_validate]{fire_exp_validate()}}}
 SpatRaster object of exposure values
 }
 \description{
-For advanced users. If the transmission distances from the
+For advanced users. Adjust the transmission distances from the
+defaults used in \code{\link[=fire_exp]{fire_exp()}}.
+}
+\details{
+\strong{DOCUMENTATION IN DEVELOPMENT}
+
+If the transmission distances from the
 wildfire exposure literature are not representative of the wildland fuels
 in your area of interest, this function can be used to change the
 transmission distance to a custom distance. It is highly recommended that
@@ -31,12 +37,11 @@ any exposure layers produced with this function are validated with observed
 fire history using the \code{\link[=fire_exp_validate]{fire_exp_validate()}} function.
 }
 \examples{
-# read example hazard data ----------------------------------
-filepath <- "extdata/hazard.tif"
-haz <- terra::rast(system.file(filepath, package = "fireexposuR"))
-# -----------------------------------------------------------
+# read example hazard data
+hazard_file_path <- "extdata/hazard.tif"
+hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 
 # compute long range exposure with custom disance of 800 m
-exp <- fire_exp_adjust(haz, tdist = 800)
+exposure800 <- fire_exp_adjust(hazard, tdist = 800)
 
 }

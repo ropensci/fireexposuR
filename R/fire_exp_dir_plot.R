@@ -1,4 +1,4 @@
-#' Visualize directional exposure with a radial plot
+#' Plot directional exposure in a radial plot
 #'
 #' @description `fire_exp_dir_plot()` plots the viable directional exposure
 #' pathways identified with [fire_exp_dir()] in a standardized radial plot.

@@ -1,4 +1,4 @@
-#' Visualize directional exposure with a map
+#' Map directional exposure
 #'
 #' @description `fire_exp_dir_map()` plots directional exposure transects onto
 #' a map.

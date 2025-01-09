@@ -2,7 +2,7 @@
 % Please edit documentation in R/fire_exp_dir_multi.R
 \name{fire_exp_dir_multi}
 \alias{fire_exp_dir_multi}
-\title{Generate a directional load plot or table for multiple values}
+\title{Summarize or plot directional load for multiple values}
 \usage{
 fire_exp_dir_multi(exposure, values, plot = FALSE, all = FALSE)
 }
@@ -25,13 +25,11 @@ outer (binary). Unless:
 * \code{plot = TRUE}: a standardized plot as a ggplot object
 }
 \description{
-\code{fire_exp_dir_multi()} automates the directional vulnerability
-assessment methods from Beverly and Forbes 2023. This function can return
-directional loads as:
-\itemize{
-\item a standardized radial plot as a ggplot object
-\item a table summarizing if each degree is included by feature
+\code{fire_exp_dir_multi()} summarizes the directional vulnerability
+load for multiple points in a study area in a table or a plot.
 }
+\details{
+\strong{DOCUMENTATION IN DEVELOPMENT}
 }
 \examples{
 # read example hazard data

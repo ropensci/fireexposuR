@@ -1,10 +1,11 @@
-#' Generate a directional load plot or table for multiple values
+#' Summarize or plot directional load for multiple values
 #'
-#' @description `fire_exp_dir_multi()` automates the directional vulnerability
-#'   assessment methods from Beverly and Forbes 2023. This function can return
-#'   directional loads as:
-#'  * a standardized radial plot as a ggplot object
-#'  * a table summarizing if each degree is included by feature
+#' @description `fire_exp_dir_multi()` summarizes the directional vulnerability
+#' load for multiple points in a study area in a table or a plot.
+#'
+#' @details
+#' **DOCUMENTATION IN DEVELOPMENT**
+#'
 #'
 #' @param exposure SpatRaster from [fire_exp()]
 #' @param values Spatvector of value as a point or simplified polygon

@@ -2,7 +2,7 @@
 % Please edit documentation in R/fire_exp_dir_map.R
 \name{fire_exp_dir_map}
 \alias{fire_exp_dir_map}
-\title{Visualize directional exposure with a map}
+\title{Map directional exposure}
 \usage{
 fire_exp_dir_map(
   transects,

@@ -2,7 +2,7 @@
 title: "Local scale example"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{communityscale}
+  %\VignetteIndexEntry{Local scale example}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
@@ -18,6 +18,8 @@ knitr::opts_chunk$set(
 ```
 
 ## Usage example
+
+**DOCUMENTATION IN DEVELOPMENT**
 
 This is a basic example which shows a workflow to assess wildfire
 exposure to a community using multiple functions from the fireexposuR
@@ -35,8 +37,11 @@ library(fireexposuR)
 
 ### Data preperation
 
-First, some example data will be generated for a town that doesn't exist in the
-middle of Alberta.
+First, some example data will be generated for an imaginary town somewhere in the
+middle of Alberta. 
+
+The hazardous fuel information is reflective of the area, but the area of
+interest is not an actual community.
 
 ```{r data}
 # load terra for spatial data funtions
@@ -47,7 +52,7 @@ hazard_file_path <- "extdata/hazard.tif"
 hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 
 # read example polygon geometry for area of interest boundary
-geom_file_path <- "extdata/builtsimpleexamplegeom.csv"
+geom_file_path <- "extdata/polygon_geometry.csv"
 geom <- read.csv(system.file(geom_file_path, package = "fireexposuR"))
 
 # use geometry to make an area of interest polygon

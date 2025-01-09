@@ -24,7 +24,17 @@ for \code{\link[=fire_exp_validate]{fire_exp_validate()}}}
 A SpatRaster object of exposure values between 0-1
 }
 \description{
-\code{fire_exp()} computes the wildfire exposure metric from a hazard fuel raster.
+\code{fire_exp()} returns a SpatRaster of wildfire exposure values calculated
+using the input hazard fuel raster.
+}
+\details{
+\strong{DOCUMENTATION IN DEVELOPMENT}
+
+There are minimum raster resolution requirements for each transmission distance.
+Radiant heat requires data of 10 m or finer, short-range embers 90 m or finer, and
+long-range embers requires 150 m or finer.
+
+#' \code{fire_exp()} computes the wildfire exposure metric from a hazard fuel raster.
 The hazard fuel raster must be prepared by the user. Forbes and Beverly 2024
 (manuscript in preparation)
 details suggestions for data acquisition and preparation in accordance with
@@ -32,11 +42,6 @@ various budget limitations and user experience levels. Computing wildfire
 exposure for different transmission distances may require unique hazard
 rasters for each distance. See Beverly et al. 2021, Beverly et al. 2010, and
 Schmidt et al. 2024 for further references for hazard raster preparation.
-}
-\details{
-There are minimum raster resolution requirements for each transmission distance.
-Radiant heat requires data of 10 m or finer, short-range embers 90 m or finer, and
-long-range embers requires 150 m or finer.
 }
 \examples{
 # read example hazard data

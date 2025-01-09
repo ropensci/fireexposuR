@@ -1,7 +1,7 @@
 # repeat test data
 filepath <- "extdata/hazard.tif"
 haz <- terra::rast(system.file(filepath, package = "fireexposuR"))
-filepath <- "extdata/builtsimpleexamplegeom.csv"
+filepath <- "extdata/polygon_geometry.csv"
 g <- read.csv(system.file(filepath, package = "fireexposuR"))
 v <- terra::vect(as.matrix(g), "polygons", crs = haz)
 nb <- terra::rasterize(v, haz)

@@ -1,7 +1,12 @@
 #' Map exposure with a classified scale
 #'
-#' @description `fire_exp_map_class()` produces a standardized map of exposure with
-#' exposure classes. This function dynamically pulls map tiles for a base map,
+#' @description `fire_exp_map_class()` produces a standardized map by
+#' classifying exposure into predetermined exposure classes.
+#'
+#'
+#' @details
+#' **DOCUMENTATION IN DEVELOPMENT**
+#' This function dynamically pulls map tiles for a base map,
 #' so it is recommended the area of interest is localized. The zoom level may
 #' need to be adjusted based on the extent of your data; see
 #' [OpenStreetMap Wiki](https://wiki.openstreetmap.org/wiki/Zoom_levels) for
@@ -42,17 +47,19 @@
 #' @export
 #'
 #' @examples
-#' # read example hazard data ----------------------------------
-#' filepath <- "extdata/hazard.tif"
-#' haz <- terra::rast(system.file(filepath, package = "fireexposuR"))
-#' # generate example AOI polygon -----------------------------
-#' filepath <- "extdata/builtsimpleexamplegeom.csv"
-#' g <- read.csv(system.file(filepath, package = "fireexposuR"))
-#' v <- terra::vect(as.matrix(g), "polygons", crs = haz)
-#' # ----------------------------------------------------------
+#' # read example hazard data
+#' hazard_file_path <- "extdata/hazard.tif"
+#' hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 #'
-#' exp <- fire_exp(haz)
-#' fire_exp_map_class(exp, classify = "local", v)
+#' # generate example area of interest geometry
+#' geom_file_path <- "extdata/polygon_geometry.csv"
+#' geom <- read.csv(system.file(geom_file_path, package = "fireexposuR"))
+#' aoi <- terra::vect(as.matrix(geom), "polygons", crs = hazard)
+#'
+#' # compute exposure
+#' exposure <- fire_exp(hazard)
+#'
+#' fire_exp_map_class(exposure, classify = "local", aoi)
 #'
 
 fire_exp_map_class <- function(exposure, classify = c("local", "landscape"),
