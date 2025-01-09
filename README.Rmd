@@ -20,11 +20,12 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 
+[![R-CMD-check](https://github.com/heyairf/fireexposuR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/heyairf/fireexposuR/actions/workflows/R-CMD-check.yaml)
+
 [![Project Status: WIP – Initial development is in progress, but there
 has not yet been a stable, usable release suitable for the
 public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
 
-[![R-CMD-check](https://github.com/heyairf/fireexposuR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/heyairf/fireexposuR/actions/workflows/R-CMD-check.yaml)
 
 [![Status at rOpenSci Software Peer Review](https://badges.ropensci.org/659_status.svg)](https://github.com/ropensci/software-review/issues/659)
 
@@ -43,8 +44,7 @@ scientific publications.
 -   [Beverly et al. 2021](https://doi.org/10.1007/s10980-020-01173-8)
     -   Validation of the wildfire exposure metric at a landscape scale
         with observed fire history
--   [Beverly and Forbes
-    2023](https://doi.org/10.1007/s11069-023-05885-3)
+-   [Beverly and Forbes 2023](https://doi.org/10.1007/s11069-023-05885-3)
     -   Directional vulnerability assessment and methodology
 
 The functions in this package require the pre-preparation of data; an

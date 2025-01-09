@@ -5,11 +5,11 @@
 
 <!-- badges: start -->
 
+[![R-CMD-check](https://github.com/heyairf/fireexposuR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/heyairf/fireexposuR/actions/workflows/R-CMD-check.yaml)
+
 [![Project Status: WIP – Initial development is in progress, but there
 has not yet been a stable, usable release suitable for the
 public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
-
-[![R-CMD-check](https://github.com/heyairf/fireexposuR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/heyairf/fireexposuR/actions/workflows/R-CMD-check.yaml)
 
 [![Status at rOpenSci Software Peer
 Review](https://badges.ropensci.org/659_status.svg)](https://github.com/ropensci/software-review/issues/659)
@@ -108,7 +108,6 @@ exposure with a continuous scale with `fire_exp_map_cont()`:
 
 ``` r
 fire_exp_map_cont(exp)
-#> <SpatRaster> resampled to 501264 cells.
 ```
 
 <img src="man/figures/README-maplandscape-1.png" width="100%" />
