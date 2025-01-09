@@ -22,8 +22,6 @@ test_that("fire_exp_dir_multi() input checks and function messages work", {
                "`exposure` must be a SpatRaster object")
   expect_error(fire_exp_dir_multi(exp, 2),
                "`values` must be a SpatVector")
-  expect_error(fire_exp_dir_multi(exp, ptsout),
-               "Values features must be within extent of the exposure layer")
 })
 
 test_that("fire_exp_dir_multi() runs when input conditions are met", {

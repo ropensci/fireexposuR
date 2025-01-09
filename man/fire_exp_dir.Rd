@@ -38,16 +38,18 @@ a proportion. Must be between 0-1. The default is \code{0.8}.}
 default is \code{FALSE}.}
 }
 \value{
-a SpatVector of the transects with a attributes: degree, segment,
-viable. Unless:
-\itemize{
-\item \code{table = TRUE}: a data frame
-}
+a SpatVector of the transects with the attributes: 'deg' = degree,
+'seg' = segment, and 'viable'. The transects will be returned with the same
+CRS as the input features.
+
+If \code{table = TRUE}: a data frame is returned instead with an additional
+attribute 'wkt', which is a Well Known Text (WKT) string of transect
+geometries (coordinate reference system: WGS84).
 }
 \description{
-\code{fire_exp_dir()} returns a SpatVector of transects that have a
-binary "Viable" attribute that represents if it is a viable linear pathway
-a wildfire could follow toward a value of interest.
+\code{fire_exp_dir()} returns a SpatVector of linear transects toward
+a value. Transects are assessed as viable wildfire pathways by intersecting
+them with areas of high exposure.
 }
 \details{
 \code{fire_exp_dir()} automates the directional vulnerability assessment
@@ -59,13 +61,13 @@ reference system (CRS) defined. The transects will be returned in the same
 CRS as the inputs.
 
 This function draws the transects by calculating the end point of a
-transect by finding the shortest path along the WGS84 (EPSG: 4326)
-ellipsoid at a given bearing and distance. The \code{value} input is reprojected
-from the input CRS to latitude and longitude using WGS84 for the
-calculations. After the transects are created, they are projected to match
-the CRS of the input exposure and value layer. The lengths of the projected
-transects will be effected by the scale factor of the input CRS; however,
-the geodesic lengths are maintained.
+transect by finding the shortest path along the WGS84
+(\href{https://epsg.io/5326}{EPSG:4326}) ellipsoid at a given bearing and
+distance. The \code{value} input is reprojected from the input CRS to latitude and
+longitude using WGS84 for the calculations. After the transects are created,
+they are projected to match the CRS of the input exposure and value layer.
+The lengths of the projected transects will be effected by the scale factor
+of the input CRS; however, the geodesic lengths are maintained.
 }
 
 \subsection{Value feature}{
@@ -74,7 +76,7 @@ The value feature can be provided as a point or a simplified polygon.
 
 If using a point feature the analysis can be sensitive to the placement
 of a point. For example, if using a point to represent a large town a
-. point placed at the centroid will likely have different outputs than a
+point placed at the centroid will likely have different outputs than a
 point placed at the edge of the community due to the arrangement of lower
 exposure values typical of a built environment.
 
@@ -110,7 +112,7 @@ resolution of the exposure raster may also be a factor in these decisions.
 The interval parameter defines how many transects are drawn. The default of
 \code{1} draws a transect at every whole degree from 1-360. This outputs a total
 of 1080 transects, 360 for each segment. Increasing the interval will
-output less transects, and increase processing speeds. When the interval is
+output less transects and process faster. When the interval is
 increased, the distance between the ends of the transects will also be
 increased. For example: the terminus of 15000 meter transects (the default)
 drawn every 1 degree (the default) will be approximately 250 meters apart,
@@ -157,6 +159,14 @@ was 80\%. This methodology could be repeated in the users area of interest.
 }
 
 \subsection{References}{
+
+Beverly JL, Forbes AM (2023) Assessing directional vulnerability to
+wildfire. \emph{Natural Hazards} \strong{117}, 831-849.
+\href{https://doi.org/10.1007/s11069-023-05885-3}{DOI}
+
+Beverly JL, McLoughlin N, Chapman E (2021) A simple metric of landscape
+fire exposure. \emph{Landscape Ecology} \strong{36}, 785-801.
+\href{https://doi.org/10.1007/s10980-020-01173-8}{DOI}
 }
 }
 \examples{

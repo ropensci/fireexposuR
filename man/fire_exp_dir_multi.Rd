@@ -34,17 +34,17 @@ directional loads as:
 }
 }
 \examples{
-#' # read example hazard data ----------------------------------
-filepath <- "extdata/hazard.tif"
-haz <- terra::rast(system.file(filepath, package = "fireexposuR"))
-# example points across the landscape
-e <- terra::buffer(terra::vect(terra::ext(haz), crs = haz), -15500)
-pts <- terra::spatSample(e, 20)
-# ----------------------------------------------------------
+# read example hazard data
+hazard_file_path <- "extdata/hazard.tif"
+hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 
-exp <- fire_exp(haz, tdist = "l")
-# this example will take a while to run
-\dontrun{
-fire_exp_dir_multi(exp, pts, plot = TRUE)
-}
+# generate 10 random example points within the hazard extent
+e <- terra::buffer(terra::vect(terra::ext(hazard), crs = hazard), -15500)
+points <- terra::spatSample(e, 10)
+
+# compute exposure metric
+exposure <- fire_exp(hazard)
+
+# plot directional load for multiple points
+fire_exp_dir_multi(exposure, points, plot = TRUE)
 }
