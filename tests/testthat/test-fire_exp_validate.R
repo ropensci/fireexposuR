@@ -12,8 +12,8 @@ expnb <- fire_exp(haz, nonburnable = nb)
 pts <- terra::spatSample(terra::rescale(haz, 0.8), 30, as.points = TRUE)
 fires <- terra::buffer(pts, 800)
 
-e2 <- c(46,54,496,504) * 10000
-aoi <- terra::as.polygons(terra::ext(e2), crs = haz)
+e <- c(39, 40, 604, 605) * 10000
+aoi <- terra::as.polygons(terra::ext(e), crs = haz)
 
 # tests ========================================================================
 
