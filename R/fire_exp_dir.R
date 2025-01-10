@@ -282,14 +282,23 @@ fire_exp_dir <- function(exposure, value,
       tidyterra::select(-"wkt")
     interslength <- terra::perim(inters)
     intdt <- cbind(as.data.frame(inters), interslength) # append lengths to data
-    transects2 <- terra::merge(transects,
+
+    transectlength <- terra::perim(transects)
+    trdt <- cbind(as.data.frame(transects), transectlength)
+
+    transects_length <- terra::merge(transects,
+                                     trdt,
+                                     by = c("deg", "seg", "wkt"),
+                                     all = TRUE)
+
+    transects2 <- terra::merge(transects_length,
                                intdt,
                                by = c("deg", "seg"),
                                all = TRUE) %>%
       dplyr::mutate(interslength = tidyr::replace_na(interslength, 0)) %>%
-      dplyr::mutate(viable = ifelse(interslength / 5000 >= thresh_viable,
+      dplyr::mutate(viable = ifelse(interslength / transectlength >= thresh_viable,
                                     1, 0)) %>%
-      tidyterra::select(-interslength)
+      tidyterra::select(-interslength, -transectlength)
   } else {
     transects2 <- transects %>%
       dplyr::mutate(viable = 0)
