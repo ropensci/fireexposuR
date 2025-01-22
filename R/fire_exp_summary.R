@@ -55,7 +55,9 @@ fire_exp_summary <- function(exposure, aoi,
                              classify = c("landscape", "local")) {
   stopifnot("`exposure` must be a SpatRaster object"
             = class(exposure) == "SpatRaster")
-  stopifnot("Linear units of exposure layer must be in meters"
+  stopifnot("`exposure` layer must have values between 0-1"
+            = (round(terra::minmax(exposure)[1], 0) >= 0 && round(terra::minmax(exposure)[2], 0) <= 1))
+  stopifnot("Linear units of `exposure` layer must be in meters"
             = terra::linearUnits(exposure) == 1)
   classify <- match.arg(classify)
 

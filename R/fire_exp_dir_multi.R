@@ -40,6 +40,8 @@
 fire_exp_dir_multi <- function(exposure, values, plot = FALSE, all = FALSE) {
   stopifnot("`exposure` must be a SpatRaster object"
             = class(exposure) == "SpatRaster")
+  stopifnot("`exposure` layer must have values between 0-1"
+            = (round(terra::minmax(exposure)[1], 0) >= 0 && round(terra::minmax(exposure)[2], 0) <= 1))
   stopifnot("`values` must be a SpatVector object of point or polygon features"
             = (class(values) == "SpatVector" &&
                  terra::geomtype(values) %in% c("points", "polygons")))

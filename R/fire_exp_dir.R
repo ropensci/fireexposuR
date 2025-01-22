@@ -159,6 +159,8 @@ fire_exp_dir <- function(exposure, value,
                          table = FALSE) {
   stopifnot("`exposure` must be a SpatRaster object"
             = class(exposure) == "SpatRaster")
+  stopifnot("`exposure` layer must have values between 0-1"
+            = (round(terra::minmax(exposure)[1], 0) >= 0 && round(terra::minmax(exposure)[2], 0) <= 1))
   stopifnot("`value` must be a SpatVector object"
             = class(value) == "SpatVector")
   stopifnot("`lengths` must be a vector of three numeric values"
