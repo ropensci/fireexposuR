@@ -4,22 +4,43 @@
 #' load for multiple points in a study area in a table or a plot.
 #'
 #' @details
-#' **DOCUMENTATION IN DEVELOPMENT**
+#' This function summarizes multiple directional vulnerability assessments into
+#' a single table or plot. The plot is based on the methods presented in
+#' Beverly and Forbes 2023. For each degree, the frequency of input values with a
+#' continuous pathway at that trajectory is found. This summary can be useful
+#' in identifying trends in directional exposure to values within a regional area
+#' of interest.
+#'
+#' Continuous pathways can be assessed for the full span of all three directional
+#' assessment transect segments, or limited to the outer two segments with the
+#' `full` parameter. If the values being assessed are variable sizes and being
+#' represented as points, it is recommended this parameter remains set to `FALSE`.
+#' The inner segment is sensitive to the size of the value when a point is used.
+#' Adjusting the parameters for `fire_exp_dir()` is also supported. See details
+#' in [`fire_exp_dir()`] for more information.
+#'
+#' ## References
+#' Beverly JL, Forbes AM (2023) Assessing directional vulnerability to
+#' wildfire. *Natural Hazards* **117**, 831-849.
+#' [DOI](https://doi.org/10.1007/s11069-023-05885-3)
 #'
 #'
-#' @param exposure SpatRaster from [fire_exp()]
+#' @param exposure SpatRaster from [`fire_exp()`]
 #' @param values Spatvector of value as a point or simplified polygon
 #' @param plot Boolean, when `TRUE`: returns a standardized directional plot.
-#'   The default is `FALSE`.
-#' @param all Boolean, when `TRUE`: considers all 3 segments (0-15km) of
-#'   directional transects. when `FALSE`: only the segments from 5-15 km are
-#'   included (Default)
+#' The default is `FALSE`.
+#' @param full Boolean. Ignored when `plot = FALSE`. When `TRUE`: all 3 transect
+#' segments must be viable. when `FALSE`: only the segments from seg2 and seg3
+#' are considered (Default)
+#' @param title (Optional) String. Ignored when `plot = FALSE`. A custom title
+#' for the plot. The default is `"Directional Vulnerability for Multiple Values"`
+#' @param ... arguments passed to [`fire_exp_dir()`].
 #'
 #' @return a data.frame of the features with attributes: value featureID,
-#'   degree, to5 (binary), to10(binary), t015(binary), full(binary),
-#'   outer (binary). Unless:
-#'      * `plot = TRUE`: a standardized plot as a ggplot object
-
+#' degree, seg1 (binary), seg2 (binary), seg3 (binary), full (binary),
+#' outer (binary). Unless:
+#'    * `plot = TRUE`: a standardized plot as a ggplot object
+#'
 #' @export
 #'
 #' @examples
@@ -35,9 +56,11 @@
 #' exposure <- fire_exp(hazard)
 #'
 #' # plot directional load for multiple points
-#' fire_exp_dir_multi(exposure, points, plot = TRUE)
+#' fire_exp_dir_multi(exposure, points, plot = TRUE, interval = 10)
 
-fire_exp_dir_multi <- function(exposure, values, plot = FALSE, all = FALSE) {
+fire_exp_dir_multi <- function(exposure, values, plot = FALSE, full = FALSE,
+                               title = "Directional Vulnerability for Multiple Values",
+                               ...) {
   stopifnot("`exposure` must be a SpatRaster object"
             = class(exposure) == "SpatRaster")
   stopifnot("`exposure` layer must have values between 0-1"
@@ -47,6 +70,8 @@ fire_exp_dir_multi <- function(exposure, values, plot = FALSE, all = FALSE) {
                  terra::geomtype(values) %in% c("points", "polygons")))
   stopifnot("`values` and `exposure` must have the same crs"
             = terra::same.crs(values, exposure) == TRUE)
+  stopifnot("`title` must be a character string"
+            = class(title) == "character")
 
   names(exposure) <- "exposure"
   expl <- exposure
@@ -55,7 +80,7 @@ fire_exp_dir_multi <- function(exposure, values, plot = FALSE, all = FALSE) {
   df <- data.frame()
 
   for (i in seq_len(nrow(fts))) {
-    dat <- fire_exp_dir(expl, fts[i], table = TRUE) %>%
+    dat <- fire_exp_dir(expl, fts[i], table = TRUE, ...) %>%
       dplyr::select(-"wkt") %>%
       dplyr::mutate(featureID = i) %>%
       tidyr::pivot_wider(names_from = "seg", values_from = "viable") %>%
@@ -70,9 +95,11 @@ fire_exp_dir_multi <- function(exposure, values, plot = FALSE, all = FALSE) {
 
   if (plot == TRUE) {
     dfsums <- df2 %>%
+      dplyr::mutate(sum_col = ifelse(full == TRUE,
+                                     full, outer)) %>%
       dplyr::group_by(.data$deg) %>%
-      dplyr::summarise(freq = ifelse(all == TRUE,
-                                     sum(.data$full), sum(.data$outer)))
+      dplyr::summarize(freq = sum(.data$sum_col))
+
     axismax <- max(dfsums$freq)
 
     plt <- ggplot2::ggplot(dfsums, ggplot2::aes(.data$deg, .data$freq)) +
@@ -99,7 +126,7 @@ fire_exp_dir_multi <- function(exposure, values, plot = FALSE, all = FALSE) {
       ggplot2::scale_y_continuous(breaks = seq(0, axismax, by = 2)) +
       ggplot2::scale_x_continuous(breaks = c(90, 180, 270, 360),
                                   labels = c("E", "S", "W", "N")) +
-      ggplot2::labs(title = "Directional Exposure Load for Multiple Values",
+      ggplot2::labs(title = title,
                     subtitle = "Plot generated with fireexposuR()",
                     y = "Frequency")
     return(plt)

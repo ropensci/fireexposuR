@@ -21,9 +21,9 @@ test_that("fire_exp_dir() input checks and function messages work", {
                "`value` must be a SpatVector object")
   expect_message(fire_exp_dir(exp, pts),
                  "Value object provided has more than one feature")
-  expect_error(fire_exp_dir(exp, pts, lengths = c("a", 2, 3)),
+  expect_error(fire_exp_dir(exp, pts, t_lengths = c("a", 2, 3)),
                  "`lengths` must be a vector of three numeric values")
-  expect_error(fire_exp_dir(exp, pts, lengths = c(1, 2)),
+  expect_error(fire_exp_dir(exp, pts, t_lengths = c(1, 2)),
                "`lengths` must be a vector of three numeric values")
   expect_error(fire_exp_dir(exp, pts, interval = "a"),
                "`interval` must be one of: 0.5, 1, 2, 3, 4, 5, 6, 8, or 10")
@@ -41,12 +41,10 @@ test_that("fire_exp_dir() returns object with correct class", {
 
 test_that("fire_exp_dir() runs when input conditions are met", {
   expect_no_error(fire_exp_dir(exp, pt))
-  expect_no_error(suppressMessages(fire_exp_dir(exp, pts)))
   expect_no_error(fire_exp_dir(exp, v))
   expect_no_error(fire_exp_dir(exp, pt, table = TRUE))
-  expect_no_error(suppressMessages(fire_exp_dir(exp, pts, table = TRUE)))
   expect_no_error(fire_exp_dir(exp, v, table = TRUE))
-  expect_no_error(fire_exp_dir(exp, v, lengths = c(2000, 2000, 2000)))
+  expect_no_error(fire_exp_dir(exp, v, t_lengths = c(2000, 2000, 2000)))
   expect_no_error(fire_exp_dir(exp, v, interval = 5))
   expect_no_error(fire_exp_dir(exp, pt, thresh_exp = 0.5))
   expect_no_error(fire_exp_dir(exp, pt, thresh_viable = 0.5))

@@ -7,7 +7,17 @@
 #'
 #' @details
 #' `fire_exp_dir()` automates the directional vulnerability assessment
-#' methods documented in Beverly and Forbes (2023).
+#' methods documented in Beverly and Forbes (2023). This analysis is used to
+#' assess linear wildfire vulnerability on the landscape in a systematic radial
+#' sampling pattern. This is a landscape scale process, so the exposure raster
+#' used should also be landscape scale. Use `tdist = "l"` when preparing data
+#' with [`fire_exp()`] for use with this function. See [`fire_exp()`] details
+#' for more information.
+#'
+#' The output line features will have the attribute 'viable'
+#' which can be used to visualize the pathways. Outputs can be visualized with
+#' [`fire_exp_dir_plot()`], [`fire_exp_dir_map()`], or exported as a spatial
+#' feature.
 #'
 #' ## Spatial Reference
 #'
@@ -51,7 +61,7 @@
 #'
 #' ## Adjusting the transects
 #' The drawing of the transects can be customized by varying the intervals and
-#' segment lengths if desired. Adjustments to the interval and lengths
+#' segment lengths if desired. Adjustments to the `interval` and `t_lengths`
 #' parameters will effect how much of the exposure data is being captured by
 #' the transects. If both parameters are being adjusted some trigonometry might
 #' be required to find the optimal combination of the parameters to ensure
@@ -71,7 +81,7 @@
 #' not capture potential pathways between transects farther from the value.
 #'
 #' ### Lengths
-#' The lengths parameters allows a custom distance to be defined for the three
+#' The t_lengths parameter allows a custom distance to be defined for the three
 #' transect segments in meters. Lengths can be increased or decreased. The
 #' segments can also be different lengths if desired.
 #'
@@ -109,7 +119,7 @@
 #'
 #' @param exposure SpatRaster (e.g. from [fire_exp()])
 #' @param value Spatvector of value as a point or simplified polygon
-#' @param lengths (Optional) A vector of three numeric values. The length of
+#' @param t_lengths (Optional) A vector of three numeric values. The length of
 #'  each transect starting from the value in meters. The default is
 #'  `c(5000, 5000, 5000)`.
 #' @param interval (Optional) Numeric. The degree interval at which to draw
@@ -152,7 +162,7 @@
 
 
 fire_exp_dir <- function(exposure, value,
-                         lengths = c(5000, 5000, 5000),
+                         t_lengths = c(5000, 5000, 5000),
                          interval = 1,
                          thresh_exp = 0.6,
                          thresh_viable = 0.8,
@@ -163,8 +173,8 @@ fire_exp_dir <- function(exposure, value,
             = (round(terra::minmax(exposure)[1], 0) >= 0 && round(terra::minmax(exposure)[2], 0) <= 1))
   stopifnot("`value` must be a SpatVector object"
             = class(value) == "SpatVector")
-  stopifnot("`lengths` must be a vector of three numeric values"
-            = class(lengths) == "numeric" && length(lengths) == 3)
+  stopifnot("`t_lengths` must be a vector of three numeric values"
+            = class(t_lengths) == "numeric" && length(t_lengths) == 3)
   stopifnot("`interval` must be one of: 0.5, 1, 2, 3, 4, 5, 6, 8, or 10"
             = interval %in% c(1, 2, 3, 4, 5, 6, 8, 10, 0.5))
   stopifnot("`thresh_exp` must be a numeric value between 0-1"
@@ -234,9 +244,9 @@ fire_exp_dir <- function(exposure, value,
     stop("value feature must be a point or polygon")
   }
 
-  seg1length <- lengths[1]
-  seg2length <- lengths[2]
-  seg3length <- lengths[3]
+  seg1length <- t_lengths[1]
+  seg2length <- t_lengths[2]
+  seg3length <- t_lengths[3]
 
   # find end points for transects
   linegeom <- linestart %>%

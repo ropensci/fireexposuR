@@ -4,7 +4,14 @@
 \alias{fire_exp_dir_multi}
 \title{Summarize or plot directional load for multiple values}
 \usage{
-fire_exp_dir_multi(exposure, values, plot = FALSE, all = FALSE)
+fire_exp_dir_multi(
+  exposure,
+  values,
+  plot = FALSE,
+  full = FALSE,
+  title = "Directional Vulnerability for Multiple Values",
+  ...
+)
 }
 \arguments{
 \item{exposure}{SpatRaster from \code{\link[=fire_exp]{fire_exp()}}}
@@ -14,22 +21,48 @@ fire_exp_dir_multi(exposure, values, plot = FALSE, all = FALSE)
 \item{plot}{Boolean, when \code{TRUE}: returns a standardized directional plot.
 The default is \code{FALSE}.}
 
-\item{all}{Boolean, when \code{TRUE}: considers all 3 segments (0-15km) of
-directional transects. when \code{FALSE}: only the segments from 5-15 km are
-included (Default)}
+\item{full}{Boolean. Ignored when \code{plot = FALSE}. When \code{TRUE}: all 3 transect
+segments must be viable. when \code{FALSE}: only the segments from seg2 and seg3
+are considered (Default)}
+
+\item{title}{(Optional) String. A custom title for the plot. The default is
+\code{"Directional Vulnerability for Multiple Values"}}
+
+\item{...}{arguments passed to \code{\link[=fire_exp_dir]{fire_exp_dir()}}.}
 }
 \value{
 a data.frame of the features with attributes: value featureID,
-degree, to5 (binary), to10(binary), t015(binary), full(binary),
+degree, seg1 (binary), seg2 (binary), seg3 (binary), full (binary),
 outer (binary). Unless:
-* \code{plot = TRUE}: a standardized plot as a ggplot object
+\itemize{
+\item \code{plot = TRUE}: a standardized plot as a ggplot object
+}
 }
 \description{
 \code{fire_exp_dir_multi()} summarizes the directional vulnerability
 load for multiple points in a study area in a table or a plot.
 }
 \details{
-\strong{DOCUMENTATION IN DEVELOPMENT}
+This function summarizes multiple directional vulnerability assessments into
+a single table or plot. The plot is based on the methods presented in
+Beverly and Forbes 2023. For each degree, the frequency of input values with a
+continuous pathway at that trajectory is found. This summary can be useful
+in identifying trends in directional exposure to values within a regional area
+of interest.
+
+Continuous pathways can be assessed for the full span of all three directional
+assessment transect segments, or limited to the outer two segments with the
+\code{full} parameter. If the values being assessed are variable sizes and being
+represented as points, it is recommended this parameter remains set to \code{FALSE}.
+The inner segment is sensitive to the size of the value when a point is used.
+Adjusting the parameters for \code{\link[=fire_exp_dir]{fire_exp_dir()}} is also supported. See details
+in \code{\link[=fire_exp_dir]{fire_exp_dir()}} for more information.
+\subsection{References}{
+
+Beverly JL, Forbes AM (2023) Assessing directional vulnerability to
+wildfire. \emph{Natural Hazards} \strong{117}, 831-849.
+\href{https://doi.org/10.1007/s11069-023-05885-3}{DOI}
+}
 }
 \examples{
 # read example hazard data
@@ -44,5 +77,5 @@ points <- terra::spatSample(e, 10)
 exposure <- fire_exp(hazard)
 
 # plot directional load for multiple points
-fire_exp_dir_multi(exposure, points, plot = TRUE)
+fire_exp_dir_multi(exposure, points, plot = TRUE, interval = 10)
 }

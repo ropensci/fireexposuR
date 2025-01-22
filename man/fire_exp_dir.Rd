@@ -7,7 +7,7 @@
 fire_exp_dir(
   exposure,
   value,
-  lengths = c(5000, 5000, 5000),
+  t_lengths = c(5000, 5000, 5000),
   interval = 1,
   thresh_exp = 0.6,
   thresh_viable = 0.8,
@@ -19,7 +19,7 @@ fire_exp_dir(
 
 \item{value}{Spatvector of value as a point or simplified polygon}
 
-\item{lengths}{(Optional) A vector of three numeric values. The length of
+\item{t_lengths}{(Optional) A vector of three numeric values. The length of
 each transect starting from the value in meters. The default is
 \code{c(5000, 5000, 5000)}.}
 
@@ -53,7 +53,12 @@ them with areas of high exposure.
 }
 \details{
 \code{fire_exp_dir()} automates the directional vulnerability assessment
-methods documented in Beverly and Forbes (2023).
+methods documented in Beverly and Forbes (2023). This analysis is used to
+assess linear wildfire vulnerability on the landscape in a systematic radial
+sampling pattern. The output line features will have the attribute 'viable'
+which can be used to visualize the pathways. Outputs can be visualized with
+\code{\link[=fire_exp_dir_plot]{fire_exp_dir_plot()}}, \code{\link[=fire_exp_dir_map]{fire_exp_dir_map()}}, or exported as a spatial
+feature.
 \subsection{Spatial Reference}{
 
 The inputs for the exposure and value layer must have the same coordinate
@@ -101,7 +106,7 @@ Adjusting these values can lead to unexpected and uncertain results.
 \subsection{Adjusting the transects}{
 
 The drawing of the transects can be customized by varying the intervals and
-segment lengths if desired. Adjustments to the interval and lengths
+segment lengths if desired. Adjustments to the \code{interval} and \code{t_lengths}
 parameters will effect how much of the exposure data is being captured by
 the transects. If both parameters are being adjusted some trigonometry might
 be required to find the optimal combination of the parameters to ensure
@@ -123,7 +128,7 @@ not capture potential pathways between transects farther from the value.
 
 \subsection{Lengths}{
 
-The lengths parameters allows a custom distance to be defined for the three
+The t_lengths parameter allows a custom distance to be defined for the three
 transect segments in meters. Lengths can be increased or decreased. The
 segments can also be different lengths if desired.
 }
