@@ -64,10 +64,10 @@ fire_exp_dir_plot <- function(transects,
 
 
   seg_lengths <- terra::perim(terra::project(transects, "EPSG:4326"))[1:3]
-  seg2_prop <- sum(seg_lengths[1:2])/sum(seg_lengths)
-  seg1_prop <- seg_lengths[1]/sum(seg_lengths)
+  seg2_prop <- sum(seg_lengths[1:2]) / sum(seg_lengths)
+  seg1_prop <- seg_lengths[1] / sum(seg_lengths)
 
-  if (missing(labels)){
+  if (missing(labels)) {
     l1 <- paste(round(seg_lengths[1]), "m")
     l2 <- paste(round(sum(seg_lengths[1:2])), "m")
     l3 <- paste(round(sum(seg_lengths)), "m")
@@ -186,4 +186,3 @@ fire_exp_dir_plot <- function(transects,
                   subtitle = "Plot generated with fireexposuR()")
   return(plt)
 }
-

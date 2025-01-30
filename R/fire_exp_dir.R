@@ -170,7 +170,8 @@ fire_exp_dir <- function(exposure, value,
   stopifnot("`exposure` must be a SpatRaster object"
             = class(exposure) == "SpatRaster")
   stopifnot("`exposure` layer must have values between 0-1"
-            = (round(terra::minmax(exposure)[1], 0) >= 0 && round(terra::minmax(exposure)[2], 0) <= 1))
+            = (round(terra::minmax(exposure)[1], 0) >= 0
+               && round(terra::minmax(exposure)[2], 0) <= 1))
   stopifnot("`value` must be a SpatVector object"
             = class(value) == "SpatVector")
   stopifnot("`t_lengths` must be a vector of three numeric values"
@@ -226,7 +227,7 @@ fire_exp_dir <- function(exposure, value,
     transects0 <- terra::vect(linegeom0, geom = "wkt", crs = "EPSG:4326") %>%
       terra::crop(wgs)
 
-    if (length(terra::geom(transects0)) == num_transects *10) {
+    if (length(terra::geom(transects0)) == num_transects * 10) {
       linestart <- as.data.frame(terra::geom(transects0)) %>%
         dplyr::select("geom", x, y) %>%
         dplyr::mutate(deg = .data$geom) %>%
@@ -255,17 +256,17 @@ fire_exp_dir <- function(exposure, value,
     dplyr::mutate(y1 = geosphere::destPoint(cbind(.data$x0, .data$y0),
                                             .data$deg, seg1length)[, 2]) %>%
     dplyr::mutate(seg1 = paste("LINESTRING(", .data$x0, " ", .data$y0, ", ",
-                              .data$x1, " ", .data$y1, ")", sep = "")) %>%
+                               .data$x1, " ", .data$y1, ")", sep = "")) %>%
     dplyr::mutate(x2 = geosphere::destPoint(cbind(.data$x1, .data$y1),
-                                             .data$deg, seg2length)[, 1]) %>%
+                                            .data$deg, seg2length)[, 1]) %>%
     dplyr::mutate(y2 = geosphere::destPoint(cbind(.data$x1, .data$y1),
-                                             .data$deg, seg2length)[, 2]) %>%
+                                            .data$deg, seg2length)[, 2]) %>%
     dplyr::mutate(seg2 = paste("LINESTRING(", .data$x1, " ", .data$y1, ", ",
                                .data$x2, " ", .data$y2, ")", sep = "")) %>%
     dplyr::mutate(x3 = geosphere::destPoint(cbind(.data$x2, .data$y2),
-                                             .data$deg, seg3length)[, 1]) %>%
+                                            .data$deg, seg3length)[, 1]) %>%
     dplyr::mutate(y3 = geosphere::destPoint(cbind(.data$x2, .data$y2),
-                                             .data$deg, seg3length)[, 2]) %>%
+                                            .data$deg, seg3length)[, 2]) %>%
     dplyr::mutate(seg3 = paste("LINESTRING(", .data$x2, " ", .data$y2, ", ",
                                .data$x3, " ", .data$y3, ")", sep = ""))
 
@@ -288,7 +289,7 @@ fire_exp_dir <- function(exposure, value,
   highexp <- terra::classify(exp, rcmat, include.lowest = TRUE)
   highexppoly <- terra::as.polygons(highexp) #convert to polygon for intersect
 
-  if (length(highexppoly) > 0){
+  if (length(highexppoly) > 0) {
     #intersect and calculate length
     inters <- terra::crop(transects, highexppoly) %>%
       tidyterra::select(-"wkt")
@@ -308,8 +309,9 @@ fire_exp_dir <- function(exposure, value,
                                by = c("deg", "seg"),
                                all = TRUE) %>%
       dplyr::mutate(interslength = tidyr::replace_na(interslength, 0)) %>%
-      dplyr::mutate(viable = ifelse(interslength / transectlength >= thresh_viable,
-                                    1, 0)) %>%
+      dplyr::mutate(viable =
+                      ifelse(interslength / transectlength >= thresh_viable,
+                             1, 0)) %>%
       tidyterra::select(-interslength, -transectlength)
   } else {
     transects2 <- transects %>%

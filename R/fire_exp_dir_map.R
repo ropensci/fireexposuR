@@ -26,8 +26,8 @@
 #' @param transects SpatVector. Output from [fire_exp_dir()]
 #' @param value (Optional) SpatVector. Adds the value to the map. Use the same
 #' value feature used to generate the transects with [fire_exp_dir()]
-#' @param zoomlevel (Optional). Numeric. set the zoom level for the base map
-#' tile. See details. The default is `11`.
+#' @param zoom_level (Optional). Numeric. set the zoom level for the base map
+#' tile. See details. The default is `10`.
 #' @param labels (Optional) a vector of three strings. Custom formatting for the
 #' distances in the legend. If left blank, the function will automatically label
 #' the distances in meters.
@@ -55,24 +55,24 @@
 #'
 #' # map with customized distance labels
 #' fire_exp_dir_map(transects, labels = c("5 km", "10 km", "15 km"),
-#'                  zoomlevel = 9)
+#'                  zoom_level = 9)
 #'
 
 
 
 fire_exp_dir_map <- function(transects,
-                              value,
-                              zoomlevel = 11,
-                              labels,
-                              title = "Directional Vulnerability") {
+                             value,
+                             zoom_level = 10,
+                             labels,
+                             title = "Directional Vulnerability") {
   stopifnot("`transects` must be a SpatVector object"
             = class(transects) == "SpatVector")
-  stopifnot("`zoomlevel` must be a number"
-            = class(zoomlevel) == "numeric")
+  stopifnot("`zoom_level` must be a number"
+            = class(zoom_level) == "numeric")
   stopifnot("`title` must be a character string"
             = class(title) == "character")
 
-  if (missing(labels)){
+  if (missing(labels)) {
     seg_lengths <- terra::perim(terra::project(transects, "EPSG:4326"))[1:3]
 
     l1 <- paste(round(seg_lengths[1]), "m")
@@ -83,9 +83,9 @@ fire_exp_dir_map <- function(transects,
   stopifnot("`labels` must be a vector of three character objects"
             = class(labels) == "character" && length(labels) == 3)
 
-  labs <-c(paste("Value to", labels[1]),
-           paste(labels[1], "to", labels[2]),
-           paste(labels[2], "to", labels[3]))
+  labs <- c(paste("Value to", labels[1]),
+            paste(labels[1], "to", labels[2]),
+            paste(labels[2], "to", labels[3]))
 
   t <- tidyterra::filter(transects, .data$viable == 1) %>%
     terra::project("EPSG:3857")
@@ -95,7 +95,7 @@ fire_exp_dir_map <- function(transects,
     terra::rescale(1.3)
 
   tile <- maptiles::get_tiles(e, "Esri.WorldImagery", crop = TRUE,
-                              zoom = zoomlevel)
+                              zoom = zoom_level)
 
   cred <- maptiles::get_credit("Esri.WorldImagery")
 
@@ -135,11 +135,11 @@ fire_exp_dir_map <- function(transects,
     ggplot2::coord_sf(expand = FALSE, default = TRUE)
 
 
-  if (missing(value)){
+  if (missing(value)) {
     return(plt)
   } else {
     stopifnot("`value` must be a SpatVector object"
-            = class(value) == "SpatVector")
+              = class(value) == "SpatVector")
     v <- terra::project(value, "EPSG:3857")
     plt <- plt +
       tidyterra::geom_spatvector(
