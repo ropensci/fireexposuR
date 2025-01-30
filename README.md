@@ -26,22 +26,30 @@ temporal horizons and spatial extents.
 > If Prometheus has *ever* been installed on your device you must take
 > some additional steps before loading this package (and most other R
 > packages that manipulate spatial data). Please refer to the vignette
-> “Prometheus users” before continuing. **This step is necessary even if
-> you have since uninstalled the program from your computer.**
+> `vignette("prometheus")` before continuing. **This step is necessary
+> even if you have since uninstalled the program from your computer.**
 
 ## Package overview
 
-- provide an accessible platform for conducting wildfire exposure
+- provides an accessible platform for conducting wildfire exposure
   assessments
-- automate methods previously documented in a series of scientific
+- automates methods previously documented in a series of scientific
   publications
-- provide options for customization and validation to meet the needs of
+- provides options for customization and validation to meet the needs of
   users applying the package across diverse use cases and geographic
   areas
 
 ### Who the package is for
 
-gfad
+This package is for anyone who is interested in conducting wildfire
+exposure assessments. This can include, but is not limited to,
+researchers, government agencies, forest industry, consultants,
+communities, and interested individuals.
+
+User’s without pre-existing knowledge of wildland fuels, spatial data,
+and R may need to dedicate more time and effort to learning how to apply
+the tools in this package by exploring the included documentation and
+linked resources.
 
 ### What the package does
 
@@ -64,7 +72,16 @@ package and the plethora of free R tutorials available online.
 
 3.  Visualizes outputs
 
+The outputs from the analysis functions can be quickly visualized in R
+with a selection of visualization functions that return plots, maps, or
+tables which can be exported as images or .csv files.
+
 4.  Allows customization
+
+Functions allow for custom parameterization to alter the analysis if
+desired. This allows for easy adaptation of the methods to suit the
+unique requirements for different use cases, geographic areas, and
+scales of analysis.
 
 ### What the package doesn’t
 
@@ -74,9 +91,9 @@ Effort has been made to provide as much technical detail in the
 documentation of this package; However, it may still be necessary to
 spend some time reading the associated scientific publications that the
 functions in this package are automating to grasp the theory behind the
-methodologies. Citations have been provided with linked DOI’s throughout
+methodologies. Citations have been provided with DOI links throughout
 this manual. This is especially relevant to users who intend to adjust
-the parameter settings from the defaults.
+function parameters.
 
 2.  Prepare your input data
 
@@ -85,20 +102,21 @@ scales. This means that the input data requirements are dependent on the
 intended purpose. The user is responsible for preparing the input data
 before using this package. Input data can be prepared in any geographic
 information system (GIS) program, or done directly in R. Refer to the
-vignette “Preparing input data” for guidance and examples.
+vignette `vignette("prep-input-data")` for guidance and examples.
 
-3.  Decide your custom parameters
+3.  Decide custom parameters
+
+The documentation and resources available in this package aim to help
+inform decisions around custom parameterization, but these decisions
+must be made by the user. Additional analysis may be required to justify
+deviation from the defaults.
 
 4.  Quality check your outputs
 
-**DOCUMENTATION IN DEVELOPMENT**
-
-The goal of fireexposuR is to provide a standardized and accessible
-platform for the computation and analysis of wildfire exposure. Wildfire
-exposure assessments are a decision support tool in wildfire management
-and can be applied for multiple temporal horizons and spatial extents.
-This package automates the methods previously documented in a series of
-scientific publications.
+The functions in the fireexposuR package are sensitive to the input data
+and parameters used. It is the users responsibility to ensure that the
+outputs from the fireexposuR package are quality checked before use in
+decision support or further analysis.
 
 ## Installation
 
@@ -112,8 +130,8 @@ devtools::install_github("heyairf/fireexposuR")
 
 ## Usage example
 
-This is a basic example which shows a basic workflow to assess the
-long-range ember exposure for an area of interest.
+This example shows a basic workflow to assess the long-range ember
+exposure and directional vulnerability for an area of interest.
 
 ### Input data
 
@@ -121,7 +139,7 @@ long-range ember exposure for an area of interest.
 # load the fireexposuR library
 library(fireexposuR)
 
-# load terra for spatial data functions
+# load the terra library for spatial data functions
 library(terra)
 #> terra 1.7.78
 
@@ -145,7 +163,7 @@ The `aoi` layer is a polygon representing a localized area of interest
 (e.g., the built environment of a community, a sensitive habitat, a
 campground, etc.) shown in red.
 
-<img src="man/figures/README-aoivis-1.png" width="100%" />
+<img src="man/figures/README-map_inputs-1.png" width="100%" />
 
 ### Compute exposure
 
@@ -172,15 +190,15 @@ package.
 fire_exp_map_cont(exposure)
 ```
 
-<img src="man/figures/README-maplandscape-1.png" width="100%" />
+<img src="man/figures/README-visualize-1.png" width="100%" />
 
 ``` r
 
 # map exposure classes within the area of interest with a base map
-fire_exp_map_class(exposure, aoi, zoom_level = 13)
+fire_exp_map_class(exposure, aoi, classify = "landscape", zoom_level = 13)
 ```
 
-<img src="man/figures/README-maplandscape-2.png" width="100%" />
+<img src="man/figures/README-visualize-2.png" width="100%" />
 
 ``` r
 
@@ -188,14 +206,62 @@ fire_exp_map_class(exposure, aoi, zoom_level = 13)
 fire_exp_dir_map(dir_exposure, aoi)
 ```
 
-<img src="man/figures/README-maplandscape-3.png" width="100%" /> \##
-Further reading
+<img src="man/figures/README-visualize-3.png" width="100%" />
 
-- [Beverly et al. 2010](https://doi.org/10.1071/WF09071)
-  - Introduces wildfire exposure and wildfire transmission distances for
-    community scale assessments
-- [Beverly et al. 2021](https://doi.org/10.1007/s10980-020-01173-8)
-  - Validation of the wildfire exposure metric at a landscape scale with
-    observed fire history
-- [Beverly and Forbes 2023](https://doi.org/10.1007/s11069-023-05885-3)
-  - Directional vulnerability assessment and methodology
+## Further reading and resources
+
+[wildfireanalytics.org](https://wildfireanalytics.org)
+
+- Wildfire exposure research news and course offering announcements
+
+FireSmart Canada (2018) Wildfire exposure assessment guidebook.
+Available
+[here](https://firesmartcanada.ca/wp-content/uploads/2022/01/FS_ExposureAssessment_Sept2018-1.pdf)
+
+- This guidebook provides a basic and easy to read overview of wildfire
+  exposure assessments with very helpful graphics
+
+Beverly JL, Bothwell P, Conner JCR, Herd EPK (2010) Assessing the
+exposure of the built environment to potential ignition sources
+generated from vegetative fuel. *International Journal of Wildland Fire*
+**19**, 299-313. [DOI](https://doi.org/10.1071/WF09071)
+
+- Introduced wildfire exposure methods and wildfire transmission
+  distances for community scale assessments
+
+Beverly JL, McLoughlin N, Chapman E (2021) A simple metric of landscape
+fire exposure. *Landscape Ecology* **36**, 785-801.
+[DOI](https://doi.org/10.1007/s10980-020-01173-8)
+
+- Validation of the wildfire exposure metric at a landscape scale with
+  observed fire history in the province of Alberta, Canada
+
+Beverly JL, Forbes AM (2023) Assessing directional vulnerability to
+wildfire. *Natural Hazards* **117**, 831-849.
+[DOI](https://doi.org/10.1007/s11069-023-05885-3)
+
+- Introduces the directional exposure assessment methodology
+
+Kim AM, Beverly JL, Al Zahid A (2024) Directional analysis of community
+wildfire evacuation capabilities. *Safety Science* **171**, 106378.
+[DOI](https://doi.org/10.1016/j.ssci.2023.106378)
+
+- Application of directional vulnerability assessments for analyzing
+  evacuation capabilities for communities
+
+Schmidt JI, Ziel RH, Calef MP, Varvak A (2024) Spatial distribution of
+wildfire threat in the far north: exposure assessment in boreal
+communities. *Natural Hazards* **120**, 4901-4924.
+[DOI](https://doi.org/10.1007/s11069-023-06365-4)
+
+- Application of wildfire exposure assessments in Alaska, USA using
+  alternative methods to define hazardous fuels
+
+Forbes AM, Beverly JL (2024) Influence of fuel data assumptions on
+wildfire exposure assessment of the built environment. *International
+Journal of Wildland Fire* **33**, WF24025
+[DOI](https://doi.org/10.1071/WF24025)
+
+- Investigates the sensitivity of wildfire exposure assessments to
+  different land cover information products used to create the input
+  hazardous fuel data at local scales
