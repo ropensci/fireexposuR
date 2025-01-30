@@ -134,6 +134,8 @@ fire_exp_extract_vis <- function(values_ext,
 
   zoom_level <- ifelse(missing(zoom_level), 12, zoom_level)
 
+  class_breaks <- sort(class_breaks)
+
   # class_breaks checks
   stopifnot("`class_breaks` must be a vector of numbers"
             = class(class_breaks) == "numeric")

@@ -87,6 +87,8 @@ fire_exp_summary <- function(exposure, aoi,
     class_breaks <- c(0.15, 0.3, 0.45, 1)
   }
 
+  class_breaks <- sort(class_breaks)
+
   # class_breaks checks
   stopifnot("`class_breaks` must be a vector of numbers"
             = class(class_breaks) == "numeric")

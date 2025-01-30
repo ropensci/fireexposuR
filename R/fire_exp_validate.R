@@ -70,6 +70,8 @@ fire_exp_validate <- function(burnableexposure, fires, aoi,
               = class(aoi) == "SpatVector")
   }
 
+  class_breaks <- sort(class_breaks)
+
   # class_breaks checks
   stopifnot("`class_breaks` must be a vector of numbers"
             = class(class_breaks) == "numeric")
