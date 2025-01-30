@@ -4,7 +4,7 @@
 \alias{fire_exp_adjust}
 \title{Compute the wildfire exposure metric with custom transmission distances}
 \usage{
-fire_exp_adjust(hazard, tdist, nonburnable)
+fire_exp_adjust(hazard, tdist, no_burn)
 }
 \arguments{
 \item{hazard}{a SpatRaster that represents hazardous fuels for the
@@ -12,7 +12,7 @@ transmission distance specified in \code{tdist}}
 
 \item{tdist}{Numeric, transmission distance in meters}
 
-\item{nonburnable}{(Optional)  SpatRaster that represents the non-burnable
+\item{no_burn}{(Optional)  SpatRaster that represents the non-burnable
 landscape. Any cells that cannot receive wildfire (e.g. open water, rock)
 and any cells that are not natural (e.g. built environment,
 irrigated agricultural areas) should be of value 1, all other cells
@@ -29,12 +29,12 @@ defaults used in \code{\link[=fire_exp]{fire_exp()}}.
 \details{
 \strong{DOCUMENTATION IN DEVELOPMENT}
 
-If the transmission distances from the
-wildfire exposure literature are not representative of the wildland fuels
-in your area of interest, this function can be used to change the
-transmission distance to a custom distance. It is highly recommended that
-any exposure layers produced with this function are validated with observed
-fire history using the \code{\link[=fire_exp_validate]{fire_exp_validate()}} function.
+If the transmission distances from the wildfire exposure literature are not
+representative of the wildland fuels in your area of interest, this function
+can be used to change the transmission distance to a custom distance. It is
+highly recommended that any exposure layers produced with this function are
+validated with observed fire history using the \code{\link[=fire_exp_validate]{fire_exp_validate()}}
+function.
 }
 \examples{
 # read example hazard data
@@ -44,4 +44,7 @@ hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 # compute long range exposure with custom disance of 800 m
 exposure800 <- fire_exp_adjust(hazard, tdist = 800)
 
+}
+\seealso{
+\code{\link[=fire_exp]{fire_exp()}}
 }

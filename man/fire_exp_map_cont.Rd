@@ -4,12 +4,15 @@
 \alias{fire_exp_map_cont}
 \title{Map exposure with a continuous scale}
 \usage{
-fire_exp_map_cont(exposure, aoi)
+fire_exp_map_cont(exposure, aoi, title = "Wildfire Exposure")
 }
 \arguments{
 \item{exposure}{SpatRaster from \code{\link[=fire_exp]{fire_exp()}}}
 
-\item{aoi}{(optional) SpatVector of an area of interest to mask the exposure}
+\item{aoi}{(Optional) SpatVector of an area of interest to mask the exposure}
+
+\item{title}{(Optional) String. A custom title for the plot. The default
+is \code{"Wildfire Exposure"}}
 }
 \value{
 a map is returned as a ggplot object
@@ -20,7 +23,16 @@ with a continuous scale for the full extent of the data or masked to an area
 of interest.
 }
 \details{
-\strong{DOCUMENTATION IN DEVELOPMENT}
+This function returns a standardized map with basic cartographic elements.
+The exposure values are mapped using a continuous scale. There is no base
+map added with this function.
+
+The plot is returned as a ggplot object which can be exported/saved to
+multiple image file formats.
+\subsection{Spatial Reference}{
+
+The map will be drawn using the same CRS as the input data.
+}
 }
 \examples{
 # read example hazard data
@@ -32,4 +44,7 @@ exposure <- fire_exp(hazard)
 
 fire_exp_map_cont(exposure)
 
+}
+\seealso{
+\code{\link[=fire_exp_map_class]{fire_exp_map_class()}}
 }

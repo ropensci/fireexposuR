@@ -2,27 +2,44 @@
 % Please edit documentation in R/fire_exp_extract_vis.R
 \name{fire_exp_extract_vis}
 \alias{fire_exp_extract_vis}
-\title{Summarize or plot exposure to values}
+\title{Visualize exposure to values in a summary table or map}
 \usage{
 fire_exp_extract_vis(
   values_ext,
+  classify = c("local", "landscape", "custom"),
+  class_breaks,
   method = c("max", "mean"),
-  classify = c("local", "landscape"),
-  map = FALSE
+  map = FALSE,
+  zoom_level,
+  title = "Classified Exposure to Values"
 )
 }
 \arguments{
 \item{values_ext}{Spatvector of points or polygons from \code{\link[=fire_exp_extract]{fire_exp_extract()}}}
 
+\item{classify}{character, either \code{"local"}, \code{"landscape"}, or \code{"custom"},
+to specify classification scheme to use. The default is \code{"local"}. If set to
+\code{"custom"}: the parameter \code{class_breaks} must be used.}
+
+\item{class_breaks}{vector of numeric values between 0-1. Ignored unless
+\code{classify = "custom"}. See details.}
+
 \item{method}{character, either \code{"max"} or \code{"mean"}. If \code{values_ext} are
 polygons the default is \code{"max"}.This parameter is ignored when \code{values_ext}
 are point features.}
 
-\item{classify}{character, either \code{"local"} or \code{"landscape"} to specify
-classification scheme to use. The default is \verb{"local}"}
-
 \item{map}{Boolean. When \code{TRUE}, a map is returned as a ggplot object. The
 default is \code{FALSE}.}
+
+\item{zoom_level}{(Optional). Numeric. Ignored when \code{map = FALSE}. set the
+zoom level for the base map tile. See details. Defaults if:
+\itemize{
+\item \code{classify = "local"} or \code{"custom"} the zoom level default is \code{12}
+\item \code{classify = "landscape"} the zoom level default is \code{7}
+}}
+
+\item{title}{(Optional) String. Ignored when \code{map = FALSE}. A custom title
+for the plot. The default is \code{"Classified Exposure to Values"}}
 }
 \value{
 a summary table is returned as a data frame object, Unless:
@@ -34,24 +51,45 @@ outputs from \code{\link[=fire_exp_extract]{fire_exp_extract()}} as a summary ta
 exposure into predetermined exposure classes.
 }
 \details{
-\strong{DOCUMENTATION IN DEVELOPMENT}
+This function visualizes the outputs from \code{\link[=fire_exp_extract]{fire_exp_extract()}} with classes.
+Classes can be chosen from the pre-set \code{"local"} and \code{"landscape"} options,
+or customized. To use a custom classification scheme, it should be defined
+with a list of numeric vectors defining the upper limits of the breaks. A
+Nil class is added automatically for exposure values of exactly zero.
 
-Landscape classification breaks are:
+Local classification breaks are predefined as \code{c(0.15, 0.3, 0.45, 1)}:
 \itemize{
-\item Low (0-20\%)
-\item Moderate (20-40\%)
-\item High (40-60\%),
-\item Very High (60-80\%)
-\item Extreme (80-100\%)
+\item Nil (0)
+\item 0 - 0.15
+\item 0.15 - 0.3
+\item 0.3 - 0.45
+\item 0.45 - 1
 }
 
-Local classification breaks are:
+#' Landscape classification breaks are predefined
+as \code{c(0.2, 0.4, 0.6, 0.8, 1)}:
 \itemize{
-\item Nil (0\%)
-\item Low (>0-15\%)
-\item Moderate (15-30\%)
-\item High (30-45\%)
-\item Extreme (45\%+)
+\item Nil (0)
+\item 0 - 0.2
+\item 0.2 - 0.4
+\item 0.4 - 0.6
+\item 0.6 - 0.8
+\item 0.8 - 1
+}
+\subsection{Spatial reference}{
+
+This function dynamically pulls map tiles for a base map when \code{map = TRUE}.
+The inputs are projected to WGS 84/Pseudo-Mercator
+(\href{https://epsg.io/3857}{EPSG:3857}) to align them with the map tiles.
+}
+
+\subsection{Zoom level}{
+
+The map tile zoom level may need to be adjusted. If the base map is blurry,
+increase the zoom level. Higher zoom levels will slow down the function, so
+only increase if necessary. Reference the
+\href{https://wiki.openstreetmap.org/wiki/Zoom_levels}{OpenStreetMap Wiki} for
+more information on zoom levels.
 }
 }
 \examples{
@@ -59,9 +97,11 @@ Local classification breaks are:
 hazard_file_path <- "extdata/hazard.tif"
 hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 
-# generate example area of interest geometry
+# read example area of interest geometry
 geom_file_path <- "extdata/polygon_geometry.csv"
 geom <- read.csv(system.file(geom_file_path, package = "fireexposuR"))
+
+# generate an area of interest polygon with the geometry
 aoi <- terra::vect(as.matrix(geom), "polygons", crs = hazard)
 
 # generate random points within the aoi polygon

@@ -4,7 +4,12 @@
 \alias{fire_exp_summary}
 \title{Summarize exposure by class}
 \usage{
-fire_exp_summary(exposure, aoi, classify = c("landscape", "local"))
+fire_exp_summary(
+  exposure,
+  aoi,
+  classify = c("landscape", "local", "custom"),
+  class_breaks
+)
 }
 \arguments{
 \item{exposure}{SpatRaster from \code{\link[=fire_exp]{fire_exp()}}}
@@ -12,39 +17,48 @@ fire_exp_summary(exposure, aoi, classify = c("landscape", "local"))
 \item{aoi}{(optional) SpatVector of an area of interest to mask exposure for
 summary}
 
-\item{classify}{character, either \code{"landscape"} or \code{"local"}. default is
-\code{"landscape"}.}
+\item{classify}{character, either \code{"local"}, \code{"landscape"}, or \code{"custom"},
+to specify classification scheme to use. The default is \code{"local"}.
+If set to \code{"custom"}: the parameter \code{class_breaks} must be used.}
+
+\item{class_breaks}{vector of numeric values between 0-1 of the upper limits
+of each custom class. Ignored unless \code{classify = "custom"}. See details.}
 }
 \value{
 a summary table as a data frame object
 }
 \description{
 \code{fire_exp_summary()} creates a summary table of area and
-proportions of exposure in predetermined exposure classes.
+proportions of exposure in predetermined or custom exposure classes.
 }
 \details{
-\strong{DOCUMENTATION IN DEVELOPMENT}
+This function summarizes the outputs from \code{\link[=fire_exp]{fire_exp()}} with classes.
+Classes can be chosen from the pre-set \code{"local"} and \code{"landscape"} options,
+or customized. To use a custom classification scheme, it should be defined
+with a list of numeric vectors defining the upper limits of the breaks. A
+Nil class is added automatically for exposure values of exactly zero.
 
-The table reports the number of pixels, the
-proportion, and area in hectares and meters squared by class.
-
-Landscape classification breaks are:
+Local classification breaks are predefined as \code{c(0.15, 0.3, 0.45, 1)}:
 \itemize{
-\item Low (0-20\%)
-\item Moderate (20-40\%)
-\item High (40-60\%),
-\item Very High (60-80\%)
-\item Extreme (80-100\%)
+\item Nil (0)
+\item 0 - 0.15
+\item 0.15 - 0.3
+\item 0.3 - 0.45
+\item 0.45 - 1
 }
 
-Local classification breaks are:
+Landscape classification breaks are predefined as \code{c(0.2, 0.4, 0.6, 0.8, 1)}:
 \itemize{
-\item Nil (0\%)
-\item Low (>0-15\%)
-\item Moderate (15-30\%)
-\item High (30-45\%)
-\item Extreme (45\%+)
+\item Nil (0)
+\item 0 - 0.2
+\item 0.2 - 0.4
+\item 0.4 - 0.6
+\item 0.6 - 0.8
+\item 0.8 - 1
 }
+
+The table reports the number of pixels, the proportion, and area in hectares
+and meters squared in each class.
 }
 \examples{
 # read example hazard data

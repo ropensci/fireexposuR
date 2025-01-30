@@ -4,22 +4,37 @@
 \alias{fire_exp_map_class}
 \title{Map exposure with a classified scale}
 \usage{
-fire_exp_map_class(exposure, classify = c("local", "landscape"), aoi, zoom)
+fire_exp_map_class(
+  exposure,
+  aoi,
+  classify = c("local", "landscape", "custom"),
+  class_breaks,
+  zoom_level,
+  title = "Classified Exposure"
+)
 }
 \arguments{
 \item{exposure}{SpatRaster (e.g. from \code{\link[=fire_exp]{fire_exp()}})}
 
-\item{classify}{character, either \code{"local"} or \code{"landscape"} to specify
-classification scheme to use.}
+\item{aoi}{(Optional) SpatVector of an area of interest to mask exposure}
 
-\item{aoi}{SpatVector of an area of interest to mask exposure}
+\item{classify}{character, either \code{"local"}, \code{"landscape"}, or \code{"custom"},
+to specify classification scheme to use. The default is \code{"local"}.
+If set to \code{"custom"}: the parameter \code{class_breaks} must be used.}
 
-\item{zoom}{(Optional). numeric, set the zoom level for the basemap based
-on the extent of your data if defaults are not appropriate. Defaults if:
+\item{class_breaks}{vector of numeric values between 0-1 of the upper limits
+of each custom class. Ignored unless \code{classify = "custom"}. See details.}
+
+\item{zoom_level}{(Optional) numeric, set the zoom level for the basemap
+based on the extent of your data if defaults are not appropriate. See
+details. Defaults if:
 \itemize{
-\item \code{classify = "local"} the zoom level default is \code{13}
-\item \code{classify = "landscape"} the zoom level default is \code{6}
+\item \code{classify = "local"} or \code{"custom"} the zoom level default is \code{12}
+\item \code{classify = "landscape"} the zoom level default is \code{7}
 }}
+
+\item{title}{(Optional) String. A custom title for the plot. The default
+is \code{"Classified Exposure"}}
 }
 \value{
 a standardized map is returned as a ggplot object
@@ -29,34 +44,49 @@ a standardized map is returned as a ggplot object
 classifying exposure into predetermined exposure classes.
 }
 \details{
-\strong{DOCUMENTATION IN DEVELOPMENT}
-This function dynamically pulls map tiles for a base map,
-so it is recommended the area of interest is localized. The zoom level may
-need to be adjusted based on the extent of your data; see
-\href{https://wiki.openstreetmap.org/wiki/Zoom_levels}{OpenStreetMap Wiki} for
-more information on zoom levels.
-For mapping large extents it is recommended (and will be faster) to use
-\code{\link[=fire_exp_map_cont]{fire_exp_map_cont()}} which does not use base maps.
+This function returns a standardized map with basic cartographic elements.
 
-Scales and colors are determined by the parameter \code{classify}
-which can be set to \code{"local"} or \code{"landscape"}.
+The plot is returned as a ggplot object which can be exported/saved to
+multiple image file formats.
 
-Landscape classification breaks are:
+This function visualizes the outputs from \code{\link[=fire_exp]{fire_exp()}} with classes.
+Classes can be chosen from the pre-set \code{"local"} and \code{"landscape"} options,
+or customized. To use a custom classification scheme, it should be defined
+with a list of numeric vectors defining the upper limits of the breaks. A
+Nil class is added automatically for exposure values of exactly zero.
+
+Local classification breaks are predefined as \code{c(0.15, 0.3, 0.45, 1)}:
 \itemize{
-\item Low (0-20\%)
-\item Moderate (20-40\%)
-\item High (40-60\%),
-\item Very High (60-80\%)
-\item Extreme (80-100\%)
+\item Nil (0)
+\item 0 - 0.15
+\item 0.15 - 0.3
+\item 0.3 - 0.45
+\item 0.45 - 1
 }
 
-Local classification breaks are:
+Landscape classification breaks are predefined as \code{c(0.2, 0.4, 0.6, 0.8, 1)}:
 \itemize{
-\item Nil (0\%)
-\item Low (>0-15\%)
-\item Moderate (15-30\%)
-\item High (30-45\%)
-\item Extreme (45\%+)
+\item Nil (0)
+\item 0 - 0.2
+\item 0.2 - 0.4
+\item 0.4 - 0.6
+\item 0.6 - 0.8
+\item 0.8 - 1
+}
+\subsection{Spatial reference}{
+
+This function dynamically pulls map tiles for a base map.
+The inputs are projected to WGS 84/Pseudo-Mercator
+(\href{https://epsg.io/3857}{EPSG:3857}) to align them with the map tiles.
+}
+
+\subsection{Zoom level}{
+
+The map tile zoom level may need to be adjusted. If the base map is blurry,
+increase the zoom level. Higher zoom levels will slow down the function, so
+only increase if necessary. Reference the
+\href{https://wiki.openstreetmap.org/wiki/Zoom_levels}{OpenStreetMap Wiki} for
+more information on zoom levels.
 }
 }
 \examples{
@@ -64,14 +94,19 @@ Local classification breaks are:
 hazard_file_path <- "extdata/hazard.tif"
 hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 
-# generate example area of interest geometry
+# read example area of interest geometry
 geom_file_path <- "extdata/polygon_geometry.csv"
 geom <- read.csv(system.file(geom_file_path, package = "fireexposuR"))
+
+# generate example area of interest polygon with geometry
 aoi <- terra::vect(as.matrix(geom), "polygons", crs = hazard)
 
 # compute exposure
 exposure <- fire_exp(hazard)
 
-fire_exp_map_class(exposure, classify = "local", aoi)
+fire_exp_map_class(exposure, aoi, classify = "local")
 
+}
+\seealso{
+\code{\link[=fire_exp_map_class]{fire_exp_map_class()}}
 }

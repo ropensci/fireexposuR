@@ -5,42 +5,62 @@
 #'
 #'
 #' @details
-#' **DOCUMENTATION IN DEVELOPMENT**
-#' This function dynamically pulls map tiles for a base map,
-#' so it is recommended the area of interest is localized. The zoom level may
-#' need to be adjusted based on the extent of your data; see
+#'
+#' This function returns a standardized map with basic cartographic elements.
+#'
+#' The plot is returned as a ggplot object which can be exported/saved to
+#' multiple image file formats.
+#'
+#' This function visualizes the outputs from [fire_exp()] with classes.
+#' Classes can be chosen from the pre-set `"local"` and `"landscape"` options,
+#' or customized. To use a custom classification scheme, it should be defined
+#' with a list of numeric vectors defining the upper limits of the breaks. A
+#' Nil class is added automatically for exposure values of exactly zero.
+#'
+#' Local classification breaks are predefined as `c(0.15, 0.3, 0.45, 1)`:
+#' * Nil (0)
+#' * 0 - 0.15
+#' * 0.15 - 0.3
+#' * 0.3 - 0.45
+#' * 0.45 - 1
+#'
+#' Landscape classification breaks are predefined as `c(0.2, 0.4, 0.6, 0.8, 1)`:
+#' * Nil (0)
+#' * 0 - 0.2
+#' * 0.2 - 0.4
+#' * 0.4 - 0.6
+#' * 0.6 - 0.8
+#' * 0.8 - 1
+#'
+#' ## Spatial reference
+#'
+#' This function dynamically pulls map tiles for a base map.
+#' The inputs are projected to WGS 84/Pseudo-Mercator
+#' ([EPSG:3857](https://epsg.io/3857)) to align them with the map tiles.
+#'
+#' ## Zoom level
+#' The map tile zoom level may need to be adjusted. If the base map is blurry,
+#' increase the zoom level. Higher zoom levels will slow down the function, so
+#' only increase if necessary. Reference the
 #' [OpenStreetMap Wiki](https://wiki.openstreetmap.org/wiki/Zoom_levels) for
 #' more information on zoom levels.
-#' For mapping large extents it is recommended (and will be faster) to use
-#' [fire_exp_map_cont()] which does not use base maps.
 #'
-#' Scales and colors are determined by the parameter `classify`
-#' which can be set to `"local"` or `"landscape"`.
-#'
-#' Landscape classification breaks are:
-#' * Low (0-20%)
-#' * Moderate (20-40%)
-#' * High (40-60%),
-#' * Very High (60-80%)
-#' * Extreme (80-100%)
-#'
-#' Local classification breaks are:
-#' * Nil (0%)
-#' * Low (>0-15%)
-#' * Moderate (15-30%)
-#' * High (30-45%)
-#' * Extreme (45%+)
-#'
-#'
+#' @seealso [fire_exp_map_class()]
 #'
 #' @param exposure SpatRaster (e.g. from [fire_exp()])
-#' @param classify character, either `"local"` or `"landscape"` to specify
-#'   classification scheme to use.
-#' @param aoi SpatVector of an area of interest to mask exposure
-#' @param zoom (Optional). numeric, set the zoom level for the basemap based
-#' on the extent of your data if defaults are not appropriate. Defaults if:
-#' * `classify = "local"` the zoom level default is `13`
-#' * `classify = "landscape"` the zoom level default is `6`
+#' @param aoi (Optional) SpatVector of an area of interest to mask exposure
+#' @param classify character, either `"local"`, `"landscape"`, or `"custom"`,
+#' to specify classification scheme to use. The default is `"local"`.
+#' If set to `"custom"`: the parameter `class_breaks` must be used.
+#' @param class_breaks vector of numeric values between 0-1 of the upper limits
+#' of each custom class. Ignored unless `classify = "custom"`. See details.
+#' @param zoom_level (Optional) numeric, set the zoom level for the basemap
+#' based on the extent of your data if defaults are not appropriate. See
+#' details. Defaults if:
+#' * `classify = "local"` or `"custom"` the zoom level default is `12`
+#' * `classify = "landscape"` the zoom level default is `7`
+#' @param title (Optional) String. A custom title for the plot. The default
+#' is `"Classified Exposure"`
 #'
 #'
 #' @return a standardized map is returned as a ggplot object
@@ -51,92 +71,111 @@
 #' hazard_file_path <- "extdata/hazard.tif"
 #' hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 #'
-#' # generate example area of interest geometry
+#' # read example area of interest geometry
 #' geom_file_path <- "extdata/polygon_geometry.csv"
 #' geom <- read.csv(system.file(geom_file_path, package = "fireexposuR"))
+#'
+#' # generate example area of interest polygon with geometry
 #' aoi <- terra::vect(as.matrix(geom), "polygons", crs = hazard)
 #'
 #' # compute exposure
 #' exposure <- fire_exp(hazard)
 #'
-#' fire_exp_map_class(exposure, classify = "local", aoi)
+#' fire_exp_map_class(exposure, aoi, classify = "local")
 #'
 
-fire_exp_map_class <- function(exposure, classify = c("local", "landscape"),
-                        aoi, zoom) {
+fire_exp_map_class <- function(exposure, aoi, classify = c("local", "landscape",
+                                                           "custom"),
+                               class_breaks, zoom_level,
+                               title = "Classified Exposure") {
   stopifnot("`exposure` must be a SpatRaster object"
             = class(exposure) == "SpatRaster")
   stopifnot("`exposure` layer must have values between 0-1"
-            = (round(terra::minmax(exposure)[1], 0) >= 0 && round(terra::minmax(exposure)[2], 0) <= 1))
-  stopifnot("`aoi` must be a SpatVector object"
-            = class(aoi) == "SpatVector")
-  stopifnot("`aoi` extent must be within `exposure` extent"
-            = terra::relate(aoi, exposure, "within"))
-  stopifnot("`exposure` and `aoi` must have same CRS"
-            = terra::same.crs(exposure, aoi))
+            = (round(terra::minmax(exposure)[1], 0) >= 0
+               && round(terra::minmax(exposure)[2], 0) <= 1))
+
   classify <- match.arg(classify)
 
   names(exposure) <- "exposure"
   exp <- exposure
 
-  # project aoi for mapping
-  b <- terra::project(aoi, "EPSG:3857")
-  # get extent to clip tile
-  e <- terra::rescale(b, 1.5)
-  # mask exposure to aoi, project for mapping
-  expb <- terra::crop(exp, aoi, mask = TRUE) %>%
-    terra::project("EPSG:3857")
+  if (!missing(aoi)) {
+    stopifnot("`aoi` must be a SpatVector object"
+              = class(aoi) == "SpatVector")
+    stopifnot("`aoi` extent must be within `exposure` extent"
+              = terra::relate(aoi, exposure, "within"))
+    stopifnot("`exposure` and `aoi` must have same CRS"
+              = terra::same.crs(exposure, aoi))
 
-
-  if (classify == "local") {
-    zl <- ifelse(missing(zoom), 13, zoom)
-    tile <- maptiles::get_tiles(e, "Esri.WorldImagery", zoom = zl) %>%
-      terra::crop(e)
-    cred <- maptiles::get_credit("Esri.WorldImagery")
-    caption <- paste("Basemap", substr(cred, 1, 63), "\n",
-                     substr(cred, 63, nchar(cred)))
-    # reclassify the values for local scale
-    m <- c(0, 0, 0,
-           0, 0.15, 1,
-           0.15, 0.3, 2,
-           0.3, 0.45, 3,
-           0.45, 1, 4)
-    rcmats <- matrix(m, ncol = 3, byrow = TRUE)
-    expbc <- terra::classify(expb, rcmats, include.lowest = TRUE)
-    levels(expbc) <- data.frame(id = 0:4,
-                                expclass = c("Nil (0%)", "Low (>0-15%)",
-                                             "Moderate (15-30%)",
-                                             "High (30-45%)",
-                                             "Extreme (45%+)"))
-    cols <- c("grey", "yellow", "orange", "red", "darkred")
+    exp <- exp %>%
+      terra::crop(aoi) %>%
+      terra::mask(aoi)
+    b <- terra::project(aoi, "EPSG:3857")
+    # get extent to clip tile
+    e <- terra::rescale(b, 1.3)
+    expb <- terra::crop(exp, aoi, mask = TRUE) %>%
+      terra::project("EPSG:3857")
   } else {
-    zl <- ifelse(missing(zoom), 6, zoom)
-    tile <- maptiles::get_tiles(e, "Esri.WorldGrayCanvas", zoom = zl) %>%
-      terra::crop(e)
-    caption <- maptiles::get_credit("Esri.WorldGrayCanvas")
-    # reclassify the values for landscape scale
-    m <- c(0, 0.2, 0,
-           0.2, 0.4, 1,
-           0.4, 0.6, 2,
-           0.6, 0.8, 3,
-           0.8, 1, 4)
-    rcmats <- matrix(m, ncol = 3, byrow = TRUE)
-    expbc <- terra::classify(expb, rcmats, include.lowest = TRUE)
-    levels(expbc) <- data.frame(id = 0:4,
-                                expclass = c("Low (0-20%)",
-                                             "Moderate (20-40%)",
-                                             "High (40-60%)",
-                                             "Very High (60-80%)",
-                                             "Extreme (80-100%)"))
-    cols <- tidyterra::whitebox.colors(5, palette = "bl_yl_rd")
-
+    e <- terra::rescale(terra::as.polygons(terra::ext(exp),
+                                           terra::crs(exp)), 1.3) %>%
+      terra::project("EPSG:3857")
+    expb <- terra::project(exp, "EPSG:3857")
   }
 
+  classify <- match.arg(classify)
 
-  plt <- ggplot2::ggplot(b) +
-    tidyterra::geom_spatraster_rgb(data = tile, alpha = 0.9) +
+  if (classify == "landscape") {
+    zoom_level <- ifelse(missing(zoom_level), 7, zoom_level)
+    class_breaks <- c(0.2, 0.4, 0.6, 0.8, 1)
+  }
+
+  if (classify == "local") {
+    class_breaks <- c(0.15, 0.3, 0.45, 1)
+  }
+
+  zoom_level <- ifelse(missing(zoom_level), 12, zoom_level)
+
+  # class_breaks checks
+  stopifnot("`class_breaks` must be a vector of numbers"
+            = class(class_breaks) == "numeric")
+  stopifnot("`class_breaks` must have 1 as the maximum value"
+            = max(class_breaks) == 1)
+  stopifnot("`class_breaks` must be greater than 0"
+            = class_breaks > 0)
+
+  class_labels <- character()
+
+  label_breaks <- c(0, class_breaks)
+  for (i in seq_along(label_breaks)) {
+    class_labels[i] <- paste(label_breaks[i], "-", label_breaks[i + 1])
+  }
+
+  class_labels <- c("Nil", utils::head(class_labels, -1))
+
+  lut <- data.frame(start = c(0, 0, utils::head(class_breaks, -1)),
+                    end = c(0, class_breaks),
+                    factor = 0:length(class_breaks),
+                    label = class_labels)
+
+  rcmats <- as.matrix(lut[, 1:3])
+  expbc <- terra::classify(expb, rcmats, include.lowest = TRUE)
+
+  levels(expbc) <- lut[, 3:4]
+
+  n_color <- length(class_breaks)
+
+  cols <- c("grey40", tidyterra::whitebox.colors(n_color, palette = "bl_yl_rd"))
+  names(cols) <- lut$label
+
+  tile <- maptiles::get_tiles(e, "Esri.WorldImagery", zoom = zoom_level) %>%
+    terra::crop(e)
+  cred <- maptiles::get_credit("Esri.WorldImagery")
+  caption <- paste("Basemap", substr(cred, 1, 63), "\n",
+                   substr(cred, 63, nchar(cred)))
+
+  plt <- ggplot2::ggplot() +
+    tidyterra::geom_spatraster_rgb(data = tile) +
     tidyterra::geom_spatraster(data = expbc, alpha = 0.8) +
-    tidyterra::geom_spatvector(fill = NA, linewidth = 0.6) +
     ggplot2::scale_fill_manual(values = cols,
                                na.value = NA,
                                na.translate = FALSE) +
@@ -147,11 +186,17 @@ fire_exp_map_class <- function(exposure, classify = c("local", "landscape"),
                                       pad_y = grid::unit(0.3, "in"),
                                       height = grid::unit(0.3, "in"),
                                       width = grid::unit(0.3, "in")) +
-    ggplot2::labs(title = "Classified Exposure",
+    ggplot2::labs(title = title,
                   subtitle = "Map generated with fireexposuR()",
-                  fill = "Exposure Class",
-                  caption = caption) +
-    ggplot2::coord_sf(expand = FALSE)
+                  fill = "Exposure",
+                  caption = caption)
+
+  if (!missing(aoi)) {
+    plt <- plt +
+      tidyterra::geom_spatvector(data = b, fill = NA, linewidth = 0.6)
+  }
+
+  plt <- plt + ggplot2::coord_sf(expand = FALSE)
 
   return(plt)
 }

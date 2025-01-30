@@ -6,18 +6,18 @@
 #' @details
 #' This function summarizes multiple directional vulnerability assessments into
 #' a single table or plot. The plot is based on the methods presented in
-#' Beverly and Forbes 2023. For each degree, the frequency of input values with a
-#' continuous pathway at that trajectory is found. This summary can be useful
-#' in identifying trends in directional exposure to values within a regional area
-#' of interest.
+#' Beverly and Forbes 2023. For each degree, the frequency of input values with
+#' a continuous pathway at that trajectory is found. This summary can be useful
+#' in identifying trends in directional exposure to values within a regional
+#' area of interest.
 #'
-#' Continuous pathways can be assessed for the full span of all three directional
-#' assessment transect segments, or limited to the outer two segments with the
-#' `full` parameter. If the values being assessed are variable sizes and being
-#' represented as points, it is recommended this parameter remains set to `FALSE`.
-#' The inner segment is sensitive to the size of the value when a point is used.
-#' Adjusting the parameters for `fire_exp_dir()` is also supported. See details
-#' in [`fire_exp_dir()`] for more information.
+#' Continuous pathways can be assessed for the full span of all three
+#' directional assessment transect segments, or limited to the outer two
+#' segments with the `full` parameter. If the values being assessed are variable
+#' sizes and being represented as points, it is recommended this parameter
+#' remains set to `FALSE`. The inner segment is sensitive to the size of the
+#' value when a point is used. Adjusting the parameters for `fire_exp_dir()` is
+#' also supported. See details in [`fire_exp_dir()`] for more information.
 #'
 #' ## References
 #' Beverly JL, Forbes AM (2023) Assessing directional vulnerability to
@@ -33,7 +33,8 @@
 #' segments must be viable. when `FALSE`: only the segments from seg2 and seg3
 #' are considered (Default)
 #' @param title (Optional) String. Ignored when `plot = FALSE`. A custom title
-#' for the plot. The default is `"Directional Vulnerability for Multiple Values"`
+#' for the plot. The default is
+#' `"Directional Vulnerability for Multiple Values"`
 #' @param ... arguments passed to [`fire_exp_dir()`].
 #'
 #' @return a data.frame of the features with attributes: value featureID,
@@ -59,17 +60,22 @@
 #' fire_exp_dir_multi(exposure, points, plot = TRUE, interval = 10)
 
 fire_exp_dir_multi <- function(exposure, values, plot = FALSE, full = FALSE,
-                               title = "Directional Vulnerability for Multiple Values",
-                               ...) {
+                               title, ...) {
   stopifnot("`exposure` must be a SpatRaster object"
             = class(exposure) == "SpatRaster")
   stopifnot("`exposure` layer must have values between 0-1"
-            = (round(terra::minmax(exposure)[1], 0) >= 0 && round(terra::minmax(exposure)[2], 0) <= 1))
+            = (round(terra::minmax(exposure)[1], 0) >= 0
+               && round(terra::minmax(exposure)[2], 0) <= 1))
   stopifnot("`values` must be a SpatVector object of point or polygon features"
             = (class(values) == "SpatVector" &&
                  terra::geomtype(values) %in% c("points", "polygons")))
   stopifnot("`values` and `exposure` must have the same crs"
             = terra::same.crs(values, exposure) == TRUE)
+
+  if (missing(title)) {
+    title <- "Directional Vulnerability for Multiple Values"
+  }
+
   stopifnot("`title` must be a character string"
             = class(title) == "character")
 

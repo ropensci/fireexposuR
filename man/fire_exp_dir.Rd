@@ -55,7 +55,12 @@ them with areas of high exposure.
 \code{fire_exp_dir()} automates the directional vulnerability assessment
 methods documented in Beverly and Forbes (2023). This analysis is used to
 assess linear wildfire vulnerability on the landscape in a systematic radial
-sampling pattern. The output line features will have the attribute 'viable'
+sampling pattern. This is a landscape scale process, so the exposure raster
+used should also be landscape scale. Use \code{tdist = "l"} when preparing data
+with \code{\link[=fire_exp]{fire_exp()}} for use with this function. See \code{\link[=fire_exp]{fire_exp()}} details
+for more information.
+
+The output line features will have the attribute 'viable'
 which can be used to visualize the pathways. Outputs can be visualized with
 \code{\link[=fire_exp_dir_plot]{fire_exp_dir_plot()}}, \code{\link[=fire_exp_dir_map]{fire_exp_dir_map()}}, or exported as a spatial
 feature.

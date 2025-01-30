@@ -12,27 +12,51 @@ fire_exp_extract(exposure, values)
 \item{values}{Spatvector of points or polygons}
 }
 \value{
-a SpatVector object with new attributes
+a SpatVector object with new attribute(s)
 }
 \description{
 \code{fire_exp_extract()} extracts the underlying exposure value for
 each feature in the values layer.
 }
 \details{
-\strong{DOCUMENTATION IN DEVELOPMENT}
-Values can be provided as either points or
-polygons, and must be singlepart features (i.e. the attribute table has one
-row per value). If the values are polygon features both the maximum and mean
-exposure is computed.
+This function appends the underlying exposure value to the input feature as
+a new attribute. The values input can be provided as either points or
+polygons. The values should be singlepart features (i.e. the attribute table
+has one row per value). If the values are polygon features both the maximum
+and mean exposure is computed. Any values outside the extent of the exposure
+raster will be returned with an exposure of NA.
+
+Outputs from this function can be visualized with \code{\link[=fire_exp_extract_vis]{fire_exp_extract_vis()}}
+or exported as a spatial feature.
+\subsection{Spatial Reference}{
+
+The inputs for the exposure and values layer must have the same coordinate
+reference system (CRS) defined. The transects will be returned in the same
+CRS as the inputs.
+}
+
+\subsection{Scale}{
+
+The spatial resolution of the input exposure raster will effect the output.
+The exposure value returned by this function are based on the cell value
+underlying the feature in the values input. Note that if the resolution of
+the exposure raster is coarse, there may be multiple values within the same
+cell and the returned values will reflect this. For polygon features, the
+maximum and mean value of all cells within the boundary of the polygon are
+used. If the exposure raster is coarse, there may not be more than one cell
+within the polygon which will result in these values being the same.
+}
 }
 \examples{
 # read example hazard data
 hazard_file_path <- "extdata/hazard.tif"
 hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 
-# generate example area of interest geometry
+# read example area of interest geometry
 geom_file_path <- "extdata/polygon_geometry.csv"
 geom <- read.csv(system.file(geom_file_path, package = "fireexposuR"))
+
+# generate an area of interest polygon with the geometry
 aoi <- terra::vect(as.matrix(geom), "polygons", crs = hazard)
 
 # generate random points within the aoi polygon

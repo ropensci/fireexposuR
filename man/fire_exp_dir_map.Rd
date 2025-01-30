@@ -7,7 +7,7 @@
 fire_exp_dir_map(
   transects,
   value,
-  zoomlevel = 11,
+  zoom_level = 10,
   labels,
   title = "Directional Vulnerability"
 )
@@ -18,8 +18,8 @@ fire_exp_dir_map(
 \item{value}{(Optional) SpatVector. Adds the value to the map. Use the same
 value feature used to generate the transects with \code{\link[=fire_exp_dir]{fire_exp_dir()}}}
 
-\item{zoomlevel}{(Optional). Numeric. set the zoom level for the base map
-tile. See details. The default is \code{11}.}
+\item{zoom_level}{(Optional). Numeric. set the zoom level for the base map
+tile. See details. The default is \code{10}.}
 
 \item{labels}{(Optional) a vector of three strings. Custom formatting for the
 distances in the legend. If left blank, the function will automatically label
@@ -73,6 +73,6 @@ transects <- fire_exp_dir(exposure, point)
 
 # map with customized distance labels
 fire_exp_dir_map(transects, labels = c("5 km", "10 km", "15 km"),
-                 zoomlevel = 9)
+                 zoom_level = 9)
 
 }

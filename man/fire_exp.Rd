@@ -4,7 +4,7 @@
 \alias{fire_exp}
 \title{Compute the wildfire exposure metric}
 \usage{
-fire_exp(hazard, tdist = c("l", "s", "r"), nonburnable)
+fire_exp(hazard, tdist = c("l", "s", "r"), no_burn)
 }
 \arguments{
 \item{hazard}{a SpatRaster that represents hazardous fuels for the
@@ -13,7 +13,7 @@ transmission distance specified in tdist}
 \item{tdist}{a character vector, can be: \code{"l"} for long-range
 embers (Default), \code{"s"} for short-range embers or, \code{"r"} for radiant heat}
 
-\item{nonburnable}{(optional) a SpatRaster that represents the non-burnable
+\item{no_burn}{(optional) a SpatRaster that represents the non-burnable
 landscape. Any cells that cannot receive wildfire (e.g. open water, rock)
 and any cells that are not natural (e.g. built environment,
 irrigated agricultural areas) should be of value 1, all other cells
@@ -28,13 +28,17 @@ A SpatRaster object of exposure values between 0-1
 using the input hazard fuel raster.
 }
 \details{
+This function is the primary function of this package.
+
 \strong{DOCUMENTATION IN DEVELOPMENT}
 
-There are minimum raster resolution requirements for each transmission distance.
-Radiant heat requires data of 10 m or finer, short-range embers 90 m or finer, and
+There are minimum raster resolution requirements for each transmission
+distance.
+Radiant heat requires data of 10 m or finer, short-range embers 90 m or
+finer, and
 long-range embers requires 150 m or finer.
 
-#' \code{fire_exp()} computes the wildfire exposure metric from a hazard fuel raster.
+\code{fire_exp()} computes the wildfire exposure metric from a hazard fuel raster.
 The hazard fuel raster must be prepared by the user. Forbes and Beverly 2024
 (manuscript in preparation)
 details suggestions for data acquisition and preparation in accordance with
@@ -50,10 +54,4 @@ hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 
 # compute long range exposure
 exposure <- fire_exp(hazard, tdist = "l")
-exposure
-
-# each transmission distance has a resolution requirement and fire_exp() will
-# not run if resolution is too coarse
-try(fire_exp(hazard, tdist = "r"))
-
 }

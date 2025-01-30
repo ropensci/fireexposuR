@@ -83,7 +83,7 @@ community. We will pretend the points are the locations of structures.
 ```{r aoivis, echo = FALSE}
 # plot the vector data with terra defaults
 plot(aoi)
-plot(points, add = T)
+plot(points, add = TRUE)
 ```
 
 ### Compute exposure
@@ -112,7 +112,7 @@ environment with exposure classifications in an area of interest with
 
 
 ```{r maplocal}
-fire_exp_map_class(exposure, classify = "local", aoi)
+fire_exp_map_class(exposure, aoi, classify = "local")
 ```
 
 This map gives us a better understanding of areas of the town that could
@@ -120,7 +120,7 @@ be fire entry points. We can also summarize the area with `fire_exp_summary()`
 if we want to know the proportional distributions of each class.
 
 ```{r summlocal}
-fire_exp_summary(exposure, classify = "local", aoi)
+fire_exp_summary(exposure, aoi, classify = "local")
 ```
 
 We also have data for the values within the built environment, for which
@@ -130,12 +130,11 @@ we can map or summarize in a table as well.
 # extract exposure to the points feature
 points_ext <- fire_exp_extract(exposure, points)
 
-# visualize the extracted data in a summary table 
+# visualize the extracted data in a summary table
 fire_exp_extract_vis(points_ext, classify = "local")
 
 # visualize the extracted data in a map
 fire_exp_extract_vis(points_ext, classify = "local", map = TRUE)
-
 ```
 
 
@@ -154,7 +153,6 @@ transects <- fire_exp_dir(exposure, aoi)
 
 # visualize directional vulnerability with a map
 fire_exp_dir_map(transects, aoi)
-
 ```
 
 

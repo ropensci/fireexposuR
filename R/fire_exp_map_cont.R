@@ -5,10 +5,22 @@
 #' of interest.
 #'
 #' @details
-#' **DOCUMENTATION IN DEVELOPMENT**
+#' This function returns a standardized map with basic cartographic elements.
+#' The exposure values are mapped using a continuous scale. There is no base
+#' map added with this function.
+#'
+#' The plot is returned as a ggplot object which can be exported/saved to
+#' multiple image file formats.
+#'
+#' ## Spatial Reference
+#' The map will be drawn using the same CRS as the input data.
+#'
+#' @seealso [fire_exp_map_class()]
 #'
 #' @param exposure SpatRaster from [fire_exp()]
-#' @param aoi (optional) SpatVector of an area of interest to mask the exposure
+#' @param aoi (Optional) SpatVector of an area of interest to mask the exposure
+#' @param title (Optional) String. A custom title for the plot. The default
+#' is `"Wildfire Exposure"`
 #'
 #' @return a map is returned as a ggplot object
 #' @export
@@ -22,11 +34,12 @@
 #'
 #' fire_exp_map_cont(exposure)
 #'
-fire_exp_map_cont <- function(exposure, aoi) {
+fire_exp_map_cont <- function(exposure, aoi, title = "Wildfire Exposure") {
   stopifnot("`exposure` must be a SpatRaster object"
             = class(exposure) == "SpatRaster")
   stopifnot("`exposure` layer must have values between 0-1"
-            = (terra::minmax(exposure)[1] >= 0 && terra::minmax(exposure)[2] <= 1))
+            = (round(terra::minmax(exposure)[1], 0) >= 0
+               && round(terra::minmax(exposure)[2], 0) <= 1))
   exp <- exposure
   if (missing(aoi)) {
     r <- exp
@@ -40,13 +53,13 @@ fire_exp_map_cont <- function(exposure, aoi) {
     r <- terra::crop(exp, aoi) %>%
       terra::mask(aoi)
   }
+
   plt <- ggplot2::ggplot() +
     tidyterra::geom_spatraster(data = r) +
-    tidyterra::geom_spatvector(fill = NA) +
     tidyterra::scale_fill_whitebox_c(palette = "bl_yl_rd",
                                      limits = c(0, 1)) +
     ggplot2::theme_void() +
-    ggplot2::labs(title = "Landscape Fire Exposure",
+    ggplot2::labs(title = title,
                   subtitle = "Map generated with fireexposuR()",
                   fill = "Exposure") +
     ggspatial::annotation_scale(location = "bl") +
@@ -56,8 +69,13 @@ fire_exp_map_cont <- function(exposure, aoi) {
       pad_y = grid::unit(0.3, "in"),
       height = grid::unit(0.3, "in"),
       width = grid::unit(0.3, "in")
-    ) +
-    ggplot2::coord_sf(expand = FALSE)
+    )
+
+  if (!missing(aoi)) {
+    plt <- plt + tidyterra::geom_spatvector(data = aoi, fill = NA)
+  }
+
+  plt <- plt + ggplot2::coord_sf(expand = FALSE)
   return(plt)
 
 }

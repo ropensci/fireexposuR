@@ -6,14 +6,17 @@
 #'
 #'
 #' @details
+#' This function is the primary function of this package.
 #'
 #' **DOCUMENTATION IN DEVELOPMENT**
 #'
-#' There are minimum raster resolution requirements for each transmission distance.
-#' Radiant heat requires data of 10 m or finer, short-range embers 90 m or finer, and
+#' There are minimum raster resolution requirements for each transmission
+#' distance.
+#' Radiant heat requires data of 10 m or finer, short-range embers 90 m or
+#' finer, and
 #' long-range embers requires 150 m or finer.
 #'
-#' #' `fire_exp()` computes the wildfire exposure metric from a hazard fuel raster.
+#' `fire_exp()` computes the wildfire exposure metric from a hazard fuel raster.
 #' The hazard fuel raster must be prepared by the user. Forbes and Beverly 2024
 #' (manuscript in preparation)
 #' details suggestions for data acquisition and preparation in accordance with
@@ -26,7 +29,7 @@
 #'   transmission distance specified in tdist
 #' @param tdist a character vector, can be: `"l"` for long-range
 #'   embers (Default), `"s"` for short-range embers or, `"r"` for radiant heat
-#' @param nonburnable (optional) a SpatRaster that represents the non-burnable
+#' @param no_burn (optional) a SpatRaster that represents the non-burnable
 #'   landscape. Any cells that cannot receive wildfire (e.g. open water, rock)
 #'   and any cells that are not natural (e.g. built environment,
 #'   irrigated agricultural areas) should be of value 1, all other cells
@@ -45,13 +48,8 @@
 #'
 #' # compute long range exposure
 #' exposure <- fire_exp(hazard, tdist = "l")
-#' exposure
-#'
-#' # each transmission distance has a resolution requirement and fire_exp() will
-#' # not run if resolution is too coarse
-#' try(fire_exp(hazard, tdist = "r"))
-#'
-fire_exp <- function(hazard, tdist = c("l", "s", "r"), nonburnable) {
+
+fire_exp <- function(hazard, tdist = c("l", "s", "r"), no_burn) {
   stopifnot("`hazard` must be a SpatRaster object"
             = class(hazard) == "SpatRaster")
   stopifnot("`hazard` layer must have values between 0-1"
@@ -89,18 +87,18 @@ fire_exp <- function(hazard, tdist = c("l", "s", "r"), nonburnable) {
   wgtwindow <- window / sum(window, na.rm = TRUE)
   exp <- terra::focal(haz, wgtwindow, fun = sum) %>%
     tidyterra::rename(exposure = "focal_sum")
-  if (missing(nonburnable)) {
+  if (missing(no_burn)) {
     return(exp)
   } else {
-    stopifnot("`nonburnable` must be a SpatRaster object"
-              = class(nonburnable) == "SpatRaster")
-    stopifnot("`nonburnable` and `hazard` must have same CRS"
-              = terra::same.crs(hazard, nonburnable))
-    stopifnot("`nonburnable` must only contain values of 1 or NA"
-              = unique(terra::values(nonburnable) %in% c(1,NA,NaN)))
-    stopifnot("`nonburnable` extent must be within `hazard` extent"
-              = terra::relate(nonburnable, hazard, "within"))
-    expb <- terra::mask(exp, nonburnable, inverse = TRUE)
+    stopifnot("`no_burn` must be a SpatRaster object"
+              = class(no_burn) == "SpatRaster")
+    stopifnot("`no_burn` and `hazard` must have same CRS"
+              = terra::same.crs(hazard, no_burn))
+    stopifnot("`no_burn` must only contain values of 1 or NA"
+              = unique(terra::values(no_burn) %in% c(1, NA, NaN)))
+    stopifnot("`no_burn` extent must be within `hazard` extent"
+              = terra::relate(no_burn, hazard, "within"))
+    expb <- terra::mask(exp, no_burn, inverse = TRUE)
     return(expb)
   }
 }

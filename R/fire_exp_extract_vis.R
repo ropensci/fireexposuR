@@ -1,36 +1,66 @@
-#' Summarize or plot exposure to values
+#' Visualize exposure to values in a summary table or map
 #'
 #' @description `fire_exp_extract_vis()` standardizes the visualization of
 #' outputs from [fire_exp_extract()] as a summary table or a map by classifying
 #' exposure into predetermined exposure classes.
 #'
 #' @details
-#' **DOCUMENTATION IN DEVELOPMENT**
+#' This function visualizes the outputs from [fire_exp_extract()] with classes.
+#' Classes can be chosen from the pre-set `"local"` and `"landscape"` options,
+#' or customized. To use a custom classification scheme, it should be defined
+#' with a list of numeric vectors defining the upper limits of the breaks. A
+#' Nil class is added automatically for exposure values of exactly zero.
 #'
+#' Local classification breaks are predefined as `c(0.15, 0.3, 0.45, 1)`:
+#' * Nil (0)
+#' * 0 - 0.15
+#' * 0.15 - 0.3
+#' * 0.3 - 0.45
+#' * 0.45 - 1
 #'
-#' Landscape classification breaks are:
-#' * Low (0-20%)
-#' * Moderate (20-40%)
-#' * High (40-60%),
-#' * Very High (60-80%)
-#' * Extreme (80-100%)
+#' #' Landscape classification breaks are predefined
+#' as `c(0.2, 0.4, 0.6, 0.8, 1)`:
+#' * Nil (0)
+#' * 0 - 0.2
+#' * 0.2 - 0.4
+#' * 0.4 - 0.6
+#' * 0.6 - 0.8
+#' * 0.8 - 1
 #'
-#' Local classification breaks are:
-#' * Nil (0%)
-#' * Low (>0-15%)
-#' * Moderate (15-30%)
-#' * High (30-45%)
-#' * Extreme (45%+)
+#' ## Spatial reference
+#'
+#' This function dynamically pulls map tiles for a base map when `map = TRUE`.
+#' The inputs are projected to WGS 84/Pseudo-Mercator
+#' ([EPSG:3857](https://epsg.io/3857)) to align them with the map tiles.
+#'
+#' ## Zoom level
+#' The map tile zoom level may need to be adjusted. If the base map is blurry,
+#' increase the zoom level. Higher zoom levels will slow down the function, so
+#' only increase if necessary. Reference the
+#' [OpenStreetMap Wiki](https://wiki.openstreetmap.org/wiki/Zoom_levels) for
+#' more information on zoom levels.
+#'
 #'
 #'
 #' @param values_ext Spatvector of points or polygons from [fire_exp_extract()]
-#' @param classify character, either `"local"` or `"landscape"` to specify
-#'   classification scheme to use. The default is `"local`"
+#' @param classify character, either `"local"`, `"landscape"`, or `"custom"`,
+#' to specify classification scheme to use. The default is `"local"`. If set to
+#' `"custom"`: the parameter `class_breaks` must be used.
+#' @param class_breaks vector of numeric values between 0-1. Ignored unless
+#'`classify = "custom"`. See details.
 #' @param method character, either `"max"` or `"mean"`. If `values_ext` are
 #' polygons the default is `"max"`.This parameter is ignored when `values_ext`
 #' are point features.
 #' @param map Boolean. When `TRUE`, a map is returned as a ggplot object. The
 #' default is `FALSE`.
+#' @param zoom_level (Optional). Numeric. Ignored when `map = FALSE`. set the
+#' zoom level for the base map tile. See details. Defaults if:
+#' * `classify = "local"` or `"custom"` the zoom level default is `12`
+#' * `classify = "landscape"` the zoom level default is `7`
+#' @param title (Optional) String. Ignored when `map = FALSE`. A custom title
+#' for the plot. The default is `"Classified Exposure to Values"`
+#'
+#'
 #'
 #' @return a summary table is returned as a data frame object, Unless:
 #' `map = TRUE`: a ggplot object
@@ -42,9 +72,11 @@
 #' hazard_file_path <- "extdata/hazard.tif"
 #' hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 #'
-#' # generate example area of interest geometry
+#' # read example area of interest geometry
 #' geom_file_path <- "extdata/polygon_geometry.csv"
 #' geom <- read.csv(system.file(geom_file_path, package = "fireexposuR"))
+#'
+#' # generate an area of interest polygon with the geometry
 #' aoi <- terra::vect(as.matrix(geom), "polygons", crs = hazard)
 #'
 #' # generate random points within the aoi polygon
@@ -62,20 +94,21 @@
 #' fire_exp_extract_vis(values_exp, map = TRUE)
 #'
 fire_exp_extract_vis <- function(values_ext,
-                       method = c("max", "mean"),
-                       classify = c("local", "landscape"),
-                       map = FALSE) {
+                                 classify = c("local", "landscape", "custom"),
+                                 class_breaks,
+                                 method = c("max", "mean"),
+                                 map = FALSE,
+                                 zoom_level,
+                                 title = "Classified Exposure to Values") {
   ext <- values_ext
-  stopifnot("`values_ext` must be a SpatVector object of point or polygon features"
+  stopifnot("`values_ext` must be a SpatVector of point or polygon features"
             = (class(ext) == "SpatVector" &&
                  terra::geomtype(ext) %in% c("points", "polygons")))
-  stopifnot("`values_ext` missing exposure attributes. Use fire_exp_extract() first"
-            = length(terra::names(ext)) > 0)
-  stopifnot("`values_ext` missing exposure attributes. Use fire_exp_extract() first"
+  stopifnot("`values_ext` missing exposure attribute. Use fire_exp_extract()"
             = any(terra::names(ext) %in% c("exposure", "mean_exp", "max_exp")))
   if (terra::geomtype(ext) == "polygons") {
     method <- match.arg(method)
-    if (method == "mean"){
+    if (method == "mean") {
       method <- "Mean"
       ext <- ext %>%
         dplyr::rename(exposure = "mean_exp")
@@ -91,60 +124,70 @@ fire_exp_extract_vis <- function(values_ext,
   classify <- match.arg(classify)
 
   if (classify == "landscape") {
-    title_str <- "Landscape Scale"
-    ext <- ext %>%
-      dplyr::mutate(scale = classify) %>%
-      dplyr::mutate(
-        exp_class = dplyr::case_when(
-          exposure >= 0.8 ~ 5,
-          exposure >= 0.6 ~ 4,
-          exposure >= 0.4 ~ 3,
-          exposure >= 0.2 ~ 2,
-          exposure >= 0 ~ 1
-        )
-      )
-
-    cols <- tidyterra::whitebox.colors(5, palette = "bl_yl_rd")
-
+    zoom_level <- ifelse(missing(zoom_level), 7, zoom_level)
+    class_breaks <- c(0.2, 0.4, 0.6, 0.8, 1)
   }
+
   if (classify == "local") {
-    title_str <- "Localized Scale"
-    ext <- ext %>%
-      dplyr::mutate(scale = classify) %>%
-      dplyr::mutate(
-        exp_class = dplyr::case_when(
-          exposure >= 0.45 ~ 5,
-          exposure >= 0.3 ~ 3,
-          exposure >= 0.15 ~ 2,
-          exposure > 0 ~ 1,
-          exposure == 0 ~ 0
-        )
-      )
-
-    cols <- c("grey", "yellow", "orange", "red", "darkred")
-
+    class_breaks <- c(0.15, 0.3, 0.45, 1)
   }
 
-  lut <- 0:5
-  names(lut) <- c("Nil",
-                  "Low",
-                  "Moderate",
-                  "High",
-                  "Very High",
-                  "Extreme")
-  ext <- ext %>%
-    dplyr::mutate(class = names(lut)[match(.data$exp_class, lut)])
+  zoom_level <- ifelse(missing(zoom_level), 12, zoom_level)
 
-  ext$class <- factor(ext$class, levels = names(lut))
+  # class_breaks checks
+  stopifnot("`class_breaks` must be a vector of numbers"
+            = class(class_breaks) == "numeric")
+  stopifnot("`class_breaks` must have 1 as the maximum value"
+            = max(class_breaks) == 1)
+  stopifnot("`class_breaks` must be greater than 0"
+            = class_breaks > 0)
 
+  class_labels <- character()
+
+  label_breaks <- c(0, class_breaks)
+  for (i in seq_along(label_breaks)) {
+    class_labels[i] <- paste(label_breaks[i], "-", label_breaks[i + 1])
+  }
+
+  class_labels <- c("Nil", utils::head(class_labels, -1))
+
+  lut <- data.frame(start = c(0, 0, utils::head(class_breaks, -1)),
+                    end = c(0, class_breaks),
+                    factor = 0:length(class_breaks),
+                    label = class_labels)
+
+  rules <- c("exposure == 0 ~ 0",
+             utils::tail(c(sprintf("dplyr::between(exposure, %f, %f) ~ %f",
+                                   lut$start, lut$end, lut$factor)), -1))
+
+  lut2 <- as.factor(lut$factor)
+
+  names(lut2) <- lut$label
+
+  ext_class <- ext %>%
+    dplyr::mutate(class = do.call(dplyr::case_when,
+                                  c(lapply(rules, str2lang)))) %>%
+    dplyr::mutate(class_range = names(lut2)[match(.data$class, lut2)])
+
+  ext_class$class_range <- factor(ext_class$class_range, levels = names(lut2))
 
   if (map == TRUE) {
-    v <- terra::project(ext, "EPSG: 3857") %>%
+
+    n_color <- length(class_breaks)
+
+    cols <- c("grey40", tidyterra::whitebox.colors(n_color,
+                                                   palette = "bl_yl_rd"))
+    names(cols) <- class_labels
+
+    v <- terra::project(ext_class, "EPSG: 3857") %>%
       tidyr::drop_na("class")
     e <- terra::rescale(v, 1.5)
-    tile <- maptiles::get_tiles(e, "Esri.WorldGrayCanvas") %>%
+    tile <- maptiles::get_tiles(e, "Esri.WorldImagery", zoom = zoom_level) %>%
       terra::crop(e)
 
+    cred <- maptiles::get_credit("Esri.WorldImagery")
+    caption <- paste("Basemap", substr(cred, 1, 63), "\n",
+                     substr(cred, 63, nchar(cred)))
 
     plt <- ggplot2::ggplot() +
       tidyterra::geom_spatraster_rgb(data = tile, alpha = 0.8) +
@@ -158,38 +201,40 @@ fire_exp_extract_vis <- function(values_ext,
       ) +
       ggplot2::theme_void() +
       ggplot2::labs(
-        title = paste(method,"Classified Exposure to Values,", title_str),
+        title = title,
         subtitle = "Map generated with fireexposuR()",
-        caption = maptiles::get_credit("Esri.WorldGrayCanvas")
+        caption = caption
       )
 
     if (terra::geomtype(v) == "points") {
       plt <- plt +
         tidyterra::geom_spatvector(data = v,
-                                   ggplot2::aes(color = factor(.data$class)),
+                                   ggplot2::aes(color =
+                                                  factor(.data$class_range)),
                                    shape = 16) +
         ggplot2::scale_color_manual(values = cols,
-                                    na.value="grey20") +
-        ggplot2::labs(color = "Exposure Class") +
+                                    na.value = "grey10") +
+        ggplot2::labs(color = "Exposure") +
         ggplot2::coord_sf(expand = FALSE)
     } else {
       plt <- plt +
         tidyterra::geom_spatvector(data = v,
-                                   ggplot2::aes(fill = factor(.data$class)),
+                                   ggplot2::aes(fill =
+                                                  factor(.data$class_range)),
                                    color = NA) +
-        ggplot2::scale_fill_manual(values = cols) +
-        ggplot2::labs(fill = "Exposure Class") +
+        ggplot2::scale_fill_manual(values = cols,
+                                   na.value = "grey10") +
+        ggplot2::labs(fill = "Exposure") +
         ggplot2::coord_sf(expand = FALSE)
     }
     return(plt)
   } else {
-      df <- as.data.frame(ext) %>%
-        dplyr::count(class) %>%
-        dplyr::mutate(prop = .data$n / sum(.data$n)) %>%
-        dplyr::mutate(method = method) %>%
-        dplyr::mutate(scale = classify) %>%
-        dplyr::select(c("scale", "method", "class", "n", "prop"))
-      return(df)
-      }
-    }
-
+    df <- as.data.frame(ext_class) %>%
+      dplyr::count(.data$class_range) %>%
+      dplyr::mutate(prop = .data$n / sum(.data$n)) %>%
+      dplyr::mutate(method = method) %>%
+      dplyr::mutate(scale = classify) %>%
+      dplyr::select(c("scale", "method", "class_range", "n", "prop"))
+    return(df)
+  }
+}

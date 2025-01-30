@@ -1,0 +1,99 @@
+---
+title: "Prometheus users"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Prometheus users}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+If your computer has had Prometheus installed on it, it is likely you will encounter a `GDAL error 1` when using any of the spatial data libraries in R. The two fixes described on this page will stop Prometheus from interfering with the R spatial data libraries. These solutions will not affect Prometheus from running. 
+
+## Why this occurs
+
+During the installation of Prometheus a path is added to your computer operating system settings to help the program find it's own version of a database file that is required for spatial data projections. The way it is installed means that the R libraries cannot find their own (and more current) version of the projection database file they require to do spatial data operations. 
+
+## Confirm issue
+
+First, confirm that Prometheus will interfere with the `fireexposuR` package. 
+
+This step must be completed in a fresh R session.
+
+Run the following code in your console:
+
+```{r eval = F}
+Sys.getenv("PROJ_LIB")
+```
+
+If the console prints a path with "Prometheus" in it, you will need to move on to the next steps. Here is an example of what the path might look like:
+
+`"C:\\Program Files\\Prometheus\\proj_nad\\"`
+
+If the console prints a blank path like this `""` that means Prometheus will not interfere with R. You do not have to take any further steps!
+
+## Fix for only the current R session
+
+This fix is only temporary and will need to be repeated every time you open a 
+new R session. If you would like a more permanent fix, proceed to the next 
+section. 
+
+Before loading any spatial libraries (e.g. fireexposuR, terra):
+
+1. Run this code in the console:
+
+```{r eval = F}
+Sys.setenv(PROJ_LIB = "")
+```
+
+2. Confirm the system environment is no longer defaulting to the Prometheus path:
+
+```{r eval = F}
+Sys.getenv("PROJ_LIB")
+```
+
+It should now print `""` instead of the path with "Prometheus" in it. You can now load spatial data libraries and they should work without interference during your current R session. 
+
+## Fix for all future R sessions
+
+We can initialize R to fix the PROJ_LIB environment path automatically every time a new session starts.
+
+1. Run this code in your RStudio console:
+
+```{r eval = F}
+usethis::edit_r_environ()
+```
+
+> **NOTE:**
+> If you get the error `there is no package called 'usethis'`
+> follow these steps:
+>
+> 1. Run `install.packages("usethis")` in the console
+>
+> 2. Follow any additional steps if prompted
+>
+> 3. Run the code above again
+
+A file named ".Renviron" will open for you. If you've never modified this file before, it will be completely blank.
+
+2. Add the following to the first line of your ".Renviron" file:
+
+`PROJ_LIB=""`
+
+3. Save the file (Ctrl+S on your keyboard, or click the save icon)
+
+4. Restart your R session (Ctrl+Shift+F10 on your keyboard, or from the Session menu click 'Restart R')
+
+5. Confirm the system environment is no longer defaulting to the Prometheus path:
+
+```{r eval = F}
+Sys.getenv("PROJ_LIB")
+```
+
+It should now print `""` instead of a path with "Prometheus" in it.

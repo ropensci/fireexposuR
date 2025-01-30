@@ -6,18 +6,19 @@
 #' @details
 #' **DOCUMENTATION IN DEVELOPMENT**
 #'
-#' If the transmission distances from the
-#' wildfire exposure literature are not representative of the wildland fuels
-#' in your area of interest, this function can be used to change the
-#' transmission distance to a custom distance. It is highly recommended that
-#' any exposure layers produced with this function are validated with observed
-#' fire history using the [fire_exp_validate()] function.
+#' If the transmission distances from the wildfire exposure literature are not
+#' representative of the wildland fuels in your area of interest, this function
+#' can be used to change the transmission distance to a custom distance. It is
+#' highly recommended that any exposure layers produced with this function are
+#' validated with observed fire history using the [fire_exp_validate()]
+#' function.
 #'
+#' @seealso [fire_exp()]
 #'
 #' @param hazard a SpatRaster that represents hazardous fuels for the
 #'   transmission distance specified in `tdist`
 #' @param tdist Numeric, transmission distance in meters
-#' @param nonburnable (Optional)  SpatRaster that represents the non-burnable
+#' @param no_burn (Optional)  SpatRaster that represents the non-burnable
 #'   landscape. Any cells that cannot receive wildfire (e.g. open water, rock)
 #'   and any cells that are not natural (e.g. built environment,
 #'   irrigated agricultural areas) should be of value 1, all other cells
@@ -35,16 +36,16 @@
 #' # compute long range exposure with custom disance of 800 m
 #' exposure800 <- fire_exp_adjust(hazard, tdist = 800)
 #'
-fire_exp_adjust <- function(hazard, tdist, nonburnable) {
+fire_exp_adjust <- function(hazard, tdist, no_burn) {
   stopifnot("`hazard` must be a SpatRaster object"
             = class(hazard) == "SpatRaster")
   stopifnot("`hazard` layer must have values between 0-1"
             = (terra::minmax(hazard)[1] >= 0 && terra::minmax(hazard)[2] <= 1))
   stopifnot("`tdist` must be numeric"
             = is.numeric(tdist))
-  if (!missing(nonburnable)) {
-    stopifnot("`nonburnable` must be a SpatRaster object"
-              = class(nonburnable) == "SpatRaster")
+  if (!missing(no_burn)) {
+    stopifnot("`no_burn` must be a SpatRaster object"
+              = class(no_burn) == "SpatRaster")
   }
 
   res <- terra::res(hazard)[1]
@@ -55,10 +56,10 @@ fire_exp_adjust <- function(hazard, tdist, nonburnable) {
   wgtwindow <- window / sum(window, na.rm = TRUE)
   exp <- terra::focal(hazard, wgtwindow, fun = sum) %>%
     tidyterra::rename(exposure = "focal_sum")
-  if (missing(nonburnable)) {
+  if (missing(no_burn)) {
     return(exp)
   } else {
-    expb <- terra::mask(exp, nonburnable, inverse = TRUE)
+    expb <- terra::mask(exp, no_burn, inverse = TRUE)
     return(expb)
   }
 }
