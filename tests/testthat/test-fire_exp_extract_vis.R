@@ -18,9 +18,9 @@ ext_pols <- fire_exp_extract(exp, pols)
 
 test_that("fire_exp_extract_vis() input checks work", {
   expect_error(fire_exp_extract_vis(2),
-               "`values_ext` must be a SpatVector object")
+               "`values_ext` must be a SpatVector")
   expect_error(fire_exp_extract_vis(pts),
-               "`values_ext` missing exposure attributes")
+               "`values_ext` missing exposure attribute")
   expect_error(fire_exp_extract_vis(ext_pols, method = "blah"),
                "'arg' should be one of")
   expect_error(fire_exp_extract_vis(ext_pts, classify = "blah"),
@@ -31,14 +31,14 @@ test_that("fire_exp_extract_vis() input checks work", {
 
 test_that("fire_exp_extract_vis() returns objects with correct class", {
   expect_s3_class(fire_exp_extract_vis(ext_pts), "data.frame")
-  expect_s3_class(fire_exp_extract_vis(ext_pts, map = T), "ggplot")
+  expect_s3_class(fire_exp_extract_vis(ext_pts, map = TRUE), "ggplot")
 })
 
 test_that("fire_exp_extract_vis() runs when input conditions are met", {
   expect_no_error(fire_exp_extract_vis(ext_pts))
-  expect_no_error(fire_exp_extract_vis(ext_pts, map = T))
+  expect_no_error(fire_exp_extract_vis(ext_pts, map = TRUE))
   expect_no_error(fire_exp_extract_vis(ext_pts, classify = "lan"))
-  expect_no_error(fire_exp_extract_vis(ext_pts, classify = "lan", map = T))
+  expect_no_error(fire_exp_extract_vis(ext_pts, classify = "lan", map = TRUE))
   expect_no_error(fire_exp_extract_vis(ext_pols, method = "mean"))
-  expect_no_error(fire_exp_extract_vis(ext_pols, method = "mean", map = T))
+  expect_no_error(fire_exp_extract_vis(ext_pols, method = "mean", map = TRUE))
 })

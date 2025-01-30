@@ -9,7 +9,7 @@ pts <- terra::spatSample(v, 20)
 
 exp <- fire_exp(haz)
 
-cropexp <- terra::crop(exp, terra::rescale(v,0.5))
+cropexp <- terra::crop(exp, terra::rescale(v, 0.5))
 
 nocrs <- exp
 terra::crs(nocrs) <- ""

@@ -11,7 +11,7 @@ exp <- fire_exp(haz)
 
 
 m <- as.matrix(g)
-m[,"x"] <- m[,"x"] +50000
+m[, "x"] <- m[, "x"] + 50000
 aoiout <- terra::vect(m, "polygons", crs = haz)
 ptsout <- terra::spatSample(aoiout, 3)
 
@@ -25,6 +25,6 @@ test_that("fire_exp_dir_multi() input checks and function messages work", {
 })
 
 test_that("fire_exp_dir_multi() runs when input conditions are met", {
-  expect_no_error(fire_exp_dir_multi(exp, pts, plot = T, interval = 10))
+  expect_no_error(fire_exp_dir_multi(exp, pts, plot = TRUE, interval = 10))
   expect_no_error(fire_exp_dir_multi(exp, pts, interval = 10))
 })

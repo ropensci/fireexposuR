@@ -15,14 +15,14 @@ test_that("fire_exp_adjust() input checks work", {
                "`hazard` must be a SpatRaster object")
   expect_error(fire_exp_adjust(haz),
                "is missing, with no default")
-  expect_error(fire_exp_adjust(haz *2, 300),
+  expect_error(fire_exp_adjust(haz * 2, 300),
                "`hazard` layer must have values between 0-1")
   expect_error(fire_exp_adjust(haz, "l"),
                "`tdist` must be numeric")
   expect_error(fire_exp_adjust(haz, 50),
                "insufficient resolution")
   expect_error(fire_exp_adjust(haz, 350, 4),
-               "`nonburnable` must be a SpatRaster object")
+               "`no_burn` must be a SpatRaster object")
 })
 
 test_that("fire_exp_adjust() returns correct object class", {

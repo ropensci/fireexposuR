@@ -7,13 +7,22 @@ v <- terra::vect(as.matrix(g), "polygons", crs = haz)
 nb <- terra::rasterize(v, haz)
 pts <- terra::spatSample(v, 20)
 
-expnb <- fire_exp(haz, nonburnable = nb)
+expnb <- fire_exp(haz, no_burn = nb)
 
 pts <- terra::spatSample(terra::rescale(haz, 0.8), 30, as.points = TRUE)
 fires <- terra::buffer(pts, 800)
 
 e <- c(39, 40, 604, 605) * 10000
 aoi <- terra::as.polygons(terra::ext(e), crs = haz)
+
+set.seed(0)
+output1 <- fire_exp_validate(expnb, fires)
+
+set.seed(1)
+output2 <- fire_exp_validate(expnb, fires)
+
+set.seed(0)
+output3 <- fire_exp_validate(expnb, fires)
 
 # tests ========================================================================
 
@@ -28,12 +37,14 @@ test_that("fire_exp_validate() input checks and function messages work", {
 
 test_that("valdiateexp() returns object with correct class", {
   expect_s3_class(fire_exp_validate(expnb, fires), "data.frame")
-  expect_s3_class(fire_exp_validate(expnb, fires, plot = T), "ggplot")
 })
 
 test_that("fire_exp_validate() runs when input conditions are met", {
   expect_no_error(fire_exp_validate(expnb, fires))
   expect_no_error(fire_exp_validate(expnb, fires, aoi))
-  expect_no_error(fire_exp_validate(expnb, fires, plot = T))
-  expect_no_error(fire_exp_validate(expnb, fires, aoi, plot = T))
+})
+
+test_that("fire_exp_validate() randomly samples", {
+  expect_false(identical(output1, output2))
+  expect_true(identical(output1, output3))
 })

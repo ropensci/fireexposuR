@@ -14,7 +14,7 @@ terra::crs(nocrsh) <- ""
 nocrsnb <- nb
 terra::crs(nocrsnb) <- ""
 
-smallhaz <- terra::crop(haz,terra::rescale(v,0.5), mask = TRUE)
+smallhaz <- terra::crop(haz, terra::rescale(v, 0.5), mask = TRUE)
 
 # tests ========================================================================
 
@@ -35,23 +35,23 @@ test_that("fire_exp() input checks and function messages work", {
                "Insufficient resolution for rad")
   expect_error(fire_exp(smallhaz),
                "Extent of hazard raster too small for exposure assessment")
-  expect_error(fire_exp(haz, nonburnable = 5),
-               "`nonburnable` must be a SpatRaster")
-  expect_error(fire_exp(haz, nonburnable = nocrsnb),
-               "nonburnable` and `hazard` must have same CRS")
-  expect_error(fire_exp(haz, nonburnable = nb * 2),
+  expect_error(fire_exp(haz, no_burn = 5),
+               "`no_burn` must be a SpatRaster")
+  expect_error(fire_exp(haz, no_burn = nocrsnb),
+               "no_burn` and `hazard` must have same CRS")
+  expect_error(fire_exp(haz, no_burn = nb * 2),
                "must only contain values of 1 or NA")
-  expect_error(fire_exp(haz, nonburnable = terra::extend(nb, 50, fill = 1)),
+  expect_error(fire_exp(haz, no_burn = terra::extend(nb, 50, fill = 1)),
                "extent must be within `hazard` extent")
 })
 
 test_that("fire_exp() returns object with correct class", {
   expect_s4_class(fire_exp(haz), "SpatRaster")
-  expect_s4_class(fire_exp(haz, nonburnable = nb), "SpatRaster")
+  expect_s4_class(fire_exp(haz, no_burn = nb), "SpatRaster")
 })
 
 test_that("fire_exp() runs when input conditions are met", {
   expect_no_condition(fire_exp(haz))
   expect_no_condition(fire_exp(haz * 0.5))
-  expect_no_condition(fire_exp(haz, nonburnable = nb))
+  expect_no_condition(fire_exp(haz, no_burn = nb))
 })

@@ -9,7 +9,7 @@ pts <- terra::spatSample(v, 20)
 
 exp <- fire_exp(haz)
 
-cropexp <- terra::crop(exp, terra::rescale(v,0.5))
+cropexp <- terra::crop(exp, terra::rescale(v, 0.5))
 
 nocrs <- exp
 terra::crs(nocrs) <- ""
@@ -18,17 +18,17 @@ terra::crs(nocrs) <- ""
 
 test_that("fire_exp_map_class() input checks and function messages work", {
   expect_error(fire_exp_map_class(2, "loc", v),
-                   "`exposure` must be a SpatRaster object")
-  expect_error(fire_exp_map_class(exp * 2, "loc", v),
-                   "must have values between")
-  expect_error(fire_exp_map_class(exp, "loc", 2),
-                   "`aoi` must be a SpatVector")
-  expect_error(fire_exp_map_class(cropexp, "loc", v),
-                   "`aoi` extent must be within `exposure` extent")
-  expect_error(fire_exp_map_class(exp, "blah", v),
-                   "'arg' should be one of")
-  expect_error(fire_exp_map_class(nocrs, "lan", v),
-                   "`exposure` and `aoi` must have same CRS")
+               "`exposure` must be a SpatRaster object")
+  expect_error(fire_exp_map_class(exp * 2, v),
+               "must have values between")
+  expect_error(fire_exp_map_class(exp, 2),
+               "`aoi` must be a SpatVector")
+  expect_error(fire_exp_map_class(cropexp, v),
+               "`aoi` extent must be within `exposure` extent")
+  expect_error(fire_exp_map_class(exp, v, "blah"),
+               "'arg' should be one of")
+  expect_error(fire_exp_map_class(nocrs, v, "lan"),
+               "`exposure` and `aoi` must have same CRS")
 })
 
 test_that("fire_exp_map_class() returns object with correct class", {
@@ -36,6 +36,6 @@ test_that("fire_exp_map_class() returns object with correct class", {
 })
 
 test_that("fire_exp_map_class() runs when input conditions are met", {
-  expect_no_error(fire_exp_map_class(exp, "lan", v))
-  expect_no_error(fire_exp_map_class(exp, "loc", v))
+  expect_no_error(fire_exp_map_class(exp, v, "lan"))
+  expect_no_error(fire_exp_map_class(exp, v, "cus", class_breaks = c(0.2, 1)))
 })
