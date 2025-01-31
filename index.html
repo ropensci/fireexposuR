@@ -18,11 +18,11 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
-    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+    <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
 
     <a class="navbar-brand me-2" href="index.html">fireexposuR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,8 +38,10 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="articles/prep-input-data.html">Preparing input data</a></li>
     <li><a class="dropdown-item" href="articles/prometheus.html">Prometheus users</a></li>
+    <li><a class="dropdown-item" href="articles/resources.html">resources</a></li>
   </ul>
 </li>
+<li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -64,16 +66,20 @@
 <p><code>firexposuR</code> is an R package for computing and visualizing wildfire exposure. The outputs from wildfire exposure assessments can be utilized as decision support tools for wildfire management across variable temporal horizons and spatial extents.</p>
 <blockquote>
 <p><strong>An important note for current (and past) Prometheus users</strong></p>
-<p>If Prometheus has <em>ever</em> been installed on your device you must take some additional steps before loading this package (and most other R packages that manipulate spatial data). Please go through the steps in <code><a href="articles/prometheus.html">vignette("prometheus")</a></code> before continuing. <strong>This is necessary even if you have since uninstalled the program from your computer.</strong></p>
+<p>If Prometheus has <em>ever</em> been installed on your device you must take some additional steps before loading this package (and most other R packages that manipulate spatial data). Please go through the steps in <code><a href="articles/prometheus.html">vignette("prometheus")</a></code> even if you have since uninstalled the program from your computer.</p>
 </blockquote>
 <div class="section level2">
-<h2 id="package-overview">Package overview<a class="anchor" aria-label="anchor" href="#package-overview"></a>
+<h2 id="package-overview">Package Overview<a class="anchor" aria-label="anchor" href="#package-overview"></a>
 </h2>
+<div class="section level3">
+<h3 id="highlights">Highlights<a class="anchor" aria-label="anchor" href="#highlights"></a>
+</h3>
 <ul>
 <li>provides an accessible platform for conducting wildfire exposure assessments</li>
 <li>automates methods previously documented in a series of scientific publications</li>
 <li>provides options for customization and validation to meet the needs of users applying the package across diverse use cases and geographic areas</li>
 </ul>
+</div>
 <div class="section level3">
 <h3 id="who-the-package-is-for">Who the package is for<a class="anchor" aria-label="anchor" href="#who-the-package-is-for"></a>
 </h3>
@@ -83,42 +89,50 @@
 <div class="section level3">
 <h3 id="what-the-package-does">What the package does<a class="anchor" aria-label="anchor" href="#what-the-package-does"></a>
 </h3>
-<ol style="list-style-type: decimal">
-<li>Automates published methodologies</li>
-</ol>
+<div class="section level4">
+<h4 id="automate-published-methodologies">Automate published methodologies<a class="anchor" aria-label="anchor" href="#automate-published-methodologies"></a>
+</h4>
 <p>This package was developed to automate the methods published in a series of scientific publications. Replicating the methods from a scientific publication can be challenging; it can require a significant amount of time and experience which can be a barrier to access.</p>
-<ol start="2" style="list-style-type: decimal">
-<li>Provides an accessible platform</li>
-</ol>
+</div>
+<div class="section level4">
+<h4 id="provide-an-accessible-platform">Provide an accessible platform<a class="anchor" aria-label="anchor" href="#provide-an-accessible-platform"></a>
+</h4>
 <p>This package and the code within it will always be free. Financial costs can also be a significant barrier to conducting wildfire risk assessments. Though this package is free to use there are still associated time costs, which will vary based on experience level. Even novice R users should have enough resources to conduct their own wildfire exposure assessments by referencing the documentation in this package and the plethora of free R tutorials available online.</p>
-<ol start="3" style="list-style-type: decimal">
-<li>Visualizes outputs</li>
-</ol>
+</div>
+<div class="section level4">
+<h4 id="visualize-outputs">Visualize outputs<a class="anchor" aria-label="anchor" href="#visualize-outputs"></a>
+</h4>
 <p>The outputs from the analysis functions can be quickly visualized in R with a selection of visualization functions that return plots, maps, or tables which can be exported as images or .csv files.</p>
-<ol start="4" style="list-style-type: decimal">
-<li>Allows customization</li>
-</ol>
+</div>
+<div class="section level4">
+<h4 id="allow-customization">Allow customization<a class="anchor" aria-label="anchor" href="#allow-customization"></a>
+</h4>
 <p>Functions allow for custom parameterization to alter the analysis if desired. This allows for easy adaptation of the methods to suit the unique requirements for different use cases, geographic areas, and scales of analysis.</p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="what-the-package-doesnt">What the package doesn’t<a class="anchor" aria-label="anchor" href="#what-the-package-doesnt"></a>
 </h3>
-<ol style="list-style-type: decimal">
-<li>Let you skip the hard part (understanding the theory)</li>
-</ol>
+<div class="section level4">
+<h4 id="let-you-skip-the-hard-part-understanding-the-theory">Let you skip the hard part (understanding the theory)<a class="anchor" aria-label="anchor" href="#let-you-skip-the-hard-part-understanding-the-theory"></a>
+</h4>
 <p>Effort has been made to provide as much technical detail in the documentation of this package; However, it may still be necessary to spend some time reading the associated scientific publications that the functions in this package are automating to grasp the theory behind the methodologies. Citations have been provided with DOI links throughout this manual. This is especially relevant to users who intend to adjust function parameters.</p>
-<ol start="2" style="list-style-type: decimal">
-<li>Prepare your input data</li>
-</ol>
+</div>
+<div class="section level4">
+<h4 id="prepare-your-input-data">Prepare your input data<a class="anchor" aria-label="anchor" href="#prepare-your-input-data"></a>
+</h4>
 <p>Methods in wildfire exposure are adaptable to different applications and scales. This means that the input data requirements are dependent on the intended purpose. The user is responsible for preparing the input data before using this package. Input data can be prepared in any geographic information system (GIS) program, or done directly in R. Refer to <code><a href="articles/prep-input-data.html">vignette("prep-input-data")</a></code> for guidance and examples.</p>
-<ol start="3" style="list-style-type: decimal">
-<li>Decide custom parameters</li>
-</ol>
+</div>
+<div class="section level4">
+<h4 id="decide-custom-parameters">Decide custom parameters<a class="anchor" aria-label="anchor" href="#decide-custom-parameters"></a>
+</h4>
 <p>The documentation and resources available in this package aim to help inform decisions around custom parameterization, but these decisions must be made by the user. Additional analysis may be required to justify deviation from the defaults.</p>
-<ol start="4" style="list-style-type: decimal">
-<li>Quality check your outputs</li>
-</ol>
+</div>
+<div class="section level4">
+<h4 id="quality-check-your-outputs">Quality check your outputs<a class="anchor" aria-label="anchor" href="#quality-check-your-outputs"></a>
+</h4>
 <p>The functions in the fireexposuR package are sensitive to the input data and parameters used. It is the users responsibility to ensure that the outputs from the fireexposuR package are quality checked before use in decision support or further analysis.</p>
+</div>
 </div>
 </div>
 <div class="section level2">
@@ -188,42 +202,6 @@
 <span><span class="fu"><a href="reference/fire_exp_dir_map.html">fire_exp_dir_map</a></span><span class="op">(</span><span class="va">dir_exposure</span>, <span class="va">aoi</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-visualize-3.png" width="100%"></p>
 </div>
-</div>
-<div class="section level2">
-<h2 id="further-reading-and-resources">Further reading and resources<a class="anchor" aria-label="anchor" href="#further-reading-and-resources"></a>
-</h2>
-<p><a href="https://wildfireanalytics.org" class="external-link">wildfireanalytics.org</a></p>
-<ul>
-<li>Wildfire exposure research news and course offering announcements</li>
-</ul>
-<p>FireSmart Canada (2018) Wildfire exposure assessment guidebook. Available <a href="https://firesmartcanada.ca/wp-content/uploads/2022/01/FS_ExposureAssessment_Sept2018-1.pdf" class="external-link">here</a></p>
-<ul>
-<li>This guidebook provides a basic and easy to read overview of wildfire exposure assessments with very helpful graphics</li>
-</ul>
-<p>Beverly JL, Bothwell P, Conner JCR, Herd EPK (2010) Assessing the exposure of the built environment to potential ignition sources generated from vegetative fuel. <em>International Journal of Wildland Fire</em> <strong>19</strong>, 299-313. <a href="https://doi.org/10.1071/WF09071" class="external-link">DOI</a></p>
-<ul>
-<li>Introduced wildfire exposure methods and wildfire transmission distances for community scale assessments</li>
-</ul>
-<p>Beverly JL, McLoughlin N, Chapman E (2021) A simple metric of landscape fire exposure. <em>Landscape Ecology</em> <strong>36</strong>, 785-801. <a href="https://doi.org/10.1007/s10980-020-01173-8" class="external-link">DOI</a></p>
-<ul>
-<li>Validation of the wildfire exposure metric at a landscape scale with observed fire history in the province of Alberta, Canada</li>
-</ul>
-<p>Beverly JL, Forbes AM (2023) Assessing directional vulnerability to wildfire. <em>Natural Hazards</em> <strong>117</strong>, 831-849. <a href="https://doi.org/10.1007/s11069-023-05885-3" class="external-link">DOI</a></p>
-<ul>
-<li>Introduces the directional exposure assessment methodology</li>
-</ul>
-<p>Kim AM, Beverly JL, Al Zahid A (2024) Directional analysis of community wildfire evacuation capabilities. <em>Safety Science</em> <strong>171</strong>, 106378. <a href="https://doi.org/10.1016/j.ssci.2023.106378" class="external-link">DOI</a></p>
-<ul>
-<li>Application of directional vulnerability assessments for analyzing evacuation capabilities for communities</li>
-</ul>
-<p>Schmidt JI, Ziel RH, Calef MP, Varvak A (2024) Spatial distribution of wildfire threat in the far north: exposure assessment in boreal communities. <em>Natural Hazards</em> <strong>120</strong>, 4901-4924. <a href="https://doi.org/10.1007/s11069-023-06365-4" class="external-link">DOI</a></p>
-<ul>
-<li>Application of wildfire exposure assessments in Alaska, USA using alternative methods to define hazardous fuels</li>
-</ul>
-<p>Forbes AM, Beverly JL (2024) Influence of fuel data assumptions on wildfire exposure assessment of the built environment. <em>International Journal of Wildland Fire</em> <strong>33</strong>, WF24025 <a href="https://doi.org/10.1071/WF24025" class="external-link">DOI</a></p>
-<ul>
-<li>Investigates the sensitivity of wildfire exposure assessments to different land cover information products used to create the input hazardous fuel data at local scales</li>
-</ul>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">

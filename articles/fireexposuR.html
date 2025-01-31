@@ -16,11 +16,11 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
-    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+    <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
 
     <a class="navbar-brand me-2" href="../index.html">fireexposuR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,8 +36,10 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/prep-input-data.html">Preparing input data</a></li>
     <li><a class="dropdown-item" href="../articles/prometheus.html">Prometheus users</a></li>
+    <li><a class="dropdown-item" href="../articles/resources.html">resources</a></li>
   </ul>
 </li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -74,17 +76,17 @@ the functions in this package.</p>
 <h2 id="spatial-data-in-r">Spatial data in R<a class="anchor" aria-label="anchor" href="#spatial-data-in-r"></a>
 </h2>
 <p>The spatial operations in <em>fireexposuR</em> are done using the
-{terra} package (Hijmans 2024). If you have not worked with spatial data
-in the R environment before it is a good idea to take some time to read
-the documentation there to understand the spatial datatypes required in
-this package. There are many useful tutorials at <a href="https://rspatial.org" class="external-link uri">https://rspatial.org</a>. At a
+<a href="https://rspatial.org/" class="external-link">terra</a> package (Hijmans 2024). If you have not worked with
+spatial data in the R environment before it is a good idea to take some
+time to read the documentation there to understand the spatial datatypes
+required in this package. There are many useful tutorials at <a href="https://rspatial.org" class="external-link uri">https://rspatial.org</a>. At a
 minimum, I recommend reading the documentation for the following
 functions:</p>
 <ul>
 <li>Reading spatial data: [<code><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">terra::vect()</a></code>] and
 [<code><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">terra::rast()</a></code>]</li>
-<li>Writing spatial data: [<code>terra::WriteVector()</code>] and
-[<code>terra::WriteRaster()</code>]</li>
+<li>Writing spatial data: [<code><a href="https://rspatial.github.io/terra/reference/writeVector.html" class="external-link">terra::writeVector()</a></code>] and
+[<code><a href="https://rspatial.github.io/terra/reference/writeRaster.html" class="external-link">terra::writeRaster()</a></code>]</li>
 </ul>
 </div>
 <div class="section level2">
