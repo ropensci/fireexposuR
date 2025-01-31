@@ -1,6 +1,7 @@
 url: https://heyairf.github.io/fireexposuR/
 template:
   bootstrap: 5
+  bootswatch: flatly
 
 reference:
 - title: "Compute"

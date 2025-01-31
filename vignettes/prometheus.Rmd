@@ -22,9 +22,10 @@ During the installation of Prometheus a path is added to your computer operating
 
 ## Confirm issue
 
-First, confirm that Prometheus will interfere with the `fireexposuR` package. 
+First, confirm if Prometheus will interfere with the `fireexposuR` package. 
 
-This step must be completed in a fresh R session.
+This step must be completed in a fresh R session. You can restart R by pressing 
+Ctrl+Shift+F10 on your keyboard or by clicking 'Restart R' in the Session menu. 
 
 Run the following code in your console:
 
@@ -32,11 +33,11 @@ Run the following code in your console:
 Sys.getenv("PROJ_LIB")
 ```
 
-If the console prints a path with "Prometheus" in it, you will need to move on to the next steps. Here is an example of what the path might look like:
+If the console prints a path with "Prometheus" in it, you will need to move on to the next section. Here is an example of what the path might look like:
 
 `"C:\\Program Files\\Prometheus\\proj_nad\\"`
 
-If the console prints a blank path like this `""` that means Prometheus will not interfere with R. You do not have to take any further steps!
+If the console prints a blank path like this `""` that means Prometheus will not interfere with R. You do not have to take any additional next steps!
 
 ## Fix for only the current R session
 

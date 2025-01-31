@@ -18,10 +18,10 @@ This document aims to guide users through the functionality of this package for 
 
 ## Spatial data in R
 
-The spatial operations in *fireexposuR* are done using the {terra} package (Hijmans 2024). If you have not worked with spatial data in the R environment before it is a good idea to take some time to read the documentation there to understand the spatial datatypes required in this package. There are many useful tutorials at <https://rspatial.org>. At a minimum, I recommend reading the documentation for the following functions: 
+The spatial operations in *fireexposuR* are done using the `{terra}` package (Hijmans 2024). If you have not worked with spatial data in the R environment before it is a good idea to take some time to read the documentation there to understand the spatial datatypes required in this package. There are many useful tutorials at <https://rspatial.org>. At a minimum, I recommend reading the documentation for the following functions: 
 
 -  Reading spatial data: [`terra::vect()`] and [`terra::rast()`]
--  Writing spatial data: [`terra::WriteVector()`] and [`terra::WriteRaster()`]
+-  Writing spatial data: [`terra::writeVector()`] and [`terra::writeRaster()`]
 
 ## 1. Determine scale
 

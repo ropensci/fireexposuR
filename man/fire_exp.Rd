@@ -158,7 +158,8 @@ hazard_file_path <- "extdata/hazard.tif"
 hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 
 # compute long range exposure
-exposure <- fire_exp(hazard, tdist = "l")
+fire_exp(hazard, tdist = "l")
+
 }
 \references{
 Beverly JL, McLoughlin N, Chapman E (2021) A simple metric of landscape fire

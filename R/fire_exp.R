@@ -159,7 +159,8 @@
 #' hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 #'
 #' # compute long range exposure
-#' exposure <- fire_exp(hazard, tdist = "l")
+#' fire_exp(hazard, tdist = "l")
+#'
 
 fire_exp <- function(hazard, tdist = c("l", "s", "r"), no_burn) {
   stopifnot("`hazard` must be a SpatRaster object"
