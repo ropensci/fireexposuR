@@ -2,8 +2,10 @@
 <url><loc>https://heyairf.github.io/fireexposuR/404.html</loc></url>
 <url><loc>https://heyairf.github.io/fireexposuR/CONTRIBUTING.html</loc></url>
 <url><loc>https://heyairf.github.io/fireexposuR/LICENSE.html</loc></url>
-<url><loc>https://heyairf.github.io/fireexposuR/articles/communityscale.html</loc></url>
+<url><loc>https://heyairf.github.io/fireexposuR/articles/fireexposuR.html</loc></url>
 <url><loc>https://heyairf.github.io/fireexposuR/articles/index.html</loc></url>
+<url><loc>https://heyairf.github.io/fireexposuR/articles/prep-input-data.html</loc></url>
+<url><loc>https://heyairf.github.io/fireexposuR/articles/prometheus.html</loc></url>
 <url><loc>https://heyairf.github.io/fireexposuR/authors.html</loc></url>
 <url><loc>https://heyairf.github.io/fireexposuR/index.html</loc></url>
 <url><loc>https://heyairf.github.io/fireexposuR/reference/fire_exp.html</loc></url>
@@ -18,6 +20,7 @@
 <url><loc>https://heyairf.github.io/fireexposuR/reference/fire_exp_map_cont.html</loc></url>
 <url><loc>https://heyairf.github.io/fireexposuR/reference/fire_exp_summary.html</loc></url>
 <url><loc>https://heyairf.github.io/fireexposuR/reference/fire_exp_validate.html</loc></url>
+<url><loc>https://heyairf.github.io/fireexposuR/reference/fire_exp_validate_plot.html</loc></url>
 <url><loc>https://heyairf.github.io/fireexposuR/reference/fireexposuR-package.html</loc></url>
 <url><loc>https://heyairf.github.io/fireexposuR/reference/index.html</loc></url>
 <url><loc>https://heyairf.github.io/fireexposuR/reference/pipe.html</loc></url>
