@@ -4,8 +4,6 @@
 #' defaults used in [fire_exp()].
 #'
 #' @details
-#' **DOCUMENTATION IN DEVELOPMENT**
-#'
 #' If the transmission distances from the wildfire exposure literature are not
 #' representative of the wildland fuels in your area of interest, this function
 #' can be used to change the transmission distance to a custom distance. It is
@@ -13,7 +11,19 @@
 #' validated with observed fire history using the [fire_exp_validate()]
 #' function.
 #'
-#' @seealso [fire_exp()]
+#' ### Spatial Reference
+#'
+#' The exposure raster will be returned in the same CRS as the input hazard
+#' layer. A crs must be defined if the outputs will be used in other functions
+#' in this package.
+#'
+#' ### Spatial resolution
+#'
+#' For a specified transmission distance, the spatial resolution must be at
+#' least 3 times finer. For example, for a transmission distance of 300 meters
+#' the input data should have a resolution of 100 meters or finer.
+#'
+#' @seealso [fire_exp()] for background information
 #'
 #' @param hazard a SpatRaster that represents hazardous fuels for the
 #'   transmission distance specified in `tdist`

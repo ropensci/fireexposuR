@@ -1,18 +1,16 @@
-#' Validate exposure with observed fires
+#' Visualize validation outputs in a plot
 #'
-#' @description For advanced users. `fire_exp_validate()` compares the
-#'   proportion of exposure classes in a the study area to the proportion of
-#'   exposure classes within burned areas. A random sample is taken to account
-#'   for spatial autocorrelation.
-#'
-#' @details
-#' **DOCUMENTATION IN DEVELOPMENT**
+#' @description `fire_exp_validate_plot()` Visualizes the results from
+#' `fire_exp_validate()` in a bar plot
 #'
 #' @seealso [fire_exp_validate()]
 #'
 #' @param validation_table The output table from [fire_exp_validate()]
+#' @param what string. Which plot should be returned? Can be `sample`, `total`,
+#'  or `"both"` (Default)
+#' @param title Optional. String. Add a custom title to the plot.
 #'
-#' @return a standardized ggplot
+#' @return a ggplot object
 #'
 #' @export
 #'
@@ -44,11 +42,15 @@
 #' fire_exp_validate_plot(validation_outputs)
 #'
 
-fire_exp_validate_plot <- function(validation_table) {
+fire_exp_validate_plot <- function(validation_table,
+                                   what = c("both", "total", "sample"),
+                                   title) {
   props <- validation_table
 
+  what <- match.arg(what)
+
   stopifnot("`validation_table` does not have expected attributes.
-            Use outputs from `fire_exp_validate()`"
+            Use output from `fire_exp_validate()`"
             = any(names(props) %in% c("exposure", "of", "prop")))
 
   props <- dplyr::arrange(props, dplyr::desc(.data$group))
@@ -56,6 +58,14 @@ fire_exp_validate_plot <- function(validation_table) {
   props$exposure <- as.factor(props$exposure)
 
   labs <- unique(props$exp_vals)
+
+  if (what == "sample") {
+    props <- dplyr::filter(props, .data$of == "Sample")
+  }
+
+  if (what == "total") {
+    props <- dplyr::filter(props, .data$of == "Total")
+  }
 
   plt <- ggplot2::ggplot(props, ggplot2::aes(x = .data$exposure,
                                              y = .data$prop,
@@ -74,7 +84,15 @@ fire_exp_validate_plot <- function(validation_table) {
     ggplot2::theme(legend.title = ggplot2::element_blank(),
                    axis.text.x = ggplot2::element_text(angle = 90,
                                                        vjust = 0.5,
-                                                       hjust = 1))
+                                                       hjust = 1)) +
+    ggplot2::labs(
+      caption = "Plot generated with fireexposuR()"
+    )
+
+  if (!missing(title)) {
+    plt <- plt +
+      ggplot2::labs(title = title)
+  }
 
   return(plt)
 }

@@ -51,12 +51,6 @@ sizes and being represented as points, it is recommended this parameter
 remains set to \code{FALSE}. The inner segment is sensitive to the size of the
 value when a point is used. Adjusting the parameters for \code{fire_exp_dir()} is
 also supported. See details in \code{\link[=fire_exp_dir]{fire_exp_dir()}} for more information.
-\subsection{References}{
-
-Beverly JL, Forbes AM (2023) Assessing directional vulnerability to
-wildfire. \emph{Natural Hazards} \strong{117}, 831-849.
-\href{https://doi.org/10.1007/s11069-023-05885-3}{DOI}
-}
 }
 \examples{
 # read example hazard data
@@ -72,4 +66,9 @@ exposure <- fire_exp(hazard)
 
 # plot directional load for multiple points
 fire_exp_dir_multi(exposure, points, plot = TRUE, interval = 10)
+}
+\references{
+Beverly JL, Forbes AM (2023) Assessing directional vulnerability to
+wildfire. \emph{Natural Hazards} \strong{117}, 831-849.
+\href{https://doi.org/10.1007/s11069-023-05885-3}{DOI}
 }

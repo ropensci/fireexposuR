@@ -14,13 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
-library(fireexposuR)
-```
 
+## This page is actively in development 
 
-## Raster
-
-
-
-## Vector
+Coming soon! 

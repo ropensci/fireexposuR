@@ -25,9 +25,9 @@ temporal horizons and spatial extents.
 >
 > If Prometheus has *ever* been installed on your device you must take
 > some additional steps before loading this package (and most other R
-> packages that manipulate spatial data). Please refer to the vignette
-> `vignette("prometheus")` before continuing. **This step is necessary
-> even if you have since uninstalled the program from your computer.**
+> packages that manipulate spatial data). Please go through the steps in
+> `vignette("prometheus")` before continuing. **This is necessary even
+> if you have since uninstalled the program from your computer.**
 
 ## Package overview
 
@@ -101,8 +101,8 @@ Methods in wildfire exposure are adaptable to different applications and
 scales. This means that the input data requirements are dependent on the
 intended purpose. The user is responsible for preparing the input data
 before using this package. Input data can be prepared in any geographic
-information system (GIS) program, or done directly in R. Refer to the
-vignette `vignette("prep-input-data")` for guidance and examples.
+information system (GIS) program, or done directly in R. Refer to
+`vignette("prep-input-data")` for guidance and examples.
 
 3.  Decide custom parameters
 

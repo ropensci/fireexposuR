@@ -32,12 +32,6 @@ polygon feature, the transect origins will still be drawn as a center point.
 
 The plot is returned as a ggplot object which can be exported/saved to
 multiple image file formats.
-\subsection{References}{
-
-Beverly JL, Forbes AM (2023) Assessing directional vulnerability to
-wildfire. \emph{Natural Hazards} \strong{117}, 831-849.
-\href{https://doi.org/10.1007/s11069-023-05885-3}{DOI}
-}
 }
 \examples{
 # read example hazard data
@@ -61,4 +55,9 @@ fire_exp_dir_plot(transects)
 # customize labels
 fire_exp_dir_plot(transects, labels = c("5 km", "10 km", "15 km"))
 
+}
+\references{
+Beverly JL, Forbes AM (2023) Assessing directional vulnerability to
+wildfire. \emph{Natural Hazards} \strong{117}, 831-849.
+\href{https://doi.org/10.1007/s11069-023-05885-3}{DOI}
 }

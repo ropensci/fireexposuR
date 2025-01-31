@@ -28,18 +28,42 @@ details.}
 (0.5\%)}
 }
 \value{
-a table of number of cells (n) and proportions (prop) for
-expected and observed exposure classes within a sampled area (Sample) and
-across the full extent (Total).
+a table of number of cells (n) and proportions (prop) of exposure
+classes within a sampled area (Sample) and across the full extent (Total).for
+the full extent of the exposure data (expected) and only within the burned
+areas (observed).
 }
 \description{
 For advanced users. \code{fire_exp_validate()} compares the
 proportion of exposure classes in a the study area to the proportion of
-exposure classes within burned areas. A random sample is taken to account
-for spatial autocorrelation.
+exposure classes within observed burned areas.
 }
 \details{
-\strong{DOCUMENTATION IN DEVELOPMENT}
+This function automates a simple validation method to assess if fire burns
+preferentially in areas with high exposure. The methods, and figure produced
+with \code{\link[=fire_exp_validate_plot]{fire_exp_validate_plot()}}, are based on Beverly et al. (2021).
+
+The function requires an exposure raster produced for a past point in time.
+Cells that cannot burn, or do not represent natural land cover should be
+removed by setting the \code{no_burn} parameter in \code{\link[=fire_exp]{fire_exp()}} or
+\code{\link[=fire_exp_adjust]{fire_exp_adjust()}}.
+
+The function also requires fire perimeter data. Currently, the function takes
+the fires as a Vector of polygons because that is typically how fire
+boundaries are stored in spatial databases. The fires input data should
+include all of the burned area that has occurred following the time period
+the input exposure layer was produced for. It is up to the user to determine
+the appropriate amount of burned area required for a meaningful assessment.
+
+A random sample is taken to account for spatial autocorrelation, the
+sampled location results can be used to test for significant differences.
+The sample size can be adjusted. The sample size represents a proportion of
+cells, the default is \code{0.005} (0.5\%). It is the user's responsibility to set
+an appropriate sample size.
+
+The class breaks can be customized from the default of 0.2 intervals by
+setting the \code{class_breaks} parameter. A class of Nil is automatically added
+for values exactly equal to 0.
 }
 \examples{
 # read example hazard data
@@ -64,6 +88,11 @@ exposure <- fire_exp(hazard, no_burn = no_burn)
 # validation table
 fire_exp_validate(exposure, fires)
 
+}
+\references{
+Beverly JL, McLoughlin N, Chapman E (2021) A simple metric of landscape
+fire exposure. \emph{Landscape Ecology} \strong{36}, 785-801.
+\href{https://doi.org/10.1007/s10980-020-01173-8}{DOI}
 }
 \seealso{
 \code{\link[=fire_exp_validate_plot]{fire_exp_validate_plot()}}

@@ -2,11 +2,40 @@
 #'
 #' @description For advanced users. `fire_exp_validate()` compares the
 #'   proportion of exposure classes in a the study area to the proportion of
-#'   exposure classes within burned areas. A random sample is taken to account
-#'   for spatial autocorrelation.
+#'   exposure classes within observed burned areas.
 #'
 #' @details
-#' **DOCUMENTATION IN DEVELOPMENT**
+#' This function automates a simple validation method to assess if fire burns
+#' preferentially in areas with high exposure. The methods, and figure produced
+#' with [`fire_exp_validate_plot()`], are based on Beverly et al. (2021).
+#'
+#' The function requires an exposure raster produced for a past point in time.
+#' Cells that cannot burn, or do not represent natural land cover should be
+#' removed by setting the `no_burn` parameter in [fire_exp()] or
+#' [fire_exp_adjust()].
+#'
+#' The function also requires fire perimeter data. Currently, the function takes
+#' the fires as a Vector of polygons because that is typically how fire
+#' boundaries are stored in spatial databases. The fires input data should
+#' include all of the burned area that has occurred following the time period
+#' the input exposure layer was produced for. It is up to the user to determine
+#' the appropriate amount of burned area required for a meaningful assessment.
+#'
+#' A random sample is taken to account for spatial autocorrelation, the
+#' sampled location results can be used to test for significant differences.
+#' The sample size can be adjusted. The sample size represents a proportion of
+#' cells, the default is `0.005` (0.5%). It is the user's responsibility to set
+#' an appropriate sample size.
+#'
+#' The class breaks can be customized from the default of 0.2 intervals by
+#' setting the `class_breaks` parameter. A class of Nil is automatically added
+#' for values exactly equal to 0.
+#'
+#'
+#' @references
+#' Beverly JL, McLoughlin N, Chapman E (2021) A simple metric of landscape
+#' fire exposure. *Landscape Ecology* **36**, 785-801.
+#' [DOI](https://doi.org/10.1007/s10980-020-01173-8)
 #'
 #' @seealso [fire_exp_validate_plot()]
 #'
@@ -20,9 +49,10 @@
 #' @param samplesize Proportion of areas to sample. The default is `0.005`
 #' (0.5%)
 #'
-#' @return a table of number of cells (n) and proportions (prop) for
-#' expected and observed exposure classes within a sampled area (Sample) and
-#' across the full extent (Total).
+#' @return a table of number of cells (n) and proportions (prop) of exposure
+#' classes within a sampled area (Sample) and across the full extent (Total).for
+#' the full extent of the exposure data (expected) and only within the burned
+#' areas (observed).
 #'
 #' @export
 #'
@@ -100,15 +130,12 @@ fire_exp_validate <- function(burnableexposure, fires, aoi,
 
   if (missing(aoi)) {
     studyarea <- classexp
-    studyareafires <- fires
   } else {
     studyarea <- terra::crop(classexp, aoi, overwrite = TRUE) %>%
       terra::mask(aoi)
-    studyareafires <- terra::crop(fires, aoi)
   }
 
-  firesarea <- terra::crop(studyarea, studyareafires, overwrite = TRUE) %>%
-    terra::mask(studyareafires)
+  firesarea <- studyarea * terra::rasterize(fires, studyarea)
 
   df1 <- dplyr::count(as.data.frame(studyarea), .data$exposure) %>%
     dplyr::mutate(of = "Total") %>%
@@ -156,7 +183,6 @@ fire_exp_validate <- function(burnableexposure, fires, aoi,
     dplyr::mutate(exp_vals = names(lut2)[match(.data$exposure, lut2)]) %>%
     dplyr::select("exposure", "exp_vals",
                   "of", "group", "n", "prop")
-
 
   return(props)
 }

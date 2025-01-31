@@ -107,7 +107,7 @@
 #' found that the average intersection with patches of pre-fire high exposure
 #' was 80%. This methodology could be repeated in the users area of interest.
 #'
-#' ## References
+#' @references
 #' Beverly JL, Forbes AM (2023) Assessing directional vulnerability to
 #' wildfire. *Natural Hazards* **117**, 831-849.
 #' [DOI](https://doi.org/10.1007/s11069-023-05885-3)

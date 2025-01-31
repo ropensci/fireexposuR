@@ -27,14 +27,25 @@ For advanced users. Adjust the transmission distances from the
 defaults used in \code{\link[=fire_exp]{fire_exp()}}.
 }
 \details{
-\strong{DOCUMENTATION IN DEVELOPMENT}
-
 If the transmission distances from the wildfire exposure literature are not
 representative of the wildland fuels in your area of interest, this function
 can be used to change the transmission distance to a custom distance. It is
 highly recommended that any exposure layers produced with this function are
 validated with observed fire history using the \code{\link[=fire_exp_validate]{fire_exp_validate()}}
 function.
+\subsection{Spatial Reference}{
+
+The exposure raster will be returned in the same CRS as the input hazard
+layer. A crs must be defined if the outputs will be used in other functions
+in this package.
+}
+
+\subsection{Spatial resolution}{
+
+For a specified transmission distance, the spatial resolution must be at
+least 3 times finer. For example, for a transmission distance of 300 meters
+the input data should have a resolution of 100 meters or finer.
+}
 }
 \examples{
 # read example hazard data
@@ -46,5 +57,5 @@ exposure800 <- fire_exp_adjust(hazard, tdist = 800)
 
 }
 \seealso{
-\code{\link[=fire_exp]{fire_exp()}}
+\code{\link[=fire_exp]{fire_exp()}} for background information
 }

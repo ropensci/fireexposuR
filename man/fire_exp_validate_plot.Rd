@@ -2,24 +2,28 @@
 % Please edit documentation in R/fire_exp_validate_plot.R
 \name{fire_exp_validate_plot}
 \alias{fire_exp_validate_plot}
-\title{Validate exposure with observed fires}
+\title{Visualize validation outputs in a plot}
 \usage{
-fire_exp_validate_plot(validation_table)
+fire_exp_validate_plot(
+  validation_table,
+  what = c("both", "total", "sample"),
+  title
+)
 }
 \arguments{
 \item{validation_table}{The output table from \code{\link[=fire_exp_validate]{fire_exp_validate()}}}
+
+\item{what}{string. Which plot should be returned? Can be \code{sample}, \code{total},
+or \code{"both"} (Default)}
+
+\item{title}{Optional. String. Add a custom title to the plot.}
 }
 \value{
-a standardized ggplot
+a ggplot object
 }
 \description{
-For advanced users. \code{fire_exp_validate()} compares the
-proportion of exposure classes in a the study area to the proportion of
-exposure classes within burned areas. A random sample is taken to account
-for spatial autocorrelation.
-}
-\details{
-\strong{DOCUMENTATION IN DEVELOPMENT}
+\code{fire_exp_validate_plot()} Visualizes the results from
+\code{fire_exp_validate()} in a bar plot
 }
 \examples{
 # read example hazard data

@@ -167,17 +167,6 @@ was 80\%. This methodology could be repeated in the users area of interest.
 }
 
 }
-
-\subsection{References}{
-
-Beverly JL, Forbes AM (2023) Assessing directional vulnerability to
-wildfire. \emph{Natural Hazards} \strong{117}, 831-849.
-\href{https://doi.org/10.1007/s11069-023-05885-3}{DOI}
-
-Beverly JL, McLoughlin N, Chapman E (2021) A simple metric of landscape
-fire exposure. \emph{Landscape Ecology} \strong{36}, 785-801.
-\href{https://doi.org/10.1007/s10980-020-01173-8}{DOI}
-}
 }
 \examples{
 # read example hazard data
@@ -194,4 +183,13 @@ exposure <- fire_exp(hazard)
 # assess directional exposure
 fire_exp_dir(exposure, point)
 
+}
+\references{
+Beverly JL, Forbes AM (2023) Assessing directional vulnerability to
+wildfire. \emph{Natural Hazards} \strong{117}, 831-849.
+\href{https://doi.org/10.1007/s11069-023-05885-3}{DOI}
+
+Beverly JL, McLoughlin N, Chapman E (2021) A simple metric of landscape
+fire exposure. \emph{Landscape Ecology} \strong{36}, 785-801.
+\href{https://doi.org/10.1007/s10980-020-01173-8}{DOI}
 }
