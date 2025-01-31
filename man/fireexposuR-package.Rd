@@ -6,6 +6,8 @@
 \alias{fireexposuR-package}
 \title{fireexposuR: Compute and Visualize Wildfire Exposure}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 This package computes and visualizes wildfire exposure using the methods documented in a series of scientific publications.
 }
 \seealso{

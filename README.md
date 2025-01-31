@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# fireexposuR
+# fireexposuR <a href="https://heyairf.github.io/fireexposuR/"><img src="man/figures/logo.png" align="right" height="139" alt="fireexposuR website" /></a>
 
 <!-- badges: start -->
 
