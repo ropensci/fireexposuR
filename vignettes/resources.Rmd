@@ -46,7 +46,7 @@ This paper applied directional vulnerability assessments with evacuation plannin
 
 * Kim AM, Beverly JL, Al Zahid A (2024) Directional analysis of community wildfire evacuation capabilities. *Safety Science* **171**, 106378. [DOI](https://doi.org/10.1016/j.ssci.2023.106378)
 
-This paper applied wildfire exposure assessments in Alaska, USA using alternative methods to define hazardous fuels
+This paper applied wildfire exposure assessments in Alaska, USA using alternative methods to define hazardous fuels. You can also check out their custom ArcGIS toolbox [here](https://github.com/gina-alaska/wildfire-exposure-toolbox?tab=readme-ov-file#overview).
 
 * Schmidt JI, Ziel RH, Calef MP, Varvak A (2024) Spatial distribution of wildfire threat in the far north: exposure assessment in boreal communities. *Natural Hazards* **120**, 4901-4924. [DOI](https://doi.org/10.1007/s11069-023-06365-4)
 
