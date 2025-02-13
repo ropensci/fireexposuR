@@ -7,9 +7,9 @@
 
 [![R-CMD-check](https://github.com/heyairf/fireexposuR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/heyairf/fireexposuR/actions/workflows/R-CMD-check.yaml)
 
-[![Project Status: WIP – Initial development is in progress, but there
-has not yet been a stable, usable release suitable for the
-public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
+[![Project Status: Active – The project has reached a stable, usable
+state and is being actively
+developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 
 [![Status at rOpenSci Software Peer
 Review](https://badges.ropensci.org/659_status.svg)](https://github.com/ropensci/software-review/issues/659)
@@ -143,7 +143,8 @@ library(fireexposuR)
 
 # load the terra library for spatial data functions
 library(terra)
-#> terra 1.7.78
+#> Warning: package 'terra' was built under R version 4.4.2
+#> terra 1.8.15
 
 # read example hazard data
 hazard_file_path <- "extdata/hazard.tif"
