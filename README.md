@@ -5,7 +5,7 @@
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/heyairf/fireexposuR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/heyairf/fireexposuR/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/ropensci/fireexposuR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ropensci/fireexposuR/actions/workflows/R-CMD-check.yaml)
 
 [![Project Status: Active – The project has reached a stable, usable
 state and is being actively
@@ -126,8 +126,7 @@ You can install the development version of fireexposuR from
 [GitHub](https://github.com/) with:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("heyairf/fireexposuR")
+install.packages("fireexposuR", repos = "https://ropensci.r-universe.dev")
 ```
 
 ## Usage example

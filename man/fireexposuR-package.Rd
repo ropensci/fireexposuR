@@ -13,9 +13,9 @@ This package computes and visualizes wildfire exposure using the methods documen
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/heyairf/fireexposuR}
-  \item \url{https://heyairf.github.io/fireexposuR/}
-  \item Report bugs at \url{https://github.com/heyairf/fireexposuR/issues}
+  \item \url{https://github.com/ropensci/fireexposuR}
+  \item \url{https://docs.ropensci.org/fireexposuR/}
+  \item Report bugs at \url{https://github.com/ropensci/fireexposuR/issues}
 }
 
 }

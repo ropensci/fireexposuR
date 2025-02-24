@@ -7,5 +7,5 @@ bibentry(
   author   = "Air M. Forbes [aut], Jennifer L. Beverly [ths]",
   note     = "R Package version xxx",
   year     = "2024",
-  url      = "https://github.com/heyairf/fireexposuR"
+  url      = "https://github.com/ropensci/fireexposuR"
 )
