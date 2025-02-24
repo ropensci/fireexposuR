@@ -68,11 +68,168 @@
     
     
 <div class="section level2">
-<h2 id="this-page-is-actively-in-development">This page is actively in development<a class="anchor" aria-label="anchor" href="#this-page-is-actively-in-development"></a>
+<h2 id="this-page-is-actively-in-development">
+<strong>This page is actively in development</strong><a class="anchor" aria-label="anchor" href="#this-page-is-actively-in-development"></a>
 </h2>
-<p>Coming soon!</p>
+<p>February 24, 2025</p>
+<p>Dear fireexposuR users,</p>
+<p>More details will be added to this page soon! For now, here are some
+considerations for choosing your raster data. You can find even more
+discussion about this topic in Forbes and Beverly (2024).</p>
+<p>Best,</p>
+<p>Air</p>
 </div>
-  </main>
+<div class="section level2">
+<h2 id="determine-required-input-datasets">Determine required input datasets<a class="anchor" aria-label="anchor" href="#determine-required-input-datasets"></a>
+</h2>
+<p>Consult the flowchart and table to determine the input data required
+to reach a desired output.</p>
+<p>[a beautiful graphic will be inserted here]</p>
+<table class="table">
+<colgroup>
+<col width="20%">
+<col width="20%">
+<col width="20%">
+<col width="20%">
+<col width="20%">
+</colgroup>
+<thead><tr class="header">
+<th>Desired Output</th>
+<th>Required Raster Data</th>
+<th>Optional Raster Data</th>
+<th>Required Vector Data</th>
+<th>Optional Vector Data</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Exposure</td>
+<td>Hazardous Fuel</td>
+<td>Non-Burnable</td>
+<td></td>
+<td>Area of Interest (Polygon)</td>
+</tr>
+<tr class="even">
+<td>Transects</td>
+<td>Hazardous Fuel</td>
+<td>Non-Burnable</td>
+<td>Value (Point or Simple Polygon)</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Values</td>
+<td>Hazardous Fuel</td>
+<td>Non-Burnable</td>
+<td>Values (Multi-Point or Multi-Polygon)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level2">
+<h2 id="raster-data">Raster Data<a class="anchor" aria-label="anchor" href="#raster-data"></a>
+</h2>
+<p>The hazardous fuel raster and optional non-burnable raster should be
+derived from the same land cover information product.</p>
+<div class="section level3">
+<h3 id="determine-minimum-data-requirements">Determine minimum data requirements<a class="anchor" aria-label="anchor" href="#determine-minimum-data-requirements"></a>
+</h3>
+<p>The minimum spatial resolution and extent requirements will depend on
+a variable ‘Transmission Distance’ and ‘Area’.</p>
+<p>Minimum Spatial Resolution = ‘Transmission Distance’ / 3</p>
+<p>Minimum Spatial Extent = ‘Area’ + Buffer of ‘Transmission
+Distance’</p>
+<div class="section level4">
+<h4 id="transmission-distance">‘Transmission Distance’<a class="anchor" aria-label="anchor" href="#transmission-distance"></a>
+</h4>
+<table class="table">
+<thead><tr class="header">
+<th></th>
+<th>transmission distance</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Long-range embers default</td>
+<td>500 m</td>
+</tr>
+<tr class="even">
+<td>Short-range embers default</td>
+<td>100 m</td>
+</tr>
+<tr class="odd">
+<td>Radiant heat default</td>
+<td>30 m</td>
+</tr>
+<tr class="even">
+<td>Custom *</td>
+<td>x m</td>
+</tr>
+</tbody>
+</table>
+<p>* the function <code><a href="../reference/fire_exp_adjust.html">fire_exp_adjust()</a></code> can be used to set a
+custom transmission distance. This is only recommended if the default
+values do not align with fire behaviour in the geographic area you are
+assessing.</p>
+</div>
+<div class="section level4">
+<h4 id="area">‘Area’<a class="anchor" aria-label="anchor" href="#area"></a>
+</h4>
+<table class="table">
+<colgroup>
+<col width="23%">
+<col width="76%">
+</colgroup>
+<thead><tr class="header">
+<th>Desired output</th>
+<th>Area</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Exposure</td>
+<td>Optional provided polygon area OR input raster extent *</td>
+</tr>
+<tr class="even">
+<td>Transects</td>
+<td>Value + Buffer of Total Transect Distance (default is 15000 m)</td>
+</tr>
+<tr class="odd">
+<td>Values</td>
+<td>Values + Buffer of Transmission Distance</td>
+</tr>
+</tbody>
+</table>
+<p>* Note that a negative transmission distance buffer will be lost due
+to edge effects</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="additional-considerations">Additional considerations<a class="anchor" aria-label="anchor" href="#additional-considerations"></a>
+</h3>
+<div class="section level4">
+<h4 id="temporal-resolution">Temporal resolution<a class="anchor" aria-label="anchor" href="#temporal-resolution"></a>
+</h4>
+<p>When sourcing a ready-made land cover information product it may need
+to be updated to reflect the current land cover composition if it was
+produced in the past. Consider if there has been significant changes to
+land cover types between now and the data production date. For example,
+a dataset could be updated to reflect recent wildfire disturbances by
+overlaying fire perimeters.</p>
+</div>
+<div class="section level4">
+<h4 id="land-cover-classifiers">land cover classifiers<a class="anchor" aria-label="anchor" href="#land-cover-classifiers"></a>
+</h4>
+<p>When sourcing or creating a land cover information product it is also
+important to consider the classification scheme that is used. It needs
+to be possible to determine if a fuel will be hazardous at the chosen
+‘Transmission Distance’ based on the classifier. For example, conifer
+fuels are considered hazardous to long-range ember transport in Alberta.
+If the land cover classifiers only specify if an area is “Forest” but
+does not differentiate between the tree species it would not be possible
+to determine which cells are hazardous for long-range embers.</p>
+</div>
+</div>
+</div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 
