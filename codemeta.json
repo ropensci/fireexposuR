@@ -2,12 +2,13 @@
   "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
   "@type": "SoftwareSourceCode",
   "identifier": "fireexposuR",
-  "description": "This package computes wildfire exposure using methods from Beverly et al. (2010), Beverly et al. (2021), and Beverly and Forbes (2023). It provides functions to standardize the mapping and visualization of wildfire exposure. This package requires pre-processing of data which is docomented in Forbes and Beverly (in preparation).",
+  "description": "This package computes and visualizes wildfire exposure using the methods documented in a series of scientific publications. ",
   "name": "fireexposuR: Compute and Visualize Wildfire Exposure",
-  "codeRepository": "https://github.com/heyairf/fireexposuR",
-  "issueTracker": "https://github.com/heyairf/fireexposuR/issues",
+  "relatedLink": "https://docs.ropensci.org/fireexposuR/",
+  "codeRepository": "https://github.com/ropensci/fireexposuR",
+  "issueTracker": "https://github.com/ropensci/fireexposuR/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
-  "version": "0.2.1",
+  "version": "1.1.0",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
@@ -21,7 +22,9 @@
       "familyName": "Forbes",
       "email": "amforbes@ualberta.ca",
       "@id": "https://orcid.org/0000-0002-9842-7648"
-    },
+    }
+  ],
+  "contributor": [
     {
       "@type": "Person",
       "givenName": "Jennifer",
@@ -229,7 +232,7 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "659.468KB",
+  "fileSize": "967.277KB",
   "citation": [
     {
       "@type": "SoftwareSourceCode",
@@ -237,20 +240,22 @@
       "author": [
         {
           "@type": "Person",
-          "givenName": "Air M.",
+          "givenName": ["Air", "M."],
           "familyName": "Forbes"
-        },
-        {
-          "@type": "Person",
-          "givenName": "Jennifer L.",
-          "familyName": "Beverly"
         }
       ],
       "name": "fireexposuR: Compute and Visualize Wildfire Exposure",
-      "url": "https://github.com/heyairf/fireexposuR",
+      "url": "https://github.com/ropensci/fireexposuR",
       "description": "R Package version xxx"
     }
   ],
-  "readme": "https://github.com/heyairf/fireexposuR/blob/main/README.md",
-  "developmentStatus": "https://www.repostatus.org/#wip"
+  "releaseNotes": "https://github.com/ropensci/fireexposuR/blob/master/NEWS.md",
+  "readme": "https://github.com/ropensci/fireexposuR/blob/main/README.md",
+  "contIntegration": "https://github.com/ropensci/fireexposuR/actions/workflows/R-CMD-check.yaml",
+  "developmentStatus": "https://www.repostatus.org/#active",
+  "review": {
+    "@type": "Review",
+    "url": "https://github.com/ropensci/software-review/issues/659",
+    "provider": "https://ropensci.org"
+  }
 }
