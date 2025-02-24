@@ -29,17 +29,19 @@ Air
 ## Determine required input datasets
 
 Consult the flowchart and table to determine the input data required to reach 
-a desired output.
+a desired output. Note that using `fire_exp_validate()` has more requirements, see the details in the function documentation.
 
 
-[a beautiful graphic will be inserted here]
+```{r, out.width = "850px", echo=FALSE}
+knitr::include_graphics("flowchart.png")
+```
 
 
 | Desired Output | Required Raster Data | Optional Raster Data | Required Vector Data | Optional Vector Data |
 |---------------|---------------|---------------|---------------|---------------|
 | Exposure | Hazardous Fuel | Non-Burnable |  | Area of Interest (Polygon) |
-| Transects | Hazardous Fuel | Non-Burnable | Value (Point or Simple Polygon) |  |
-| Values | Hazardous Fuel | Non-Burnable | Values (Multi-Point or Multi-Polygon) |  |
+| Directional Vulnerability Transects | Hazardous Fuel | Non-Burnable | Value (Point or Simple Polygon) |  |
+| Exposure to Values | Hazardous Fuel | Non-Burnable | Values (Multi-Point or Multi-Polygon) |  |
 
 ## Raster Data
 
@@ -49,32 +51,32 @@ from the same land cover information product.
 ### Determine minimum data requirements
 
 The minimum spatial resolution and extent requirements will depend on a variable
-'Transmission Distance' and 'Area'.
+*Transmission Distance* and **Area**.
 
-Minimum Spatial Resolution = 'Transmission Distance' / 3
+Minimum Spatial Resolution = *Transmission Distance* / 3
 
-Minimum Spatial Extent = 'Area' + Buffer of 'Transmission Distance'
+Minimum Spatial Extent = **Area** + Buffer of *Transmission Distance*
 
-#### 'Transmission Distance'
+#### Transmission Distance
 
-|                            | transmission distance |
-|----------------------------|-----------------------|
-| Long-range embers default  | 500 m                 |
-| Short-range embers default | 100 m                 |
-| Radiant heat default       | 30 m                  |
-| Custom \*                  | x m                   |
+|                            | *Transmission Distance* |
+|----------------------------|-------------------------|
+| Long-range embers default  | 500 m                   |
+| Short-range embers default | 100 m                   |
+| Radiant heat default       | 30 m                    |
+| Custom \*                  | x m                     |
 
 \* the function `fire_exp_adjust()` can be used to set a custom transmission 
-distance. This is only recommended if the default values do not align with fire 
-behaviour in the geographic area you are assessing.
+distance. This is only recommended if the default values do not represent fire 
+behaviour in the area of interest.
 
-#### 'Area'
+#### **Area**
 
 | Desired output | Area |
 |-----------------|-------------------------------------------------------|
 | Exposure | Optional provided polygon area OR input raster extent \* |
-| Transects | Value + Buffer of Total Transect Distance (default is 15000 m) |
-| Values | Values + Buffer of Transmission Distance |
+| Transects | Value extent + Buffer of Total Transect Distance (default is 15000 m) |
+| Values | Values extent + Buffer of *Transmission Distance* |
 
 \* Note that a negative transmission distance buffer will be lost due to edge 
 effects
@@ -101,3 +103,6 @@ specify if an area is "Forest" but does not differentiate between the tree
 species it would not be possible to determine which cells are hazardous for 
 long-range embers. 
 
+## References
+
+Forbes AM, Beverly JL (2024) Influence of fuel data assumptions on wildfire exposure assessment of the built environment. *International Journal of Wildland Fire* **33**, WF24025 [DOI](https://doi.org/10.1071/WF24025)

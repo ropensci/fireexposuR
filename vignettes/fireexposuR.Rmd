@@ -51,6 +51,15 @@ The transmission distance for short-range embers is defined as 100 meters and th
 
 Second, consider which analyses you are interested in using the package for. Determining the scope will inform the required spatial resolution and extent of the input data, which is further documented in `vignette("prep-input-data")`.
 
+Consult the flowchart and table to determine which functions you are interested in using. Note that using `fire_exp_validate()` has more requirements, see the details in the function documentation.
+
+
+```{r, out.width = "850px", echo=FALSE}
+knitr::include_graphics("flowchart.png")
+```
+
+
+
 Here are some common use case examples with suggested package functions and required input data. 
 
 ### Example: Compute exposure
@@ -143,6 +152,10 @@ library(fireexposuR)
 # Load the terra library for reading/writing spatial data
 library(terra)
 
+
+# PLEASE NOTE: The following code is to demonstrate an example workflow. The
+# referenced input data does not exist. 
+
 # read raster of wildland fuels hazardous for long-range ember transmission
 hazard_long <- rast("long_range_hazard.tif")
 
@@ -205,6 +218,9 @@ library(fireexposuR)
 
 # Load the terra library for reading/writing spatial data
 library(terra)
+
+# PLEASE NOTE: The following code is to demonstrate an example workflow. The
+# referenced input data does not exist. 
 
 # read raster of wildland fuels hazardous for long-range ember transmission
 hazard_long <- rast("long_range_hazard.tif")
@@ -287,6 +303,9 @@ library(fireexposuR)
 # Load the terra library for reading/writing spatial data
 library(terra)
 
+# PLEASE NOTE: The following code is to demonstrate an example workflow. The
+# referenced input data does not exist. 
+
 # read long-range ember hazard raster
 hazard <- rast("hazard.tif")
 
@@ -312,6 +331,9 @@ library(fireexposuR)
 
 # Load the terra library for reading/writing spatial data
 library(terra)
+
+# PLEASE NOTE: The following code is to demonstrate an example workflow. The
+# referenced input data does not exist. 
 
 # read long-range ember hazard raster
 hazard <- rast("hazard.tif")
@@ -345,6 +367,9 @@ library(fireexposuR)
 
 # Load the terra library for reading/writing spatial data
 library(terra)
+
+# PLEASE NOTE: The following code is to demonstrate an example workflow. The
+# referenced input data does not exist. 
 
 # read long-range ember hazard raster: option A
 hazard_a <- rast("hazard_a.tif")
