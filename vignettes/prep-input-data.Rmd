@@ -14,7 +14,90 @@ knitr::opts_chunk$set(
 )
 ```
 
+## **This page is actively in development**
 
-## This page is actively in development 
+February 24, 2025
 
-Coming soon! 
+Dear fireexposuR users,
+
+More details will be added to this page soon! For now, here are some considerations for choosing your raster data. You can find even more discussion about this topic in Forbes and Beverly (2024).
+
+Best,
+
+Air 
+
+## Determine required input datasets
+
+Consult the flowchart and table to determine the input data required to reach 
+a desired output.
+
+
+[a beautiful graphic will be inserted here]
+
+
+| Desired Output | Required Raster Data | Optional Raster Data | Required Vector Data | Optional Vector Data |
+|---------------|---------------|---------------|---------------|---------------|
+| Exposure | Hazardous Fuel | Non-Burnable |  | Area of Interest (Polygon) |
+| Transects | Hazardous Fuel | Non-Burnable | Value (Point or Simple Polygon) |  |
+| Values | Hazardous Fuel | Non-Burnable | Values (Multi-Point or Multi-Polygon) |  |
+
+## Raster Data
+
+The hazardous fuel raster and optional non-burnable raster should be derived 
+from the same land cover information product.
+
+### Determine minimum data requirements
+
+The minimum spatial resolution and extent requirements will depend on a variable
+'Transmission Distance' and 'Area'.
+
+Minimum Spatial Resolution = 'Transmission Distance' / 3
+
+Minimum Spatial Extent = 'Area' + Buffer of 'Transmission Distance'
+
+#### 'Transmission Distance'
+
+|                            | transmission distance |
+|----------------------------|-----------------------|
+| Long-range embers default  | 500 m                 |
+| Short-range embers default | 100 m                 |
+| Radiant heat default       | 30 m                  |
+| Custom \*                  | x m                   |
+
+\* the function `fire_exp_adjust()` can be used to set a custom transmission 
+distance. This is only recommended if the default values do not align with fire 
+behaviour in the geographic area you are assessing.
+
+#### 'Area'
+
+| Desired output | Area |
+|-----------------|-------------------------------------------------------|
+| Exposure | Optional provided polygon area OR input raster extent \* |
+| Transects | Value + Buffer of Total Transect Distance (default is 15000 m) |
+| Values | Values + Buffer of Transmission Distance |
+
+\* Note that a negative transmission distance buffer will be lost due to edge 
+effects
+
+
+### Additional considerations
+
+#### Temporal resolution
+
+When sourcing a ready-made land cover information product it may need to be 
+updated to reflect the current land cover composition if it was produced in the 
+past. Consider if there has been significant changes to land cover types 
+between now and the data production date. For example, a dataset could be 
+updated to reflect recent wildfire disturbances by overlaying fire perimeters.
+
+#### land cover classifiers
+
+When sourcing or creating a land cover information product it is also important 
+to consider the classification scheme that is used. It needs to be possible to 
+determine if a fuel will be hazardous at the chosen 'Transmission Distance' 
+based on the classifier. For example, conifer fuels are considered hazardous to 
+long-range ember transport in Alberta. If the land cover classifiers only 
+specify if an area is "Forest" but does not differentiate between the tree 
+species it would not be possible to determine which cells are hazardous for 
+long-range embers. 
+
