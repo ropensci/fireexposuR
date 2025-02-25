@@ -5,5 +5,5 @@ pts <- function(n = 20) {
   g <- read.csv(geo_path)
   v <- terra::vect(as.matrix(g), "polygons", crs = haz)
   nb <- terra::rasterize(v, haz)
-  terra::spatSample(v, n = 3)
+  terra::spatSample(v, n = n)
 }
