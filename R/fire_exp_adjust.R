@@ -48,19 +48,34 @@
 #'
 fire_exp_adjust <- function(hazard, tdist, no_burn) {
   stopifnot("`hazard` must be a SpatRaster object"
-            = class(hazard) == "SpatRaster")
-  stopifnot("`hazard` layer must have values between 0-1"
-            = (terra::minmax(hazard)[1] >= 0 && terra::minmax(hazard)[2] <= 1))
-  stopifnot("`tdist` must be numeric"
+            = class(hazard) == "SpatRaster",
+            "`hazard` layer must have values between 0-1"
+            = (round(terra::minmax(hazard)[1]) >= 0
+               && round(terra::minmax(hazard)[2]) <= 1),
+            "`tdist` must be numeric"
             = is.numeric(tdist))
+  if (terra::crs(hazard) == "") {
+    message("Input CRS is undefined: If output will be used in
+            other fireexposuR functions a CRS must be defined")
+  }
   if (!missing(no_burn)) {
     stopifnot("`no_burn` must be a SpatRaster object"
-              = class(no_burn) == "SpatRaster")
+              = class(no_burn) == "SpatRaster",
+              "`no_burn` must be a SpatRaster object"
+              = class(no_burn) == "SpatRaster",
+              "`no_burn` and `hazard` must have same CRS"
+              = terra::same.crs(hazard, no_burn),
+              "`no_burn` must only contain values of 1 or NA"
+              = unique(terra::values(no_burn) %in% c(1, NA, NaN)),
+              "`no_burn` extent must be within `hazard` extent"
+              = terra::relate(no_burn, hazard, "within"))
   }
 
   res <- terra::res(hazard)[1]
   stopifnot("insufficient resolution for chosen exposure transmission distance"
             = res <= tdist / 3)
+
+
   annulus <- c(res, tdist)
   window <- MultiscaleDTM::annulus_window(annulus, "map", res)
   wgtwindow <- window / sum(window, na.rm = TRUE)
