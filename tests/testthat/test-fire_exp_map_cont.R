@@ -1,22 +1,14 @@
-# repeat test data
-filepath <- "extdata/hazard.tif"
-haz <- terra::rast(system.file(filepath, package = "fireexposuR"))
-filepath <- "extdata/polygon_geometry.csv"
-g <- read.csv(system.file(filepath, package = "fireexposuR"))
-v <- terra::vect(as.matrix(g), "polygons", crs = haz)
-nb <- terra::rasterize(v, haz)
-pts <- terra::spatSample(v, 20)
-
-exp <- fire_exp(haz)
-
-cropexp <- terra::crop(exp, terra::rescale(v, 0.5))
-
-nocrs <- exp
-terra::crs(nocrs) <- ""
-
-# tests ========================================================================
-
 test_that("fire_exp_map_cont() input checks and function messages work", {
+  exp <- exposure()
+  v <- pol()
+
+  cropexp <- terra::crop(exp, terra::rescale(v, 0.5))
+
+  nocrs <- exp
+  terra::crs(nocrs) <- ""
+  v2 <- v
+  terra::crs(v2) <- ""
+
   expect_condition(fire_exp_map_cont(2),
                    "`exposure` must be a SpatRaster object")
   expect_condition(fire_exp_map_cont(exp * 2),
@@ -26,14 +18,20 @@ test_that("fire_exp_map_cont() input checks and function messages work", {
   expect_condition(fire_exp_map_cont(cropexp, v),
                    "`aoi` extent must be within `exposure` extent")
   expect_condition(fire_exp_map_cont(nocrs, v),
+                   "`exposure` layer must have a CRS")
+  expect_condition(fire_exp_map_cont(exp, v2),
                    "`exposure` and `aoi` must have same CRS")
 })
 
 test_that("fire_exp_map_cont() returns object with correct class", {
+  exp <- exposure()
   expect_s3_class(suppressMessages(fire_exp_map_cont(exp)), "ggplot")
 })
 
 test_that("fire_exp_map_cont() runs when input conditions are met", {
+  exp <- exposure()
+  v <- pol()
+  # messages suppressed because terra outputs a message for bigger rasters
   expect_no_error(suppressMessages(fire_exp_map_cont(exp)))
   expect_no_error(suppressMessages(fire_exp_map_cont(exp, v)))
 })
