@@ -66,10 +66,10 @@ fire_exp_dir_map <- function(transects,
                              labels,
                              title = "Directional Vulnerability") {
   stopifnot("`transects` must be a SpatVector object"
-            = class(transects) == "SpatVector")
-  stopifnot("`zoom_level` must be a number"
-            = class(zoom_level) == "numeric")
-  stopifnot("`title` must be a character string"
+            = class(transects) == "SpatVector",
+            "`zoom_level` must be a number"
+            = class(zoom_level) == "numeric",
+            "`title` must be a character string"
             = class(title) == "character")
 
   if (missing(labels)) {
@@ -128,7 +128,7 @@ fire_exp_dir_map <- function(transects,
     ggplot2::theme_void() +
     ggplot2::labs(
       title = title,
-      subtitle = "Map generated with fireexposuR()",
+      subtitle = "Map generated with {fireexposuR}",
       color = "Transect segment",
       caption = caption
     ) +

@@ -58,8 +58,8 @@ fire_exp_dir_plot <- function(transects,
                               labels,
                               title = "Directional Vulnerability") {
   stopifnot("`title` must be a character string"
-            = class(title) == "character")
-  stopifnot("`transects` must be a SpatVector object"
+            = class(title) == "character",
+            "`transects` must be a SpatVector object"
             = class(transects) == "SpatVector")
 
 
@@ -183,6 +183,6 @@ fire_exp_dir_plot <- function(transects,
     ggplot2::scale_x_continuous(breaks = c(90, 180, 270, 360),
                                 labels = c("E", "S", "W", "N")) +
     ggplot2::labs(title = title,
-                  subtitle = "Plot generated with fireexposuR()")
+                  subtitle = "Plot generated with {fireexposuR}")
   return(plt)
 }

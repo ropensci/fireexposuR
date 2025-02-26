@@ -123,8 +123,8 @@
 #'  each transect starting from the value in meters. The default is
 #'  `c(5000, 5000, 5000)`.
 #' @param interval (Optional) Numeric. The degree interval at which to draw
-#'  the transects for analysis. Can be one of 0.5, 1, 2, 3, 4, 5, 6, 8, or 10.
-#'  The default is `1`.
+#'  the transects for analysis. Can be one of 0.25, 0.5, 1, 2, 3, 4, 5, 6, 8,
+#'  or 10 (factors of 360, ensures even spacing). The default is `1`.
 #' @param thresh_exp (optional) Numeric. The exposure value to use to define
 #'  high exposure as a proportion. Must be between 0-1. The default is `0.6`.
 #' @param thresh_viable (optional) Numeric. The minimum intersection of a
@@ -168,28 +168,28 @@ fire_exp_dir <- function(exposure, value,
                          thresh_viable = 0.8,
                          table = FALSE) {
   stopifnot("`exposure` must be a SpatRaster object"
-            = class(exposure) == "SpatRaster")
-  stopifnot("`exposure` layer must have values between 0-1"
+            = class(exposure) == "SpatRaster",
+            "`exposure` layer must have values between 0-1"
             = (round(terra::minmax(exposure)[1], 0) >= 0
-               && round(terra::minmax(exposure)[2], 0) <= 1))
-  stopifnot("`value` must be a SpatVector object"
-            = class(value) == "SpatVector")
-  stopifnot("`t_lengths` must be a vector of three numeric values"
-            = class(t_lengths) == "numeric" && length(t_lengths) == 3)
-  stopifnot("`interval` must be one of: 0.5, 1, 2, 3, 4, 5, 6, 8, or 10"
-            = interval %in% c(1, 2, 3, 4, 5, 6, 8, 10, 0.5))
-  stopifnot("`thresh_exp` must be a numeric value between 0-1"
-            = thresh_exp >= 0 && thresh_exp <= 1)
-  stopifnot("`thresh_viable` must be a numeric value between 0-1"
+               && round(terra::minmax(exposure)[2], 0) <= 1),
+            "`value` must be a SpatVector object"
+            = class(value) == "SpatVector",
+            "`t_lengths` must be a vector of three numeric values"
+            = class(t_lengths) == "numeric" && length(t_lengths) == 3,
+            "`interval` must be one of: 0.25, 0.5, 1, 2, 3, 4, 5, 6, 8, or 10"
+            = interval %in% c(1, 2, 3, 4, 5, 6, 8, 10, 0.5, 0.25),
+            "`thresh_exp` must be a numeric value between 0-1"
+            = thresh_exp >= 0 && thresh_exp <= 1,
+            "`thresh_viable` must be a numeric value between 0-1"
             = thresh_viable >= 0 && thresh_viable <= 1)
 
   names(exposure) <- "exposure"
   expl <- exposure
 
   stopifnot("`exposure` layer must have a CRS defined"
-            = terra::crs(expl, describe = TRUE)$name != "unknown")
-  stopifnot("`exposure` and `value` must have the same CRS"
-            = terra::crs(expl) == terra::crs(value))
+            = terra::crs(expl) != "",
+            "`exposure` and `value` must have the same CRS"
+            = terra::same.crs(expl, value))
 
 
   if (length(value) > 1) {

@@ -105,7 +105,7 @@ geom <- read.csv(system.file(geom_file_path, package = "fireexposuR"))
 aoi <- terra::vect(as.matrix(geom), "polygons", crs = hazard)
 
 # generate random points within the aoi polygon
-points <- terra::spatSample(aoi, 200)
+points <- terra::spatSample(aoi, 100)
 
 # compute exposure
 exposure <- fire_exp(hazard)

@@ -63,13 +63,17 @@
 fire_exp_extract <- function(exposure,
                              values) {
   stopifnot("`exposure` must be a SpatRaster object"
-            = class(exposure) == "SpatRaster")
-  stopifnot("`exposure` layer must have values between 0-1"
+            = class(exposure) == "SpatRaster",
+            "`exposure` layer must have values between 0-1"
             = (round(terra::minmax(exposure)[1], 0) >= 0
-               && round(terra::minmax(exposure)[2], 0) <= 1))
-  stopifnot("`values` must be a SpatVector object of point or polygon features"
+               && round(terra::minmax(exposure)[2], 0) <= 1),
+            "`values` must be a SpatVector object of point or polygon features"
             = (class(values) == "SpatVector" &&
-                 terra::geomtype(values) %in% c("points", "polygons")))
+                 terra::geomtype(values) %in% c("points", "polygons")),
+            "`exposure` layer must have a CRS defined"
+            = terra::crs(exposure) != "",
+            "`exposure` and `values` must have the same CRS"
+            = terra::same.crs(exposure, values))
 
   names(exposure) <- "exposure"
   exp <- exposure

@@ -80,7 +80,7 @@
 #' aoi <- terra::vect(as.matrix(geom), "polygons", crs = hazard)
 #'
 #' # generate random points within the aoi polygon
-#' points <- terra::spatSample(aoi, 200)
+#' points <- terra::spatSample(aoi, 100)
 #'
 #' # compute exposure
 #' exposure <- fire_exp(hazard)
@@ -103,8 +103,8 @@ fire_exp_extract_vis <- function(values_ext,
   ext <- values_ext
   stopifnot("`values_ext` must be a SpatVector of point or polygon features"
             = (class(ext) == "SpatVector" &&
-                 terra::geomtype(ext) %in% c("points", "polygons")))
-  stopifnot("`values_ext` missing exposure attribute. Use fire_exp_extract()"
+                 terra::geomtype(ext) %in% c("points", "polygons")),
+            "`values_ext` missing exposure attribute. Use fire_exp_extract()"
             = any(terra::names(ext) %in% c("exposure", "mean_exp", "max_exp")))
   if (terra::geomtype(ext) == "polygons") {
     method <- match.arg(method)
@@ -119,7 +119,7 @@ fire_exp_extract_vis <- function(values_ext,
         dplyr::rename(exposure = "max_exp")
     }
   } else {
-    method <- "Point"
+    method <- "NA"
   }
   classify <- match.arg(classify)
 
@@ -138,10 +138,10 @@ fire_exp_extract_vis <- function(values_ext,
 
   # class_breaks checks
   stopifnot("`class_breaks` must be a vector of numbers"
-            = class(class_breaks) == "numeric")
-  stopifnot("`class_breaks` must have 1 as the maximum value"
-            = max(class_breaks) == 1)
-  stopifnot("`class_breaks` must be greater than 0"
+            = class(class_breaks) == "numeric",
+            "`class_breaks` must have 1 as the maximum value"
+            = max(class_breaks) == 1,
+            "`class_breaks` must be greater than 0"
             = class_breaks > 0)
 
   class_labels <- character()
@@ -192,7 +192,7 @@ fire_exp_extract_vis <- function(values_ext,
                      substr(cred, 63, nchar(cred)))
 
     plt <- ggplot2::ggplot() +
-      tidyterra::geom_spatraster_rgb(data = tile, alpha = 0.8) +
+      tidyterra::geom_spatraster_rgb(data = tile, alpha = 0.7) +
       ggspatial::annotation_scale(location = "bl") +
       ggspatial::annotation_north_arrow(
         location = "bl",
@@ -204,7 +204,7 @@ fire_exp_extract_vis <- function(values_ext,
       ggplot2::theme_void() +
       ggplot2::labs(
         title = title,
-        subtitle = "Map generated with fireexposuR()",
+        subtitle = "Map generated with {fireexposuR}",
         caption = caption
       )
 
@@ -235,8 +235,7 @@ fire_exp_extract_vis <- function(values_ext,
       dplyr::count(.data$class_range) %>%
       dplyr::mutate(prop = .data$n / sum(.data$n)) %>%
       dplyr::mutate(method = method) %>%
-      dplyr::mutate(scale = classify) %>%
-      dplyr::select(c("scale", "method", "class_range", "n", "prop"))
+      dplyr::select(c("class_range", "n", "prop", "method"))
     return(df)
   }
 }

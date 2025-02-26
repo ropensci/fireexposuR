@@ -65,11 +65,13 @@ fire_exp_summary <- function(exposure, aoi,
                              classify = c("landscape", "local", "custom"),
                              class_breaks) {
   stopifnot("`exposure` must be a SpatRaster object"
-            = class(exposure) == "SpatRaster")
-  stopifnot("`exposure` layer must have values between 0-1"
+            = class(exposure) == "SpatRaster",
+            "`exposure` layer must have values between 0-1"
             = (round(terra::minmax(exposure)[1], 0) >= 0
-               && round(terra::minmax(exposure)[2], 0) <= 1))
-  stopifnot("Linear units of `exposure` layer must be in meters"
+               && round(terra::minmax(exposure)[2], 0) <= 1),
+            "`exposure` layer must have a CRS defined"
+            = terra::crs(exposure) != "",
+            "Linear units of `exposure` layer must be in meters"
             = terra::linearUnits(exposure) == 1)
   classify <- match.arg(classify)
 
@@ -91,10 +93,10 @@ fire_exp_summary <- function(exposure, aoi,
 
   # class_breaks checks
   stopifnot("`class_breaks` must be a vector of numbers"
-            = class(class_breaks) == "numeric")
-  stopifnot("`class_breaks` must have 1 as the maximum value"
-            = max(class_breaks) == 1)
-  stopifnot("`class_breaks` must be greater than 0"
+            = class(class_breaks) == "numeric",
+            "`class_breaks` must have 1 as the maximum value"
+            = max(class_breaks) == 1,
+            "`class_breaks` must be greater than 0"
             = class_breaks > 0)
 
   class_labels <- character()
@@ -121,7 +123,8 @@ fire_exp_summary <- function(exposure, aoi,
       terra::crop(aoi) %>%
       terra::mask(aoi)
   }
-  df <- as.data.frame(exp)
+  df <- as.data.frame(exp) %>%
+    dplyr::mutate(exposure = round(exposure, 5))
 
   rules <- c("exposure == 0 ~ 0",
              utils::tail(c(sprintf("dplyr::between(exposure, %f, %f) ~ %f",

@@ -89,10 +89,12 @@ fire_exp_map_class <- function(exposure, aoi, classify = c("local", "landscape",
                                class_breaks, zoom_level,
                                title = "Classified Exposure") {
   stopifnot("`exposure` must be a SpatRaster object"
-            = class(exposure) == "SpatRaster")
-  stopifnot("`exposure` layer must have values between 0-1"
+            = class(exposure) == "SpatRaster",
+            "`exposure` layer must have values between 0-1"
             = (round(terra::minmax(exposure)[1], 0) >= 0
-               && round(terra::minmax(exposure)[2], 0) <= 1))
+               && round(terra::minmax(exposure)[2], 0) <= 1),
+            "`exposure` layer must have a CRS defined"
+            = terra::crs(exposure) != "")
 
   classify <- match.arg(classify)
 
@@ -101,10 +103,10 @@ fire_exp_map_class <- function(exposure, aoi, classify = c("local", "landscape",
 
   if (!missing(aoi)) {
     stopifnot("`aoi` must be a SpatVector object"
-              = class(aoi) == "SpatVector")
-    stopifnot("`aoi` extent must be within `exposure` extent"
-              = terra::relate(aoi, exposure, "within"))
-    stopifnot("`exposure` and `aoi` must have same CRS"
+              = class(aoi) == "SpatVector",
+              "`aoi` extent must be within `exposure` extent"
+              = terra::relate(aoi, exposure, "within"),
+              "`exposure` and `aoi` must have same CRS"
               = terra::same.crs(exposure, aoi))
 
     exp <- exp %>%
@@ -112,12 +114,12 @@ fire_exp_map_class <- function(exposure, aoi, classify = c("local", "landscape",
       terra::mask(aoi)
     b <- terra::project(aoi, "EPSG:3857")
     # get extent to clip tile
-    e <- terra::rescale(b, 1.3)
+    e <- terra::rescale(b, 1.2)
     expb <- terra::crop(exp, aoi, mask = TRUE) %>%
       terra::project("EPSG:3857")
   } else {
     e <- terra::rescale(terra::as.polygons(terra::ext(exp),
-                                           terra::crs(exp)), 1.3) %>%
+                                           terra::crs(exp)), 1.2) %>%
       terra::project("EPSG:3857")
     expb <- terra::project(exp, "EPSG:3857")
   }

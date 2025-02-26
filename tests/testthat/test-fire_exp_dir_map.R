@@ -1,25 +1,10 @@
-# repeat test data
-filepath <- "extdata/hazard.tif"
-haz <- terra::rast(system.file(filepath, package = "fireexposuR"))
-filepath <- "extdata/polygon_geometry.csv"
-g <- read.csv(system.file(filepath, package = "fireexposuR"))
-v <- terra::vect(as.matrix(g), "polygons", crs = haz)
-nb <- terra::rasterize(v, haz)
-pts <- terra::spatSample(v, 20)
-pt_wkt <- "POINT (400000 6050000)"
-pt <- terra::vect(pt_wkt, crs = haz)
-
-
-
-exp <- fire_exp(haz)
-
-t_pt <- fire_exp_dir(exp, pt)
-t_pol <- fire_exp_dir(exp, v)
-
-
-# tests ========================================================================
-
 test_that("fire_exp_dir_map() input checks work", {
+  exp <- exposure()
+  v <- pol()
+  pt <- pts(1)
+
+  t_pt <- fire_exp_dir(exp, pt)
+  t_pol <- fire_exp_dir(exp, v)
   expect_error(fire_exp_dir_map(2),
                "`transects` must be a SpatVector object")
   expect_error(fire_exp_dir_map(t_pt, title = 2),
@@ -33,10 +18,22 @@ test_that("fire_exp_dir_map() input checks work", {
 })
 
 test_that("fire_exp_dir_map() returns objects with correct class", {
+  exp <- exposure()
+  v <- pol()
+  pt <- pts(1)
+
+  t_pt <- fire_exp_dir(exp, pt)
+  t_pol <- fire_exp_dir(exp, v)
   expect_s3_class(suppressMessages(fire_exp_dir_map(t_pt)), "ggplot")
 })
 
 test_that("fire_exp_dir_map() runs when input conditions are met", {
+  exp <- exposure()
+  v <- pol()
+  pt <- pts(1)
+
+  t_pt <- fire_exp_dir(exp, pt)
+  t_pol <- fire_exp_dir(exp, v)
   expect_no_error(suppressMessages(fire_exp_dir_map(t_pt)))
   expect_no_error(suppressMessages(fire_exp_dir_map(t_pol)))
   expect_no_error(suppressMessages(fire_exp_dir_map(t_pol, value = v)))
