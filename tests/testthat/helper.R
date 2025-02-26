@@ -32,11 +32,11 @@ nb <- function() {
 
 fires <- function(n = 20) {
   pts <- terra::spatSample(terra::rescale(haz(), 0.8), 20, as.points = TRUE)
-  fires <- terra::buffer(pts, 800)
+  terra::buffer(pts, 800)
 }
 
 # landscape scale aoi
 aoi <- function() {
   e <- c(39, 40, 604, 605) * 10000
-  aoi <- terra::as.polygons(terra::ext(e), crs = haz())
+  terra::as.polygons(terra::ext(e), crs = haz())
 }
