@@ -136,7 +136,7 @@ decision support or further analysis.
 ## Installation
 
 You can install the development version of fireexposuR from
-[GitHub](https://github.com/) with:
+R-Universe with:
 
 ``` r
 install.packages("fireexposuR", repos = "https://ropensci.r-universe.dev")

@@ -122,8 +122,8 @@ decision support or further analysis.
 
 ## Installation
 
-You can install the development version of fireexposuR from
-[GitHub](https://github.com/) with:
+You can install the development version of fireexposuR from R-Universe
+with:
 
 ``` r
 install.packages("fireexposuR", repos = "https://ropensci.r-universe.dev")
@@ -142,8 +142,7 @@ library(fireexposuR)
 
 # load the terra library for spatial data functions
 library(terra)
-#> Warning: package 'terra' was built under R version 4.4.2
-#> terra 1.8.15
+#> terra 1.8.21
 
 # read example hazard data
 hazard_file_path <- "extdata/hazard.tif"
