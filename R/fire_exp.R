@@ -164,14 +164,26 @@
 
 fire_exp <- function(hazard, tdist = c("l", "s", "r"), no_burn) {
   stopifnot("`hazard` must be a SpatRaster object"
-            = class(hazard) == "SpatRaster")
-  stopifnot("`hazard` layer must have values between 0-1"
-            = (terra::minmax(hazard)[1] >= 0 && terra::minmax(hazard)[2] <= 1))
+            = class(hazard) == "SpatRaster",
+            "`hazard` layer must have values between 0-1"
+            = (round(terra::minmax(hazard)[1]) >= 0
+               && round(terra::minmax(hazard)[2] <= 1)))
   tdist <- match.arg(tdist)
 
   if (terra::crs(hazard) == "") {
-    message("Input CRS is undefined: If exposure() output will be used in
+    message("Input CRS is undefined: If output will be used in
             other fireexposuR functions a CRS must be defined")
+  }
+
+  if (!missing(no_burn)) {
+    stopifnot("`no_burn` must be a SpatRaster object"
+              = class(no_burn) == "SpatRaster",
+              "`no_burn` and `hazard` must have same CRS"
+              = terra::same.crs(hazard, no_burn),
+              "`no_burn` must only contain values of 1 or NA"
+              = unique(terra::values(no_burn) %in% c(1, NA, NaN)),
+              "`no_burn` extent must be within `hazard` extent"
+              = terra::relate(no_burn, hazard, "within"))
   }
 
   haz <- hazard
@@ -203,14 +215,6 @@ fire_exp <- function(hazard, tdist = c("l", "s", "r"), no_burn) {
   if (missing(no_burn)) {
     return(exp)
   } else {
-    stopifnot("`no_burn` must be a SpatRaster object"
-              = class(no_burn) == "SpatRaster")
-    stopifnot("`no_burn` and `hazard` must have same CRS"
-              = terra::same.crs(hazard, no_burn))
-    stopifnot("`no_burn` must only contain values of 1 or NA"
-              = unique(terra::values(no_burn) %in% c(1, NA, NaN)))
-    stopifnot("`no_burn` extent must be within `hazard` extent"
-              = terra::relate(no_burn, hazard, "within"))
     expb <- terra::mask(exp, no_burn, inverse = TRUE)
     return(expb)
   }

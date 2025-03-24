@@ -62,14 +62,14 @@
 fire_exp_dir_multi <- function(exposure, values, plot = FALSE, full = FALSE,
                                title, ...) {
   stopifnot("`exposure` must be a SpatRaster object"
-            = class(exposure) == "SpatRaster")
-  stopifnot("`exposure` layer must have values between 0-1"
+            = class(exposure) == "SpatRaster",
+            "`exposure` layer must have values between 0-1"
             = (round(terra::minmax(exposure)[1], 0) >= 0
-               && round(terra::minmax(exposure)[2], 0) <= 1))
-  stopifnot("`values` must be a SpatVector object of point or polygon features"
+               && round(terra::minmax(exposure)[2], 0) <= 1),
+            "`values` must be a SpatVector object of point or polygon features"
             = (class(values) == "SpatVector" &&
-                 terra::geomtype(values) %in% c("points", "polygons")))
-  stopifnot("`values` and `exposure` must have the same crs"
+                 terra::geomtype(values) %in% c("points", "polygons")),
+            "`values` and `exposure` must have the same crs"
             = terra::same.crs(values, exposure) == TRUE)
 
   if (missing(title)) {
@@ -133,7 +133,7 @@ fire_exp_dir_multi <- function(exposure, values, plot = FALSE, full = FALSE,
       ggplot2::scale_x_continuous(breaks = c(90, 180, 270, 360),
                                   labels = c("E", "S", "W", "N")) +
       ggplot2::labs(title = title,
-                    subtitle = "Plot generated with fireexposuR()",
+                    subtitle = "Plot generated with {fireexposuR}",
                     y = "Frequency")
     return(plt)
   } else {

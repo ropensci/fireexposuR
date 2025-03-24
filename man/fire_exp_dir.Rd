@@ -24,8 +24,8 @@ each transect starting from the value in meters. The default is
 \code{c(5000, 5000, 5000)}.}
 
 \item{interval}{(Optional) Numeric. The degree interval at which to draw
-the transects for analysis. Can be one of 0.5, 1, 2, 3, 4, 5, 6, 8, or 10.
-The default is \code{1}.}
+the transects for analysis. Can be one of 0.25, 0.5, 1, 2, 3, 4, 5, 6, 8,
+or 10 (factors of 360, ensures even spacing). The default is \code{1}.}
 
 \item{thresh_exp}{(optional) Numeric. The exposure value to use to define
 high exposure as a proportion. Must be between 0-1. The default is \code{0.6}.}

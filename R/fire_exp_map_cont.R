@@ -36,19 +36,21 @@
 #'
 fire_exp_map_cont <- function(exposure, aoi, title = "Wildfire Exposure") {
   stopifnot("`exposure` must be a SpatRaster object"
-            = class(exposure) == "SpatRaster")
-  stopifnot("`exposure` layer must have values between 0-1"
+            = class(exposure) == "SpatRaster",
+            "`exposure` layer must have values between 0-1"
             = (round(terra::minmax(exposure)[1], 0) >= 0
-               && round(terra::minmax(exposure)[2], 0) <= 1))
+               && round(terra::minmax(exposure)[2], 0) <= 1),
+            "`exposure` layer must have a CRS defined"
+            = terra::crs(exposure) != "")
   exp <- exposure
   if (missing(aoi)) {
     r <- exp
   } else {
     stopifnot("`aoi` must be a SpatVector object"
-              = class(aoi) == "SpatVector")
-    stopifnot("`aoi` extent must be within `exposure` extent"
-              = terra::relate(aoi, exposure, "within"))
-    stopifnot("`exposure` and `aoi` must have same CRS"
+              = class(aoi) == "SpatVector",
+              "`aoi` extent must be within `exposure` extent"
+              = terra::relate(aoi, exposure, "within"),
+              "`exposure` and `aoi` must have same CRS"
               = terra::same.crs(exposure, aoi))
     r <- terra::crop(exp, aoi) %>%
       terra::mask(aoi)
@@ -60,7 +62,7 @@ fire_exp_map_cont <- function(exposure, aoi, title = "Wildfire Exposure") {
                                      limits = c(0, 1)) +
     ggplot2::theme_void() +
     ggplot2::labs(title = title,
-                  subtitle = "Map generated with fireexposuR()",
+                  subtitle = "Map generated with {fireexposuR}",
                   fill = "Exposure") +
     ggspatial::annotation_scale(location = "bl") +
     ggspatial::annotation_north_arrow(

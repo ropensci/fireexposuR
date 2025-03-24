@@ -1,16 +1,5 @@
-# repeat test data
-filepath <- "extdata/hazard.tif"
-haz <- terra::rast(system.file(filepath, package = "fireexposuR"))
-filepath <- "extdata/polygon_geometry.csv"
-g <- read.csv(system.file(filepath, package = "fireexposuR"))
-v <- terra::vect(as.matrix(g), "polygons", crs = haz)
-nb <- terra::rasterize(v, haz)
-pts <- terra::spatSample(v, 20)
-
-
-# tests ========================================================================
-
 test_that("fire_exp_adjust() input checks work", {
+  haz <- haz()
   expect_error(fire_exp_adjust(2),
                "`hazard` must be a SpatRaster object")
   expect_error(fire_exp_adjust(haz),
@@ -26,10 +15,13 @@ test_that("fire_exp_adjust() input checks work", {
 })
 
 test_that("fire_exp_adjust() returns correct object class", {
+  haz <- haz()
   expect_s4_class(fire_exp_adjust(haz, 350), "SpatRaster")
 })
 
 test_that("fire_exp_adjust() runs when input conditions are met", {
+  haz <- haz()
+  nb <- nb()
   expect_no_error(fire_exp_adjust(haz, 350))
   expect_no_error(fire_exp_adjust(haz, 350, nb))
 })

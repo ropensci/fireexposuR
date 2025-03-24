@@ -87,27 +87,32 @@ fire_exp_validate <- function(burnableexposure, fires, aoi,
   names(burnableexposure) <- "exposure"
   expb <- burnableexposure
   stopifnot("`burnableexposure` must be a SpatRaster object"
-            = class(expb) == "SpatRaster")
-  stopifnot("Linear units of `exposure` layer must be in meters"
-            = terra::linearUnits(expb) == 1)
-  stopifnot("`exposure` layer must have values between 0-1"
-            = (round(terra::minmax(expb)[1], 0) >= 0
-               && round(terra::minmax(expb)[2], 0) <= 1))
-  stopifnot("`fires` must be a SpatVector object"
-            = class(fires) == "SpatVector")
+            = class(expb) == "SpatRaster",
+            "Linear units of `exposure` layer must be in meters"
+            = terra::linearUnits(expb) == 1,
+            "`exposure` layer must have values between 0-1"
+            = (round(terra::minmax(expb)[1], 0)) >= 0
+            && round(terra::minmax(expb)[2], 0) <= 1,
+            "`fires` must be a SpatVector object"
+            = class(fires) == "SpatVector",
+            "`burnableexposure` and `fires` must have same CRS"
+            = terra::same.crs(burnableexposure, fires)
+            )
   if (!missing(aoi)) {
     stopifnot("`aoi` must be a SpatVector object"
-              = class(aoi) == "SpatVector")
+              = class(aoi) == "SpatVector",
+              "`burnableexposure` and `aoi` must have same CRS"
+              = terra::same.crs(burnableexposure, aoi))
   }
 
   class_breaks <- sort(class_breaks)
 
   # class_breaks checks
   stopifnot("`class_breaks` must be a vector of numbers"
-            = class(class_breaks) == "numeric")
-  stopifnot("`class_breaks` must have 1 as the maximum value"
-            = max(class_breaks) == 1)
-  stopifnot("`class_breaks` must be greater than 0"
+            = class(class_breaks) == "numeric",
+            "`class_breaks` must have 1 as the maximum value"
+            = max(class_breaks) == 1,
+            "`class_breaks` must be greater than 0"
             = class_breaks > 0)
 
   class_labels <- character()
