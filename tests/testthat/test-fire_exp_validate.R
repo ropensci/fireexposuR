@@ -20,7 +20,7 @@ test_that("fire_exp_validate() runs when input conditions are met", {
   fires <- fires()
   aoi <- aoi()
   expect_no_error(fire_exp_validate(expnb, fires))
-  expect_no_error(fire_exp_validate(expnb, fires, aoi))
+  expect_no_error(fire_exp_validate(expnb, fires, aoi, samplesize = 0.1))
 })
 
 test_that("fire_exp_validate() randomly samples", {
