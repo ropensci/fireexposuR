@@ -8,7 +8,7 @@
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
-This package computes and visualizes wildfire exposure using the methods documented in a series of scientific publications.
+Methods for computing and visualizing wildfire igntion exposure and directional vulnerability that are published in a series of scientific publications are automated by the functions in this package. See Beverly et al. (2010) \doi{10.1071/WF09071}, Beverly et al. (2021) \doi{10.1007/s10980-020-01173-8}, and Beverly and Forbes (2023) \doi{10.1007/s11069-023-05885-3} for background and methodology.
 }
 \seealso{
 Useful links:
@@ -20,7 +20,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Air Forbes \email{amforbes@ualberta.ca} (\href{https://orcid.org/0000-0002-9842-7648}{ORCID})
+\strong{Maintainer}: Air Forbes \email{heyairf@gmail.com} (\href{https://orcid.org/0000-0002-9842-7648}{ORCID})
 
 Other contributors:
 \itemize{
