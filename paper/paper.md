@@ -5,7 +5,7 @@ tags:
 - wildfire
 - Wildland fire
 - risk assessment
-date: "25 April 2025"
+date: "21 May 2025"
 output:
   html_document:
     df_print: paged
@@ -57,12 +57,13 @@ methods and data requirements are also comparatively simpler than alternative
 wildfire risk models, making them an ideal option when constrained by budget 
 or time. These methods were developed in Alberta, Canada; but have since been 
 adapted successfully to other geographic areas. @schmidt:2024 customized 
-exposure assessments for use in Alaska, USA, and publications are currently in 
-preparation that apply the exposure metric across the entire Canadian land base 
-[@beverly:2025] and in Portugal [@khan:2025]. Research is also underway to adapt 
-the methods for use in the United Kingdom. The exposure metric has also been 
-used as an input to evacuation planning [@kim:2024], fuel treatment planning 
-[@karimi:2024], and to assess telecommunication vulnerability [@kuiper:2025].
+exposure assessments for use in Alaska, USA, @khan:2025 have applied them in 
+Portugal, and a publication is currently in preparation that applies and 
+validates the exposure metric across the entire Canadian land base 
+[@beverly:2025]. Research is also underway to adapt the methods for use in the 
+United Kingdom. The exposure metric has been used as an input to evacuation 
+planning [@kim:2024], fuel treatment planning [@karimi:2024], and to assess 
+telecommunication vulnerability [@kuiper:2025].
 
 # Statement of need
 
@@ -92,7 +93,7 @@ an open-source platform with no financial fees. Package documentation is
 presented in plain language to ensure access to a non-technical audience. 
 Access to the package requires basic proficiency in the R environment, which 
 could present a barrier to some users; however, abundant online resources and 
-tutorials are available to anyone willingness to learn. 
+tutorials are available to anyone willing to learn. 
 
 # State of the field
 
@@ -132,8 +133,8 @@ exported. \label{fig:one}](flowchart.png)
 The `fireexposuR` project was funded by the National Research Council of Canada,
 the Forest Resource Improvement Association of Alberta, and Housing, 
 Infrastructure and Communities Canada. We thank ROpenSci reviewers Ronny 
-Hernandez Mora [\@ronnyhdez](https://github.com/ronnyhdez) and Sherry Zhang 
-[\@huizezhang-sherry](https://github.com/huizezhang-sherry) for their 
+Hernandez Mora ([\@ronnyhdez](https://github.com/ronnyhdez)) and Sherry Zhang 
+([\@huizezhang-sherry](https://github.com/huizezhang-sherry)) for their 
 helpful feedback, which significantly improved the code and documentation in 
 this R package. We also thank the many early users of the package for providing 
 feedback during initial development. 
