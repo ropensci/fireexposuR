@@ -92,7 +92,7 @@ fire_exp_validate(exposure, fires)
 \references{
 Beverly JL, McLoughlin N, Chapman E (2021) A simple metric of landscape
 fire exposure. \emph{Landscape Ecology} \strong{36}, 785-801.
-\href{https://doi.org/10.1007/s10980-020-01173-8}{DOI}
+\doi{10.1007/s10980-020-01173-8}
 }
 \seealso{
 \code{\link[=fire_exp_validate_plot]{fire_exp_validate_plot()}}

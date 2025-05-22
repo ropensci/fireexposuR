@@ -118,12 +118,12 @@
 #' @references
 #' Beverly JL, McLoughlin N, Chapman E (2021) A simple metric of landscape fire
 #' exposure. *Landscape Ecology* **36**, 785-801.
-#' [DOI](https://doi.org/10.1007/s10980-020-01173-8)
+#' \doi{10.1007/s10980-020-01173-8}
 #'
 #' Beverly JL, Bothwell P, Conner JCR, Herd EPK (2010) Assessing the exposure
 #' of the built environment to potential ignition sources generated from
 #' vegetative fuel. *International Journal of Wildland Fire* **19**, 299-313.
-#' [DOI](https://doi.org/10.1071/WF09071)
+#' \doi{10.1071/WF09071}
 #'
 #' FireSmart Canada (2018) Wildfire exposure assessment guidebook. Available
 #' [here](https://firesmartcanada.ca/wp-content/uploads/2022/01/FS_ExposureAssessment_Sept2018-1.pdf)
@@ -134,7 +134,7 @@
 #' Schmidt JI, Ziel RH, Calef MP, Varvak A (2024) Spatial distribution of
 #' wildfire threat in the far north: exposure assessment in boreal communities.
 #' *Natural Hazards* **120**, 4901-4924.
-#' [DOI](https://doi.org/10.1007/s11069-023-06365-4)
+#' \doi{10.1007/s11069-023-06365-4}
 #'
 #'
 #' @param hazard a SpatRaster that represents hazardous fuels for the

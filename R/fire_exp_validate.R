@@ -35,7 +35,7 @@
 #' @references
 #' Beverly JL, McLoughlin N, Chapman E (2021) A simple metric of landscape
 #' fire exposure. *Landscape Ecology* **36**, 785-801.
-#' [DOI](https://doi.org/10.1007/s10980-020-01173-8)
+#' \doi{10.1007/s10980-020-01173-8}
 #'
 #' @seealso [fire_exp_validate_plot()]
 #'

@@ -70,5 +70,5 @@ fire_exp_dir_multi(exposure, points, plot = TRUE, interval = 10)
 \references{
 Beverly JL, Forbes AM (2023) Assessing directional vulnerability to
 wildfire. \emph{Natural Hazards} \strong{117}, 831-849.
-\href{https://doi.org/10.1007/s11069-023-05885-3}{DOI}
+\doi{10.1007/s11069-023-05885-3}
 }

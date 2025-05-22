@@ -110,11 +110,11 @@
 #' @references
 #' Beverly JL, Forbes AM (2023) Assessing directional vulnerability to
 #' wildfire. *Natural Hazards* **117**, 831-849.
-#' [DOI](https://doi.org/10.1007/s11069-023-05885-3)
+#' \doi{10.1007/s11069-023-05885-3}
 #'
 #' Beverly JL, McLoughlin N, Chapman E (2021) A simple metric of landscape
 #' fire exposure. *Landscape Ecology* **36**, 785-801.
-#' [DOI](https://doi.org/10.1007/s10980-020-01173-8)
+#' \doi{10.1007/s10980-020-01173-8}
 #'
 #'
 #' @param exposure SpatRaster (e.g. from [fire_exp()])

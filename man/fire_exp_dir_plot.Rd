@@ -59,5 +59,5 @@ fire_exp_dir_plot(transects, labels = c("5 km", "10 km", "15 km"))
 \references{
 Beverly JL, Forbes AM (2023) Assessing directional vulnerability to
 wildfire. \emph{Natural Hazards} \strong{117}, 831-849.
-\href{https://doi.org/10.1007/s11069-023-05885-3}{DOI}
+\doi{10.1007/s11069-023-05885-3}
 }

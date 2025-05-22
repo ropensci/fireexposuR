@@ -164,12 +164,12 @@ fire_exp(hazard, tdist = "l")
 \references{
 Beverly JL, McLoughlin N, Chapman E (2021) A simple metric of landscape fire
 exposure. \emph{Landscape Ecology} \strong{36}, 785-801.
-\href{https://doi.org/10.1007/s10980-020-01173-8}{DOI}
+\doi{10.1007/s10980-020-01173-8}
 
 Beverly JL, Bothwell P, Conner JCR, Herd EPK (2010) Assessing the exposure
 of the built environment to potential ignition sources generated from
 vegetative fuel. \emph{International Journal of Wildland Fire} \strong{19}, 299-313.
-\href{https://doi.org/10.1071/WF09071}{DOI}
+\doi{10.1071/WF09071}
 
 FireSmart Canada (2018) Wildfire exposure assessment guidebook. Available
 \href{https://firesmartcanada.ca/wp-content/uploads/2022/01/FS_ExposureAssessment_Sept2018-1.pdf}{here}
@@ -180,5 +180,5 @@ Hijmans R (2024). \emph{terra: Spatial Data Analysis}. R package version 1.7-78,
 Schmidt JI, Ziel RH, Calef MP, Varvak A (2024) Spatial distribution of
 wildfire threat in the far north: exposure assessment in boreal communities.
 \emph{Natural Hazards} \strong{120}, 4901-4924.
-\href{https://doi.org/10.1007/s11069-023-06365-4}{DOI}
+\doi{10.1007/s11069-023-06365-4}
 }
