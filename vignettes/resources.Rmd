@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 
 Wildfire exposure research news and course offering announcements are posted on the Wildfire Analytics website
 
-* [wildfireanalytics.org](https://wildfireanalytics.org)
+* [wildfireanalytics.org](https://wildfireanalytics.org/index.html)
 
 This guidebook provides a basic and easy to read overview of wildfire exposure assessments with very helpful graphics
 
