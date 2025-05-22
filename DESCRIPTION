@@ -5,7 +5,7 @@ Version: 1.1.0
 Authors@R: c(person("Air", "Forbes", email = "heyairf@gmail.com", 
     role = c("aut", "cre"), comment = c(ORCID = "0000-0002-9842-7648")),
     person("Jennifer", "Beverly", role = "ths"))
-Description: Methods for computing and visualizing wildfire igntion exposure 
+Description: Methods for computing and visualizing wildfire ignition exposure 
     and directional vulnerability that are published in a series of scientific 
     publications are automated by the functions in this package. See Beverly 
     et al. (2010) <doi:10.1071/WF09071>, Beverly et al. (2021) 
