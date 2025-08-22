@@ -14,7 +14,8 @@ knitr::opts_chunk$set(
 )
 ```
 
-If your computer has had Prometheus installed on it, it is likely you will encounter a `GDAL error 1` when using any of the spatial data libraries in R. The two fixes described on this page will stop Prometheus from interfering with the R spatial data libraries. These solutions will not affect Prometheus from running. 
+If your computer has had [Prometheus](https://firegrowthmodel.ca/#/prometheus_overview) or 
+ [Burn-P3](https://firegrowthmodel.ca/#/burnp3_overview) installed on it, it is likely you will encounter a `GDAL error 1` when using any of the spatial data libraries in R. The two fixes described on this page will stop these applications from interfering with the R spatial data libraries. These solutions will not affect Prometheus or Burn-P3 from running. 
 
 ## Why this occurs
 
@@ -37,7 +38,7 @@ If the console prints a path with "Prometheus" in it, you will need to move on t
 
 `"C:\\Program Files\\Prometheus\\proj_nad\\"`
 
-If the console prints a blank path like this `""` that means Prometheus will not interfere with R. You do not have to take any additional next steps!
+If the console prints a blank path like this `""` that means Prometheus will not interfere with R. You do not have to take any additional next steps and can leave this page!
 
 ## Fix for only the current R session
 
@@ -59,7 +60,7 @@ Sys.setenv(PROJ_LIB = "")
 Sys.getenv("PROJ_LIB")
 ```
 
-It should now print `""` instead of the path with "Prometheus" in it. You can now load spatial data libraries and they should work without interference during your current R session. 
+It should now print `""` instead of the path with the "Prometheus" directory in it. You can now load spatial data libraries and they should work without interference during your current R session. 
 
 ## Fix for all future R sessions
 

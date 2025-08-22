@@ -34,13 +34,16 @@ exposure. The outputs from wildfire exposure assessments can be utilized
 as decision support tools for wildfire management across variable
 temporal horizons and spatial extents.
 
-> **An important note for current (and past) Prometheus users**
+> **An important note for current (and past) Prometheus and Burn-P3 users**
 >
-> If Prometheus has *ever* been installed on your device you must take
+> If [Prometheus](https://firegrowthmodel.ca/#/prometheus_overview) or 
+> [Burn-P3](https://firegrowthmodel.ca/#/burnp3_overview) have *ever* been 
+> installed on your device you must take
 > some additional steps before loading this package (and most other R
 > packages that manipulate spatial data). Please go through the steps in
-> `vignette("prometheus")` even if you have since uninstalled the
-> program from your computer.
+> `vignette("prometheus")` even if you have since uninstalled these
+> programs from your computer to check for interferance or you will get 
+> unexpected errors related to the GDAL library.
 
 ## Package Overview
 
@@ -134,6 +137,13 @@ outputs from the fireexposuR package are quality checked before use in
 decision support or further analysis.
 
 ## Installation
+
+You can install the stable version of fireexposuR from CRAN with:
+
+``` r
+install.packages("fireexposuR")
+```
+
 
 You can install the development version of fireexposuR from
 R-Universe with:
