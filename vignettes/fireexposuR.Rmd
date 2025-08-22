@@ -29,7 +29,7 @@ First, consider what scale(s) of wildfire transmission you are interested in ass
 
 ### Landscape
 
-Landscape scale wildfire exposure assessments are concerned with large, and often fast, wildfire ignition potential in natural wildland fuels. These assessments can be conducted for large extents (e.g., country, province (Beverly et al. 2021), state (Schmidt et al. 2024)) or focused near a value of interest (e.g., a community buffer (Beverly and Forbes 2023; Kim et al. 2023)). Only fuels that have the potential to produce long-range embers are considered for landscape scale exposure assessments. 
+Landscape scale wildfire exposure assessments are concerned with large, and often fast, wildfire ignition potential in natural wildland fuels. These assessments can be conducted for large extents (e.g., country (Khan et al. 2025), province (Beverly et al. 2021), state (Schmidt et al. 2024)) or focused near a value of interest (e.g., a community buffer (Beverly and Forbes 2023; Kim et al. 2023)). Only fuels that have the potential to produce long-range embers are considered for landscape scale exposure assessments. 
 
 ### Local
 
@@ -41,7 +41,7 @@ The defaults for the wildfire transmission distances are based on Beverly et al.
 
 #### Long-range embers 
 
-The transmission distance for long-range embers is defined as 500 meters. In reality, under extreme conditions some wildland fuels have the potential to transmit long-range embers at distances much greater than 500 meters; However, this value has been validated for the exposure metric in Alberta (Beverly et al. 2021), Alaska (Schmidt et al. 2024), Portugal (manuscript in preparation), and across the entire Canadian landbase (manuscript in preparation). 
+The transmission distance for long-range embers is defined as 500 meters. In reality, under extreme conditions some wildland fuels have the potential to transmit long-range embers at distances much greater than 500 meters; However, this value has been validated for the exposure metric in Alberta (Beverly et al. 2021), Alaska (Schmidt et al. 2024), Portugal (Khan et al. 2025), and across the entire Canadian landbase (manuscript in preparation). 
 
 #### Short-range embers and radiant heat
 
@@ -417,6 +417,9 @@ Forbes AM, Beverly JL (2024) Influence of fuel data assumptions on wildfire expo
 
  Hijmans R (2024). _terra: Spatial Data Analysis_. R package version 1.7-78,
   <https://CRAN.R-project.org/package=terra>.
+
+Khan SI, Colaço MC, Sequeira AC, Rego FC, Beverly JL (2025) Validating a landscape metric to map fire exposure to hazardous fuels in Portugal.*Natural Hazards* **121**, 16273–16295.
+[DOI](https://doi.org/10.1007/s11069-025-07424-8)
 
 Kim AM, Beverly JL, Al Zahid A (2024) Directional analysis of community wildfire evacuation capabilities. *Safety Science* **171**, 106378. [DOI](https://doi.org/10.1016/j.ssci.2023.106378)
 

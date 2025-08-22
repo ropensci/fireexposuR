@@ -50,3 +50,7 @@ This paper applied wildfire exposure assessments in Alaska, USA using alternativ
 
 * Schmidt JI, Ziel RH, Calef MP, Varvak A (2024) Spatial distribution of wildfire threat in the far north: exposure assessment in boreal communities. *Natural Hazards* **120**, 4901-4924. [DOI](https://doi.org/10.1007/s11069-023-06365-4)
 
+This paper validated the landscape fire exposure metric in a the Mediteranian 
+
+* Khan SI, Colaço MC, Sequeira AC, Rego FC, Beverly JL (2025) Validating a landscape metric to map fire exposure to hazardous fuels in Portugal.*Natural Hazards* **121**, 16273–16295.
+[DOI](https://doi.org/10.1007/s11069-025-07424-8)
