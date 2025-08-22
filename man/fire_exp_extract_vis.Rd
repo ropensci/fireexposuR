@@ -48,6 +48,7 @@ a summary table is returned as a data frame object, Unless:
 \description{
 This function still works, but please update your code to
 use the new \code{\link[=fire_exp_extract_summary]{fire_exp_extract_summary()}} or \code{\link[=fire_exp_extract_map]{fire_exp_extract_map()}} instead.
+This function will be removed in the future.
 }
 \details{
 This function visualizes the outputs from \code{\link[=fire_exp_extract]{fire_exp_extract()}} with classes.
