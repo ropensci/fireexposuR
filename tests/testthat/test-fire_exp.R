@@ -1,38 +1,30 @@
-# repeat test data
-filepath <- "extdata/hazard.tif"
-haz <- terra::rast(system.file(filepath, package = "fireexposuR"))
-filepath <- "extdata/polygon_geometry.csv"
-g <- read.csv(system.file(filepath, package = "fireexposuR"))
-v <- terra::vect(as.matrix(g), "polygons", crs = haz)
-nb <- terra::rasterize(v, haz)
-pts <- terra::spatSample(v, 20)
-
-# function specific test data
-nocrsh <- haz
-terra::crs(nocrsh) <- ""
-
-nocrsnb <- nb
-terra::crs(nocrsnb) <- ""
-
-smallhaz <- terra::crop(haz, terra::rescale(v, 0.5), mask = TRUE)
-
-# tests ========================================================================
-
 test_that("fire_exp() input checks and function messages work", {
+  haz <- haz()
+  nb <- nb()
+  v <- pol()
+  smallhaz <- terra::crop(haz, terra::rescale(v, 0.5), mask = TRUE)
+  nocrsh <- haz
+  terra::crs(nocrsh) <- ""
+  nocrsnb <- nb
+  terra::crs(nocrsnb) <- ""
   expect_error(fire_exp(5),
                "`hazard` must be a SpatRaster object")
   expect_error(fire_exp(haz * 2),
                "`hazard` layer must have values between 0-1")
-  expect_error(fire_exp(haz, tdist = "x"),
-               "'arg' should be one of")
+  expect_warning(fire_exp(haz, tdist = "l"),
+               "use of the 'tdist' parameter has been deprecated.")
+  expect_error(fire_exp(haz, t_dist = c("l", 3)),
+               "only one value")
+  expect_error(fire_exp(haz, t_dist = nb),
+               "`t_dist` must be numeric")
   expect_message(fire_exp(nocrsh),
                  "Input CRS is undefined:")
   expect_error(fire_exp(terra::rescale(haz, 2)),
-               "Insufficient resolution for l")
-  expect_error(fire_exp(haz, tdist = "s"),
-               "Insufficient resolution for short")
-  expect_error(fire_exp(haz, tdist = "r"),
-               "Insufficient resolution for rad")
+               "insufficient resolution for ")
+  expect_error(fire_exp(haz, t_dist = 100),
+               "insufficient resolution for")
+  expect_error(fire_exp(haz, t_dist = 30),
+               "insufficient resolution for ")
   expect_error(fire_exp(smallhaz),
                "Extent of hazard raster too small for exposure assessment")
   expect_error(fire_exp(haz, no_burn = 5),
