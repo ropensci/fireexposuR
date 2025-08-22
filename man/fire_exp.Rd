@@ -4,14 +4,18 @@
 \alias{fire_exp}
 \title{Compute the wildfire exposure metric}
 \usage{
-fire_exp(hazard, tdist = c("l", "s", "r"), no_burn)
+fire_exp(hazard, t_dist = 500, no_burn, tdist)
 }
 \arguments{
 \item{hazard}{a SpatRaster that represents hazardous fuels for the
 transmission distance specified in tdist}
 
-\item{tdist}{a character vector, can be: \code{"l"} for long-range
-embers (Default), \code{"s"} for short-range embers or, \code{"r"} for radiant heat}
+\item{t_dist}{Numeric. Provide a value in meters for the transmission
+distance. The default is \code{500} for long-range embers/landscape fire
+exposure. Use \code{100} for short-range embers, \code{30} for radiant heat, or
+provide a custom distance. See details for the reasoning behind the
+recommended transmission distances and precautions about using a custom
+one.}
 
 \item{no_burn}{(optional) a SpatRaster that represents the non-burnable
 landscape. Any cells that cannot receive wildfire (e.g. open water, rock)
@@ -19,6 +23,11 @@ and any cells that are not natural (e.g. built environment,
 irrigated agricultural areas) should be of value 1, all other cells
 should be NODATA. This parameter should be provided if preparing data
 for \code{\link[=fire_exp_validate]{fire_exp_validate()}}}
+
+\item{tdist}{Deprecated. Use \code{t_dist}. This parameter will be removed in
+future versions of the package. Choose from: \code{"l"} for long-range
+embers (500 m), \code{"s"} for short-range embers (100 m), \code{"r"}
+for radiant heat (30 m)}
 }
 \value{
 A SpatRaster object of exposure values between 0-1
@@ -46,7 +55,7 @@ are capable of transmitting fire at different scales. The transmission
 distances define a potential maximum spread distance from an ignition
 source. If the default distances do not accurately represent fire behaviour
 in your area of interest you can adjust them with \code{\link[=fire_exp_adjust]{fire_exp_adjust()}}.
-\subsection{Radiant heat}{
+\subsection{Radiant heat (30 m)}{
 
 The default transmission distance for radiant heat is 30 meters. At this
 scale of wildfire transmission wildfire can spread from direct flame contact
@@ -59,7 +68,7 @@ Embers (AKA firebrands) can be carried by wind beyond the active fire front.
 To determin two different ember spreading distances Beverly et al. (2010)
 reviewed fire-spot distance observations and applied predictive models to
 verify these distances were a reasonable assumption.
-\subsection{Short-range embers}{
+\subsection{Short-range embers (100 m)}{
 
 The default transmission distance for short-range embers is 100 meters. Some
 fuel types have the potential to produce embers over short distances. An
@@ -69,7 +78,7 @@ will also be hazardous to transmit fire via radiant heat or direct flame
 contact.
 }
 
-\subsection{Long-range embers}{
+\subsection{Long-range embers (500 m)}{
 
 The default transmission distance for long-range embers is 500 meters.
 Some fuel types have the potential to transmit embers across large distances.
@@ -85,10 +94,21 @@ conditions, these cases are relatively uncommon.
 
 The 500 meter spread distance has been further validated across Alberta
 (Beverly et al. 2021), in Alaska (Schmidt et al. 2024), across the entire
-Canadian landbase (manuscript in preparation), and in Portugal (manuscript
-in preparation).
+Canadian landbase (manuscript in preparation), and in Portugal (Khan et al.
+2025).
 }
 
+}
+
+\subsection{Setting a custom transmission distance}{
+
+If the transmission distances from the wildfire exposure literature are not
+representative of the wildland fuels in your area of interest, this function
+can be used to change the transmission distance to a custom distance. It is
+highly recommended that any exposure layers produced with this function are
+validated with observed fire history using the \code{\link[=fire_exp_validate]{fire_exp_validate()}}
+function. See methods of validation in Beverly et al. 2021, Schmidt et al.
+2024, and Khan et al. 2025 for more discussion on validation.
 }
 
 }
@@ -119,11 +139,14 @@ and examples.
 
 A separate hazard raster should be prepared for each of the transmission
 distances of interest. There are also minimum spatial resolution and extent
-requirements for each transmission distances.
+requirements for each transmission distances.For a specified transmission
+distance, the spatial resolution must be at least 3 times finer. For example,
+for a transmission distance of 300 meters the input data should have a
+resolution of 100 meters or finer.
 
 Long-range embers:
 \itemize{
-\item minimum raster resolution is 150 meters
+\item minimum raster resolution is ~ 150 meters
 \item The dimensions of the data must be wider/taller than 1000 meters because
 500 meters of data will be lost along the perimeter due to edge effects
 }
@@ -146,8 +169,8 @@ Radiant heat:
 \subsection{Spatial Reference}{
 
 The exposure raster will be returned in the same CRS as the input hazard
-layer. A crs must be defined if the outputs will be used in other functions
-in this package.
+layer. A crs must be defined if the output will be used as an input to other
+functions in this package.
 }
 
 }
@@ -158,7 +181,7 @@ hazard_file_path <- "extdata/hazard.tif"
 hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 
 # compute long range exposure
-fire_exp(hazard, tdist = "l")
+fire_exp(hazard, tdist = "long")
 
 }
 \references{
@@ -176,6 +199,11 @@ FireSmart Canada (2018) Wildfire exposure assessment guidebook. Available
 
 Hijmans R (2024). \emph{terra: Spatial Data Analysis}. R package version 1.7-78,
 \href{https://CRAN.R-project.org/package=terra}{CRAN}.
+
+Khan SI, Colaço MC, Sequeira AC, Rego FC, Beverly JL (2025) Validating a
+landscape metric to map fire exposure to hazardous fuels in Portugal.
+\emph{Natural Hazards} \strong{121}, 16273–16295.
+\doi{10.1007/s11069-025-07424-8}
 
 Schmidt JI, Ziel RH, Calef MP, Varvak A (2024) Spatial distribution of
 wildfire threat in the far north: exposure assessment in boreal communities.

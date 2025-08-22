@@ -46,12 +46,17 @@ test_that("fire_exp() input checks and function messages work", {
 })
 
 test_that("fire_exp() returns object with correct class", {
+  haz <- haz()
+  nb <- nb()
   expect_s4_class(fire_exp(haz), "SpatRaster")
   expect_s4_class(fire_exp(haz, no_burn = nb), "SpatRaster")
 })
 
 test_that("fire_exp() runs when input conditions are met", {
+  haz <- haz()
+  nb <- nb()
   expect_no_condition(fire_exp(haz))
+  expect_no_condition(fire_exp(haz, t_dist = 800))
   expect_no_condition(fire_exp(haz * 0.5))
   expect_no_condition(fire_exp(haz, no_burn = nb))
 })
