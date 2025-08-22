@@ -21,12 +21,10 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/ropensci/fireexposuR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ropensci/fireexposuR/actions/workflows/R-CMD-check.yaml)
-
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-
 [![Status at rOpenSci Software Peer
 Review](https://badges.ropensci.org/659_status.svg)](https://github.com/ropensci/software-review/issues/659)
-
+[![CRAN status](https://www.r-pkg.org/badges/version/fireexposuR)](https://CRAN.R-project.org/package=fireexposuR)
 <!-- badges: end -->
 
 `firexposuR` is an R package for computing and visualizing wildfire

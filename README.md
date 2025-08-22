@@ -6,14 +6,13 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/ropensci/fireexposuR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ropensci/fireexposuR/actions/workflows/R-CMD-check.yaml)
-
 [![Project Status: Active – The project has reached a stable, usable
 state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-
 [![Status at rOpenSci Software Peer
 Review](https://badges.ropensci.org/659_status.svg)](https://github.com/ropensci/software-review/issues/659)
-
+[![CRAN
+status](https://www.r-pkg.org/badges/version/fireexposuR)](https://CRAN.R-project.org/package=fireexposuR)
 <!-- badges: end -->
 
 `firexposuR` is an R package for computing and visualizing wildfire
@@ -21,13 +20,17 @@ exposure. The outputs from wildfire exposure assessments can be utilized
 as decision support tools for wildfire management across variable
 temporal horizons and spatial extents.
 
-> **An important note for current (and past) Prometheus users**
+> **An important note for current (and past) Prometheus and Burn-P3
+> users**
 >
-> If Prometheus has *ever* been installed on your device you must take
-> some additional steps before loading this package (and most other R
-> packages that manipulate spatial data). Please go through the steps in
-> `vignette("prometheus")` even if you have since uninstalled the
-> program from your computer.
+> If [Prometheus](https://firegrowthmodel.ca/#/prometheus_overview) or
+> [Burn-P3](https://firegrowthmodel.ca/#/burnp3_overview) have *ever*
+> been installed on your device you must take some additional steps
+> before loading this package (and most other R packages that manipulate
+> spatial data). Please go through the steps in `vignette("prometheus")`
+> even if you have since uninstalled these programs from your computer
+> to check for interferance or you will get unexpected errors related to
+> the GDAL library.
 
 ## Package Overview
 
@@ -122,6 +125,12 @@ decision support or further analysis.
 
 ## Installation
 
+You can install the stable version of fireexposuR from CRAN with:
+
+``` r
+install.packages("fireexposuR")
+```
+
 You can install the development version of fireexposuR from R-Universe
 with:
 
@@ -142,7 +151,7 @@ library(fireexposuR)
 
 # load the terra library for spatial data functions
 library(terra)
-#> terra 1.8.21
+#> terra 1.8.50
 
 # read example hazard data
 hazard_file_path <- "extdata/hazard.tif"
@@ -171,6 +180,8 @@ campground, etc.) shown in red.
 ``` r
 # compute long-range ember exposure by setting transmission distance to "l"
 exposure <- fire_exp(hazard, tdist = "l")
+#> Warning in fire_exp(hazard, tdist = "l"): use of the 'tdist' parameter has been deprecated.
+#>             Use 't_dist' with a numeric value instead
 
 # compute directional exposure toward the value with default parameters
 dir_exposure <- fire_exp_dir(exposure, aoi)
