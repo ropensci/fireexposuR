@@ -2,7 +2,7 @@
 % Please edit documentation in R/fire_exp_map_class.R
 \name{fire_exp_map_class}
 \alias{fire_exp_map_class}
-\title{Map exposure with a classified scale}
+\title{Map exposure with a classified scale (Deprecated)}
 \usage{
 fire_exp_map_class(
   exposure,
@@ -40,8 +40,9 @@ is \code{"Classified Exposure"}}
 a standardized map is returned as a ggplot object
 }
 \description{
-\code{fire_exp_map_class()} produces a standardized map by
-classifying exposure into predetermined exposure classes.
+This function still works, but will be removed in future
+versions of the package. The same functionality is now included in
+\code{\link[=fire_exp_map]{fire_exp_map()}}. .
 }
 \details{
 This function returns a standardized map with basic cartographic elements.
@@ -94,12 +95,9 @@ more information on zoom levels.
 hazard_file_path <- "extdata/hazard.tif"
 hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 
-# read example area of interest geometry
-geom_file_path <- "extdata/polygon_geometry.csv"
-geom <- read.csv(system.file(geom_file_path, package = "fireexposuR"))
-
-# generate example area of interest polygon with geometry
-aoi <- terra::vect(as.matrix(geom), "polygons", crs = hazard)
+# read example area of interest
+polygon_path <- system.file("extdata", "polygon.shp", package ="fireexposuR")
+aoi <- terra::vect(polygon_path)
 
 # compute exposure
 exposure <- fire_exp(hazard)
