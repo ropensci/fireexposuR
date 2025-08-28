@@ -188,7 +188,7 @@ fire_exp_extract_map <- function(values_ext,
     tmap::tm_scalebar(position = tmap::tm_pos_out("center", "bottom"),
                       text.size = 0.9) +
     tmap::tm_layout(inner.margins = 0.1) +
-    tmap::tm_crs("EPSG:3857")
+    tmap::tm_crs("auto")
 
 
   return(plt)
