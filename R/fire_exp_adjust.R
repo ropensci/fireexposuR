@@ -50,8 +50,6 @@
 #'
 fire_exp_adjust <- function(hazard, tdist, no_burn) {
 
-  .Deprecated("fire_exp")
-
   stopifnot("`hazard` must be a SpatRaster object"
             = class(hazard) == "SpatRaster",
             "`hazard` layer must have values between 0-1"
@@ -80,6 +78,7 @@ fire_exp_adjust <- function(hazard, tdist, no_burn) {
   stopifnot("insufficient resolution for chosen exposure transmission distance"
             = res <= tdist / 3)
 
+  .Deprecated("fire_exp")
 
   annulus <- c(res, tdist)
   window <- MultiscaleDTM::annulus_window(annulus, "map", res)
@@ -87,9 +86,9 @@ fire_exp_adjust <- function(hazard, tdist, no_burn) {
   exp <- terra::focal(hazard, wgtwindow, fun = sum) %>%
     tidyterra::rename(exposure = "focal_sum")
   if (missing(no_burn)) {
-    return(exp)
+    exp
   } else {
     expb <- terra::mask(exp, no_burn, inverse = TRUE)
-    return(expb)
+    expb
   }
 }
