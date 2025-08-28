@@ -1,8 +1,9 @@
-#' Map exposure with a continuous scale
+#' Map exposure with a continuous scale (Deprecated)
 #'
-#' @description `fire_exp_map_cont()` produces a standardized map of exposure
-#' with a continuous scale for the full extent of the data or masked to an area
-#' of interest.
+#' @description This function still works, but will be removed in future
+#' versions of the package. The same functionality is now included in
+#'  [fire_exp_map()]. .
+#'
 #'
 #' @details
 #' This function returns a standardized map with basic cartographic elements.
@@ -35,6 +36,7 @@
 #' fire_exp_map_cont(exposure)
 #'
 fire_exp_map_cont <- function(exposure, aoi, title = "Wildfire Exposure") {
+
   stopifnot("`exposure` must be a SpatRaster object"
             = class(exposure) == "SpatRaster",
             "`exposure` layer must have values between 0-1"
@@ -55,6 +57,8 @@ fire_exp_map_cont <- function(exposure, aoi, title = "Wildfire Exposure") {
     r <- terra::crop(exp, aoi) %>%
       terra::mask(aoi)
   }
+
+  .Deprecated("fire_exp_map")
 
   plt <- ggplot2::ggplot() +
     tidyterra::geom_spatraster(data = r) +

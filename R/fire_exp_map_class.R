@@ -1,7 +1,8 @@
-#' Map exposure with a classified scale
+#' Map exposure with a classified scale (Deprecated)
 #'
-#' @description `fire_exp_map_class()` produces a standardized map by
-#' classifying exposure into predetermined exposure classes.
+#' @description This function still works, but will be removed in future
+#' versions of the package. The same functionality is now included in
+#'  [fire_exp_map()]. .
 #'
 #'
 #' @details
@@ -88,6 +89,8 @@ fire_exp_map_class <- function(exposure, aoi, classify = c("local", "landscape",
                                                            "custom"),
                                class_breaks, zoom_level,
                                title = "Classified Exposure") {
+
+
   stopifnot("`exposure` must be a SpatRaster object"
             = class(exposure) == "SpatRaster",
             "`exposure` layer must have values between 0-1"
@@ -146,6 +149,8 @@ fire_exp_map_class <- function(exposure, aoi, classify = c("local", "landscape",
             = max(class_breaks) == 1)
   stopifnot("`class_breaks` must be greater than 0"
             = class_breaks > 0)
+
+  .Deprecated("fire_exp_map")
 
   class_labels <- character()
 
