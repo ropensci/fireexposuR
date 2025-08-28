@@ -174,7 +174,7 @@ hazard_file_path <- "extdata/hazard.tif"
 hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 
 # generate an example point
-point_wkt <- "POINT (400000 6050000)"
+point_wkt <- "POINT (345000 5876000)"
 point <- terra::vect(point_wkt, crs = hazard)
 
 # compute exposure metric

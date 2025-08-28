@@ -1,7 +1,7 @@
 test_that("fire_exp() input checks and function messages work", {
   haz <- haz()
   nb <- nb()
-  v <- pol()
+  v <- polygon()
   smallhaz <- terra::crop(haz, terra::rescale(v, 0.5), mask = TRUE)
   nocrsh <- haz
   terra::crs(nocrsh) <- ""
@@ -12,7 +12,7 @@ test_that("fire_exp() input checks and function messages work", {
   expect_error(fire_exp(haz * 2),
                "`hazard` layer must have values between 0-1")
   expect_warning(fire_exp(haz, tdist = "l"),
-               "use of the 'tdist' parameter has been deprecated.")
+                 "use of the 'tdist' parameter has been deprecated.")
   expect_error(fire_exp(haz, t_dist = c("l", 3)),
                "only one value")
   expect_error(fire_exp(haz, t_dist = nb),
