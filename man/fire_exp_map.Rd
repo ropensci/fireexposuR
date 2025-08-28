@@ -70,9 +70,8 @@ Landscape classification breaks are predefined as \code{c(0.2, 0.4, 0.6, 0.8, 1)
 }
 \subsection{Spatial reference}{
 
-This function dynamically pulls map tiles for a base map. The inputs are
-projected to WGS 84/Pseudo-Mercator (\href{https://epsg.io/3857}{EPSG:3857}) to
-align them with the map tiles.
+This function dynamically pulls map tiles for a base map. The crs is set
+automatically. See \code{\link[tmap:tm_crs]{tmap::tm_crs()}} for details.
 }
 }
 \examples{

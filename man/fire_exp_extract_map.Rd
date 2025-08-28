@@ -9,7 +9,6 @@ fire_exp_extract_map(
   classify = c("local", "landscape", "custom"),
   class_breaks,
   method = c("max", "mean"),
-  zoom_level,
   title = "Classified Exposure to Values"
 )
 }
@@ -27,23 +26,20 @@ to specify classification scheme to use. The default is \code{"local"}. If set t
 polygons the default is \code{"max"}.This parameter is ignored when \code{values_ext}
 are point features.}
 
-\item{zoom_level}{(Optional). Numeric. Ignored when \code{map = FALSE}. set the
-zoom level for the base map tile. See details. Defaults if:
-\itemize{
-\item \code{classify = "local"} or \code{"custom"} the zoom level default is \code{12}
-\item \code{classify = "landscape"} the zoom level default is \code{7}
-}}
-
 \item{title}{(Optional) String. Ignored when \code{map = FALSE}. A custom title
 for the plot. The default is \code{"Classified Exposure to Values"}}
 }
 \value{
-a summary table is returned as a ggplot object
+a map is returned as a tmap object
 }
 \description{
 \code{fire_exp_extract_map()} standardizes the visualization of
 outputs from \code{\link[=fire_exp_extract]{fire_exp_extract()}} as a map by classifying
 exposure into predetermined exposure classes.
+
+The plot is returned as a tmap object which can be further customized using
+tmap commands or exported/saved to multiple image file formats. See
+\code{\link[tmap:tmap_save]{tmap::tmap_save()}} for export details.
 }
 \details{
 This function visualizes the outputs from \code{\link[=fire_exp_extract]{fire_exp_extract()}} with classes.
@@ -73,18 +69,8 @@ as \code{c(0.2, 0.4, 0.6, 0.8, 1)}:
 }
 \subsection{Spatial reference}{
 
-This function dynamically pulls map tiles for a base map when \code{map = TRUE}.
-The inputs are projected to WGS 84/Pseudo-Mercator
-(\href{https://epsg.io/3857}{EPSG:3857}) to align them with the map tiles.
-}
-
-\subsection{Zoom level}{
-
-The map tile zoom level may need to be adjusted. If the base map is blurry,
-increase the zoom level. Higher zoom levels will slow down the function, so
-only increase if necessary. Reference the
-\href{https://wiki.openstreetmap.org/wiki/Zoom_levels}{OpenStreetMap Wiki} for
-more information on zoom levels.
+This function dynamically pulls map tiles for a base map. The crs is set
+automatically. See \code{\link[tmap:tm_crs]{tmap::tm_crs()}} for details.
 }
 }
 \examples{
@@ -92,15 +78,12 @@ more information on zoom levels.
 hazard_file_path <- "extdata/hazard.tif"
 hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 
-# read example area of interest geometry
-geom_file_path <- "extdata/polygon_geometry.csv"
-geom <- read.csv(system.file(geom_file_path, package = "fireexposuR"))
-
-# generate an area of interest polygon with the geometry
-aoi <- terra::vect(as.matrix(geom), "polygons", crs = hazard)
+# read example area of interest
+polygon_path <- system.file("extdata", "polygon.shp", package ="fireexposuR")
+aoi <- terra::vect(polygon_path)
 
 # generate random points within the aoi polygon
-points <- terra::spatSample(aoi, 100)
+points <- terra::spatSample(aoi, 20)
 
 # compute exposure
 exposure <- fire_exp(hazard)

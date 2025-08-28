@@ -4,6 +4,10 @@
 #' outputs from [fire_exp_extract()] as a map by classifying
 #' exposure into predetermined exposure classes.
 #'
+#' The plot is returned as a tmap object which can be further customized using
+#' tmap commands or exported/saved to multiple image file formats. See
+#' [tmap::tmap_save()] for export details.
+#'
 #' @details
 #' This function visualizes the outputs from [fire_exp_extract()] with classes.
 #' Classes can be chosen from the pre-set `"local"` and `"landscape"` options,
@@ -29,16 +33,8 @@
 #'
 #' ## Spatial reference
 #'
-#' This function dynamically pulls map tiles for a base map when `map = TRUE`.
-#' The inputs are projected to WGS 84/Pseudo-Mercator
-#' ([EPSG:3857](https://epsg.io/3857)) to align them with the map tiles.
-#'
-#' ## Zoom level
-#' The map tile zoom level may need to be adjusted. If the base map is blurry,
-#' increase the zoom level. Higher zoom levels will slow down the function, so
-#' only increase if necessary. Reference the
-#' [OpenStreetMap Wiki](https://wiki.openstreetmap.org/wiki/Zoom_levels) for
-#' more information on zoom levels.
+#' This function dynamically pulls map tiles for a base map. The crs is set
+#' automatically. See [tmap::tm_crs()] for details.
 #'
 #'
 #'
@@ -56,7 +52,7 @@
 #'
 #'
 #'
-#' @return a summary table is returned as a ggplot object
+#' @return a map is returned as a tmap object
 #'
 #' @export
 #'
@@ -84,7 +80,6 @@ fire_exp_extract_map <- function(values_ext,
                                  classify = c("local", "landscape", "custom"),
                                  class_breaks,
                                  method = c("max", "mean"),
-                                 zoom_level,
                                  title = "Classified Exposure to Values") {
   ext <- values_ext
   stopifnot("`values_ext` must be a SpatVector of point or polygon features"

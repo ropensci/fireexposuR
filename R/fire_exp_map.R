@@ -169,7 +169,7 @@ fire_exp_map <- function(exposure, aoi, classify,
   }
 
   if (!missing(aoi)) {
-    plt <- plt + tmap::tm_shape(aoi) +
+    plt <- plt + tmap::tm_shape(sf::st_as_sf(aoi)) +
       tmap::tm_borders(lwd = 2)
   }
 
