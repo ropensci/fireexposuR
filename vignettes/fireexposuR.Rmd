@@ -154,7 +154,7 @@ library(terra)
 
 
 # PLEASE NOTE: The following code is to demonstrate an example workflow. The
-# referenced input data does not exist. 
+# referenced input data does not exist.
 
 # read raster of wildland fuels hazardous for long-range ember transmission
 hazard_long <- rast("long_range_hazard.tif")
@@ -220,7 +220,7 @@ library(fireexposuR)
 library(terra)
 
 # PLEASE NOTE: The following code is to demonstrate an example workflow. The
-# referenced input data does not exist. 
+# referenced input data does not exist.
 
 # read raster of wildland fuels hazardous for long-range ember transmission
 hazard_long <- rast("long_range_hazard.tif")
@@ -304,7 +304,7 @@ library(fireexposuR)
 library(terra)
 
 # PLEASE NOTE: The following code is to demonstrate an example workflow. The
-# referenced input data does not exist. 
+# referenced input data does not exist.
 
 # read long-range ember hazard raster
 hazard <- rast("hazard.tif")
@@ -333,7 +333,7 @@ library(fireexposuR)
 library(terra)
 
 # PLEASE NOTE: The following code is to demonstrate an example workflow. The
-# referenced input data does not exist. 
+# referenced input data does not exist.
 
 # read long-range ember hazard raster
 hazard <- rast("hazard.tif")
@@ -369,7 +369,7 @@ library(fireexposuR)
 library(terra)
 
 # PLEASE NOTE: The following code is to demonstrate an example workflow. The
-# referenced input data does not exist. 
+# referenced input data does not exist.
 
 # read long-range ember hazard raster: option A
 hazard_a <- rast("hazard_a.tif")

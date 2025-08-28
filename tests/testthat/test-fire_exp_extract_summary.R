@@ -15,7 +15,7 @@ test_that("fire_exp_extract_summary() input checks work", {
   expect_error(fire_exp_extract_summary(ext_pols, classify = "blah"),
                "'arg' should be one of")
   expect_error(fire_exp_extract_summary(ext_pts, classify = "custom",
-                                    class_breaks = c("a", "b")),
+                                        class_breaks = c("a", "b")),
                "`class_breaks` must be a vector of numbers")
   expect_error(fire_exp_extract_summary(ext_pts, classify = "custom",
                                         class_breaks = c(0.2, 0.8)),
