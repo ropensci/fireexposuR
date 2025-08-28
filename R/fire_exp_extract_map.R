@@ -178,12 +178,15 @@ fire_exp_extract_map <- function(values_ext,
   }
 
   plt <- plt + tmap::tm_basemap("Esri.WorldImagery") +
-    tmap::tm_credits("Basemap: Esri World Imagery") +
+    tmap::tm_credits("Basemap: Esri World Imagery",
+                     color = "white") +
     tmap::tm_title(title) +
     tmap::tm_compass(
       type = "arrow",
       position = c("LEFT", "BOTTOM"),
-      color.light = "white"
+      color.light = "black",
+      color.dark = "white",
+      text.color = "white"
     ) +
     tmap::tm_scalebar(position = tmap::tm_pos_out("center", "bottom"),
                       text.size = 0.9) +
