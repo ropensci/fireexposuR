@@ -21,10 +21,12 @@ Imports:
     maptiles,
     MultiscaleDTM,
     rlang,
+    sf,
     terra,
     tidyr,
     tidyselect,
-    tidyterra
+    tidyterra,
+    tmap
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.2
