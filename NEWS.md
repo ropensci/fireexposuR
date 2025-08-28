@@ -12,6 +12,7 @@ The functionality of these has been merged into a new function: `fire_exp_map()`
 functions in the package
 * example data is now for a real location, allowing for more interpretation of
 results in the vignettes
+* maps are now built with tmap library to improve basemaps and components
 
 # fireexposuR 1.1.0 (January 31, 2025)
 
