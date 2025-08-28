@@ -157,12 +157,9 @@ library(terra)
 hazard_file_path <- "extdata/hazard.tif"
 hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 
-# read example polygon geometry for area of interest boundary
-geom_file_path <- "extdata/polygon_geometry.csv"
-geom <- read.csv(system.file(geom_file_path, package = "fireexposuR"))
-
-# use geometry to make an area of interest polygon
-aoi <- terra::vect(as.matrix(geom), "polygons", crs = hazard)
+# read example area of interest
+polygon_path <- system.file("extdata", "polygon.shp", package ="fireexposuR")
+aoi <- terra::vect(polygon_path)
 ```
 
 The `hazard` layer is a binary raster where a value of 1 represents
@@ -178,10 +175,8 @@ campground, etc.) shown in red.
 ### Compute exposure
 
 ``` r
-# compute long-range ember exposure by setting transmission distance to "l"
-exposure <- fire_exp(hazard, tdist = "l")
-#> Warning in fire_exp(hazard, tdist = "l"): use of the 'tdist' parameter has been deprecated.
-#>             Use 't_dist' with a numeric value instead
+# compute long-range ember exposure
+exposure <- fire_exp(hazard, t_dist = 500)
 
 # compute directional exposure toward the value with default parameters
 dir_exposure <- fire_exp_dir(exposure, aoi)
@@ -189,8 +184,10 @@ dir_exposure <- fire_exp_dir(exposure, aoi)
 
 These objects can be exported using the terra library if the user
 prefers visualizing and conducting further analysis outside of the R
-environment (e.g. a GIS). - The `exposure` layer can be exported as a
-raster - The `dir_exposure` layer can be exported as a shapefile
+environment (e.g. a GIS).
+
+- The `exposure` layer can be exported as a raster
+- The `dir_exposure` layer can be exported as a shapefile
 
 ### Visualize exposure
 
@@ -199,15 +196,18 @@ package.
 
 ``` r
 # map the full extent of the exposure raster with a continuous scale
-fire_exp_map_cont(exposure)
+fire_exp_map(exposure)
+#> [basemaps] Tiles from "Esri.WorldImagery" will be projected so details (e.g.
+#> text) could appear blurry
+#> This message is displayed once per session.
 ```
 
 <img src="man/figures/README-visualize-1.png" width="100%" />
 
 ``` r
 
-# map exposure classes within the area of interest with a base map
-fire_exp_map_class(exposure, aoi, classify = "landscape", zoom_level = 13)
+# map exposure classes within the area of interest
+fire_exp_map(exposure, aoi, classify = "local")
 ```
 
 <img src="man/figures/README-visualize-2.png" width="100%" />
