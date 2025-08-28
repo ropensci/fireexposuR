@@ -8,7 +8,6 @@ reference:
     Functions for automating wildfire exposure methods
   contents:
   - fire_exp
-  - fire_exp_adjust
   - fire_exp_dir
   - fire_exp_extract
   - fire_exp_validate
@@ -17,10 +16,19 @@ reference:
     Functions for visualizing wildfire exposure outputs in R
   contents:
   - fire_exp_summary
-  - fire_exp_map_class
-  - fire_exp_map_cont
-  - fire_exp_extract_vis
+  - fire_exp_map
+  - fire_exp_extract_summary
+  - fire_exp_extract_map
   - fire_exp_dir_map
   - fire_exp_dir_plot
   - fire_exp_dir_multi
   - fire_exp_validate_plot
+
+- title: "Deprecated"
+  desc: >
+    These functions have been replaced and will be removed in future versions
+  contents:
+  - fire_exp_adjust
+  - fire_exp_map_class
+  - fire_exp_map_cont
+  - fire_exp_extract_vis
