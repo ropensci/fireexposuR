@@ -1,6 +1,17 @@
 # fireexposuR (development version)
 
 * Continuous improvement of documentation and resources
+* use of `fire_exp_adjust()` has been deprecated. The functionality has been added
+to `fire_exp()` instead.
+* `fire_exp()` now takes a numeric value for the transmission distance (`t_dist`).
+    * parameter `tdist` will still work, but return a message to update code
+* use of `fire_exp_map_cont()` and `fire_exp_map_class()` have been deprecated.
+The functionality of these has been merged into a new function: `fire_exp_map()`
+* split `fire_exp_extract_vis()` into two separate functions: 
+`fire_exp_extract_summary()`, `fire_exp_dir_map()` to be consistent with other
+functions in the package
+* example data is now for a real location, allowing for more interpretation of
+results in the vignettes
 
 # fireexposuR 1.1.0 (January 31, 2025)
 
