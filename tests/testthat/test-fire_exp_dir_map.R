@@ -24,7 +24,7 @@ test_that("fire_exp_dir_map() returns objects with correct class", {
 
   t_pt <- fire_exp_dir(exp, pt)
   t_pol <- fire_exp_dir(exp, v)
-  expect_s3_class(suppressMessages(fire_exp_dir_map(t_pt)), "ggplot")
+  expect_s3_class(suppressMessages(fire_exp_dir_map(t_pt)), "tmap")
 })
 
 test_that("fire_exp_dir_map() runs when input conditions are met", {

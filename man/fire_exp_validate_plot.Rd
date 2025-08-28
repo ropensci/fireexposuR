@@ -13,8 +13,8 @@ fire_exp_validate_plot(
 \arguments{
 \item{validation_table}{The output table from \code{\link[=fire_exp_validate]{fire_exp_validate()}}}
 
-\item{what}{string. Which plot should be returned? Can be \code{sample}, \code{total},
-or \code{"both"} (Default)}
+\item{what}{string. Which plot should be returned? Can be \code{"sample"},
+\code{"total"},or \code{"both"} (Default)}
 
 \item{title}{Optional. String. Add a custom title to the plot.}
 }
@@ -30,10 +30,8 @@ a ggplot object
 hazard_file_path <- "extdata/hazard.tif"
 hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 
-# generate example non-burnable cells data
-geom_file_path <- "extdata/polygon_geometry.csv"
-geom <- read.csv(system.file(geom_file_path, package = "fireexposuR"))
-polygon <- terra::vect(as.matrix(geom), "polygons", crs = hazard)
+polygon_path <- system.file("extdata", "polygon.shp", package ="fireexposuR")
+polygon <- terra::vect(polygon_path)
 no_burn <- terra::rasterize(polygon, hazard)
 
 # generate example fire polygons by buffering random points

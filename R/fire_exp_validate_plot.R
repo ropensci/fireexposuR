@@ -6,8 +6,8 @@
 #' @seealso [fire_exp_validate()]
 #'
 #' @param validation_table The output table from [fire_exp_validate()]
-#' @param what string. Which plot should be returned? Can be `sample`, `total`,
-#'  or `"both"` (Default)
+#' @param what string. Which plot should be returned? Can be `"sample"`,
+#'  `"total"`,or `"both"` (Default)
 #' @param title Optional. String. Add a custom title to the plot.
 #'
 #' @return a ggplot object
@@ -19,10 +19,9 @@
 #' hazard_file_path <- "extdata/hazard.tif"
 #' hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 #'
-#' # generate example non-burnable cells data
-#' geom_file_path <- "extdata/polygon_geometry.csv"
-#' geom <- read.csv(system.file(geom_file_path, package = "fireexposuR"))
-#' polygon <- terra::vect(as.matrix(geom), "polygons", crs = hazard)
+# generate example non-burnable cells data
+#' polygon_path <- system.file("extdata", "polygon.shp", package ="fireexposuR")
+#' polygon <- terra::vect(polygon_path)
 #' no_burn <- terra::rasterize(polygon, hazard)
 #'
 #' # generate example fire polygons by buffering random points
