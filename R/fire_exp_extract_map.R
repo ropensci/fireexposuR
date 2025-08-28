@@ -51,10 +51,6 @@
 #' @param method character, either `"max"` or `"mean"`. If `values_ext` are
 #' polygons the default is `"max"`.This parameter is ignored when `values_ext`
 #' are point features.
-#' @param zoom_level (Optional). Numeric. Ignored when `map = FALSE`. set the
-#' zoom level for the base map tile. See details. Defaults if:
-#' * `classify = "local"` or `"custom"` the zoom level default is `12`
-#' * `classify = "landscape"` the zoom level default is `7`
 #' @param title (Optional) String. Ignored when `map = FALSE`. A custom title
 #' for the plot. The default is `"Classified Exposure to Values"`
 #'
@@ -114,15 +110,12 @@ fire_exp_extract_map <- function(values_ext,
   classify <- match.arg(classify)
 
   if (classify == "landscape") {
-    zoom_level <- ifelse(missing(zoom_level), 7, zoom_level)
     class_breaks <- c(0.2, 0.4, 0.6, 0.8, 1)
   }
 
   if (classify == "local") {
     class_breaks <- c(0.15, 0.3, 0.45, 1)
   }
-
-  zoom_level <- ifelse(missing(zoom_level), 12, zoom_level)
 
   class_breaks <- sort(class_breaks)
 
@@ -170,53 +163,38 @@ fire_exp_extract_map <- function(values_ext,
                                                  palette = "bl_yl_rd"))
   names(cols) <- class_labels
 
-  v <- terra::project(ext_class, "EPSG: 3857") %>%
-    tidyr::drop_na("class")
-  e <- terra::rescale(v, 1.5)
-  tile <- maptiles::get_tiles(e, "Esri.WorldImagery", zoom = zoom_level) %>%
-    terra::crop(e)
+  if (terra::geomtype(ext_class) == "points") {
 
-  cred <- maptiles::get_credit("Esri.WorldImagery")
-  caption <- paste("Basemap", substr(cred, 1, 63), "\n",
-                   substr(cred, 63, nchar(cred)))
-
-  plt <- ggplot2::ggplot() +
-    tidyterra::geom_spatraster_rgb(data = tile, alpha = 0.7) +
-    ggspatial::annotation_scale(location = "bl") +
-    ggspatial::annotation_north_arrow(
-      location = "bl",
-      which_north = TRUE,
-      pad_y = grid::unit(0.3, "in"),
-      height = grid::unit(0.3, "in"),
-      width = grid::unit(0.3, "in")
-    ) +
-    ggplot2::theme_void() +
-    ggplot2::labs(
-      title = title,
-      subtitle = "Map generated with {fireexposuR}",
-      caption = caption
-    )
-
-  if (terra::geomtype(v) == "points") {
-    plt <- plt +
-      tidyterra::geom_spatvector(data = v,
-                                 ggplot2::aes(color =
-                                                factor(.data$class_range)),
-                                 shape = 16) +
-      ggplot2::scale_color_manual(values = cols,
-                                  na.value = "grey10") +
-      ggplot2::labs(color = "Exposure") +
-      ggplot2::coord_sf(expand = FALSE)
+    plt <- tmap::tm_shape(sf::st_as_sf(ext_class)) +
+      tmap::tm_symbols(
+        size = 0.6,
+        lwd = 2,
+        fill = "class_range",
+        fill.scale = tmap::tm_scale_categorical(values = cols),
+        fill.legend = tmap::tm_legend(title = "Exposure Class")
+      )
   } else {
-    plt <- plt +
-      tidyterra::geom_spatvector(data = v,
-                                 ggplot2::aes(fill =
-                                                factor(.data$class_range)),
-                                 color = NA) +
-      ggplot2::scale_fill_manual(values = cols,
-                                 na.value = "grey10") +
-      ggplot2::labs(fill = "Exposure") +
-      ggplot2::coord_sf(expand = FALSE)
+    plt <- tmap::tm_shape(sf::st_as_sf(ext_class)) +
+      tmap::tm_polygons(
+        fill = "class_range",
+        fill.scale = tmap::tm_scale_categorical(values = cols),
+        fill.legend = tmap::tm_legend(title = "Exposure Class")
+      )
   }
+
+  plt <- plt + tmap::tm_basemap("Esri.WorldImagery") +
+    tmap::tm_credits("Basemap: Esri World Imagery") +
+    tmap::tm_title(title) +
+    tmap::tm_compass(
+      type = "arrow",
+      position = c("LEFT", "BOTTOM"),
+      color.light = "white"
+    ) +
+    tmap::tm_scalebar(position = tmap::tm_pos_out("center", "bottom"),
+                      text.size = 0.9) +
+    tmap::tm_layout(inner.margins = 0.1) +
+    tmap::tm_crs("EPSG:3857")
+
+
   return(plt)
 }
