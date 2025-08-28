@@ -97,12 +97,6 @@ fire_exp_extract_vis <- function(values_ext,
                                  map = FALSE,
                                  zoom_level,
                                  title = "Classified Exposure to Values") {
-  if (map == TRUE) {
-    .Deprecated("fire_exp_extract_map")
-  } else {
-    .Deprecated("fire_exp_extract_summary")
-  }
-
   ext <- values_ext
   stopifnot("`values_ext` must be a SpatVector of point or polygon features"
             = (class(ext) == "SpatVector" &&
@@ -177,6 +171,7 @@ fire_exp_extract_vis <- function(values_ext,
   ext_class$class_range <- factor(ext_class$class_range, levels = names(lut2))
 
   if (map == TRUE) {
+    .Deprecated("fire_exp_extract_map")
 
     n_color <- length(class_breaks)
 
@@ -234,6 +229,8 @@ fire_exp_extract_vis <- function(values_ext,
     }
     return(plt)
   } else {
+    .Deprecated("fire_exp_extract_summary")
+
     df <- as.data.frame(ext_class) %>%
       dplyr::count(.data$class_range) %>%
       dplyr::mutate(prop = .data$n / sum(.data$n)) %>%
