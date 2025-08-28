@@ -88,5 +88,5 @@ fire_exp_extract <- function(exposure,
       dplyr::rename(max_exp = exposure)
     ext <- cbind(ext1, ext2)
   }
-  return(ext)
+  ext
 }
