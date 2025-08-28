@@ -30,7 +30,7 @@ test_that("fire_exp_dir() returns object with correct class", {
 
 test_that("fire_exp_dir() runs when input conditions are met", {
   pt <- pts(1)
-  v <- pol()
+  v <- polygon()
   exp <- exposure()
   expect_no_error(fire_exp_dir(exp, pt))
   expect_no_error(fire_exp_dir(exp, v))

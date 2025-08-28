@@ -1,6 +1,12 @@
 haz <- function() {
-  hazard_path <- system.file("extdata", "hazard.tif", package ="fireexposuR")
-  haz <- terra::rast(hazard_path)
+  hazard_path <- system.file("extdata", "hazard.tif", package = "fireexposuR")
+  terra::rast(hazard_path)
+
+}
+
+nb <- function() {
+  nb_path <- system.file("extdata", "nb.tif", package = "fireexposuR")
+  terra::rast(nb_path)
 }
 
 exposure <- function(nb) {
@@ -11,32 +17,19 @@ exposure <- function(nb) {
   }
 }
 
-pol <- function() {
-  haz <- haz()
-  geo_path <- system.file("extdata", "polygon_geometry.csv", package ="fireexposuR")
-  geo <- read.csv(geo_path)
-  terra::vect(as.matrix(geo), "polygons", crs = haz)
+polygon <- function() {
+  polygon_path <- system.file("extdata", "polygon.shp", package = "fireexposuR")
+  terra::vect(polygon_path)
 }
 
 pts <- function(n = 20) {
   haz <- haz()
-  v <- pol()
+  v <- polygon()
   terra::spatSample(v, n)
 }
 
-nb <- function() {
-  haz <- haz()
-  v <- pol()
-  terra::rasterize(v, haz)
-}
 
 fires <- function(n = 20) {
-  pts <- terra::spatSample(terra::rescale(haz(), 0.8), 20, as.points = TRUE)
+  pts <- terra::spatSample(terra::rescale(haz(), 0.8), n, as.points = TRUE)
   terra::buffer(pts, 800)
-}
-
-# landscape scale aoi
-aoi <- function() {
-  e <- c(39, 40, 604, 605) * 10000
-  terra::as.polygons(terra::ext(e), crs = haz())
 }

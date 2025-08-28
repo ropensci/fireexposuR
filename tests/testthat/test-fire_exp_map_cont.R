@@ -1,6 +1,6 @@
 test_that("fire_exp_map_cont() input checks and function messages work", {
   exp <- exposure()
-  v <- pol()
+  v <- polygon()
 
   cropexp <- terra::crop(exp, terra::rescale(v, 0.5))
 
@@ -9,6 +9,8 @@ test_that("fire_exp_map_cont() input checks and function messages work", {
   v2 <- v
   terra::crs(v2) <- ""
 
+  expect_warning(fire_exp_map_cont(exp),
+                 "'fire_exp_map_cont' is deprecated")
   expect_condition(fire_exp_map_cont(2),
                    "`exposure` must be a SpatRaster object")
   expect_condition(fire_exp_map_cont(exp * 2),
@@ -25,13 +27,13 @@ test_that("fire_exp_map_cont() input checks and function messages work", {
 
 test_that("fire_exp_map_cont() returns object with correct class", {
   exp <- exposure()
-  expect_s3_class(suppressMessages(fire_exp_map_cont(exp)), "ggplot")
+  expect_s3_class(suppressWarnings(fire_exp_map_cont(exp)), "ggplot")
 })
 
 test_that("fire_exp_map_cont() runs when input conditions are met", {
   exp <- exposure()
-  v <- pol()
+  v <- polygon()
   # messages suppressed because terra outputs a message for bigger rasters
-  expect_no_error(suppressMessages(fire_exp_map_cont(exp)))
+  expect_no_error(suppressMessages(suppressWarnings(fire_exp_map_cont(exp))))
   expect_no_error(suppressMessages(fire_exp_map_cont(exp, v)))
 })

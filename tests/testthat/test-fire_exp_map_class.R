@@ -1,6 +1,6 @@
 test_that("fire_exp_map_class() input checks and function messages work", {
   exp <- exposure()
-  v <- pol()
+  v <- polygon()
 
   cropexp <- terra::crop(exp, terra::rescale(v, 0.5))
 
@@ -27,13 +27,13 @@ test_that("fire_exp_map_class() input checks and function messages work", {
 
 test_that("fire_exp_map_class() returns object with correct class", {
   exp <- exposure()
-  v <- pol()
-  expect_s3_class(fire_exp_map_class(exp, aoi = v), "ggplot")
+  v <- polygon()
+  expect_s3_class(suppressWarnings(fire_exp_map_class(exp, aoi = v)), "ggplot")
 })
 
 test_that("fire_exp_map_class() runs when input conditions are met", {
   exp <- exposure()
-  v <- pol()
-  expect_no_error(fire_exp_map_class(exp, v, "lan"))
+  v <- polygon()
+  expect_no_error(suppressWarnings(fire_exp_map_class(exp, v, "lan")))
   expect_no_error(fire_exp_map_class(exp, v, "cus", class_breaks = c(0.2, 1)))
 })

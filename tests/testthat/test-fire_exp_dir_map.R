@@ -1,6 +1,6 @@
 test_that("fire_exp_dir_map() input checks work", {
   exp <- exposure()
-  v <- pol()
+  v <- polygon()
   pt <- pts(1)
 
   t_pt <- fire_exp_dir(exp, pt)
@@ -19,7 +19,7 @@ test_that("fire_exp_dir_map() input checks work", {
 
 test_that("fire_exp_dir_map() returns objects with correct class", {
   exp <- exposure()
-  v <- pol()
+  v <- polygon()
   pt <- pts(1)
 
   t_pt <- fire_exp_dir(exp, pt)
@@ -29,7 +29,7 @@ test_that("fire_exp_dir_map() returns objects with correct class", {
 
 test_that("fire_exp_dir_map() runs when input conditions are met", {
   exp <- exposure()
-  v <- pol()
+  v <- polygon()
   pt <- pts(1)
 
   t_pt <- fire_exp_dir(exp, pt)
