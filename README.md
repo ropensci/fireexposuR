@@ -151,7 +151,6 @@ library(fireexposuR)
 
 # load the terra library for spatial data functions
 library(terra)
-#> terra 1.8.50
 
 # read example hazard data
 hazard_file_path <- "extdata/hazard.tif"
@@ -170,7 +169,7 @@ The `aoi` layer is a polygon representing a localized area of interest
 (e.g., the built environment of a community, a sensitive habitat, a
 campground, etc.) shown in red.
 
-<img src="man/figures/README-map_inputs-1.png" width="100%" />
+<img src="man/figures/README-map_inputs-1.png" width="100%" style="display: block; margin: auto;" />
 
 ### Compute exposure
 
@@ -197,12 +196,9 @@ package.
 ``` r
 # map the full extent of the exposure raster with a continuous scale
 fire_exp_map(exposure)
-#> [basemaps] Tiles from "Esri.WorldImagery" will be projected so details (e.g.
-#> text) could appear blurry
-#> This message is displayed once per session.
 ```
 
-<img src="man/figures/README-visualize-1.png" width="100%" />
+<img src="man/figures/README-visualize-1.png" width="100%" style="display: block; margin: auto;" />
 
 ``` r
 
@@ -210,7 +206,7 @@ fire_exp_map(exposure)
 fire_exp_map(exposure, aoi, classify = "local")
 ```
 
-<img src="man/figures/README-visualize-2.png" width="100%" />
+<img src="man/figures/README-visualize-2.png" width="100%" style="display: block; margin: auto;" />
 
 ``` r
 
@@ -218,4 +214,4 @@ fire_exp_map(exposure, aoi, classify = "local")
 fire_exp_dir_map(dir_exposure, aoi)
 ```
 
-<img src="man/figures/README-visualize-3.png" width="100%" />
+<img src="man/figures/README-visualize-3.png" width="100%" style="display: block; margin: auto;" />

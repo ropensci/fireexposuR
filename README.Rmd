@@ -12,7 +12,9 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
-  out.width = "100%"
+  out.width = "100%",
+  fig.align = "center",
+  warning = FALSE, message = FALSE
 )
 ```
 
@@ -209,7 +211,7 @@ raster
 The outputs can also be visualized directly in R with the fireexposuR
 package.
 
-```{r visualize}
+```{r visualize, fig.width=9, fig.height=8}
 # map the full extent of the exposure raster with a continuous scale
 fire_exp_map(exposure)
 
