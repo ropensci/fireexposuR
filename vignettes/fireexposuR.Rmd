@@ -68,13 +68,11 @@ The simplest use case of this package is computing the exposure metric. All of t
 
 Analysis functions: 
 
--  `fire_exp()` : Compute exposure with default transmission distances
--  `fire_exp_adjust()` : Compute exposure with custom transmission distances
+-  `fire_exp()` : Compute exposure for a given transmission distance
 
 Visualization functions:
 
--  `fire_exp_map_cont()` : Visualize exposure mapped with a continuous scale
--  `fire_exp_map_class()` : Visualize exposure mapped with a classified scale
+-  `fire_exp_map()` : Visualize exposure mapped with a continuous scale or classified scale
 -  `fire_exp_summary()` : Visualize exposure classes in a summary table
 
 Required input data:
@@ -110,10 +108,10 @@ hazard_long <- rast("long_range_hazard.tif")
 hazard_short <- rast("short_range_hazard.tif")
 
 # compute long-range ember exposure using the long-range hazard layer
-exposure_long <- fire_exp(hazard_long, tdist = "l")
+exposure_long <- fire_exp(hazard_long, t_dist = 500)
 
 # compute short-range ember exposure using the short-range hazard layer
-exposure_short <- fire_exp(hazard_short, tdist = "s")
+exposure_short <- fire_exp(hazard_short, t_dist = 100)
 
 # Export the results as a .tif file using terra
 writeRaster(exposure_long, "exposure_long.tif")
@@ -193,7 +191,8 @@ Analysis functions:
 
 Visualization functions:
 
--  `fire_exp_map_extract_vis()` : Visualize classified exposure to values in a map or summary table
+-  `fire_exp_map_extract_map()` : Visualize classified exposure to values in a map
+-  `fire_exp_map_extract_summary()` : Visualize classified exposure to values in a summary table
 -  `fire_exp_map_class()` : Visualize exposure mapped with a classified scale 
 -  `fire_exp_map_summary()` : Visualize exposure classes in a summary table 
 
@@ -229,10 +228,10 @@ hazard_long <- rast("long_range_hazard.tif")
 hazard_short <- rast("short_range_hazard.tif")
 
 # compute long-range ember exposure using the long-range hazard layer
-exposure_long <- fire_exp(hazard_long, tdist = "l")
+exposure_long <- fire_exp(hazard_long, t_dist = 500)
 
 # compute short-range ember exposure using the short-range hazard layer
-exposure_short <- fire_exp(hazard_short, tdist = "s")
+exposure_short <- fire_exp(hazard_short, t_dist = 100)
 
 # read polygon feature vector of an area of interest boundary
 # (e.g., a built environment)
@@ -252,19 +251,19 @@ values_exposure_short <- fire_exp_extract(exposure_short, multiple_values)
 fire_exp_summary(exposure_long, area_of_interest, classify = "local")
 
 # Visualize long-range ember exposure classes in the aoi with a map
-fire_exp_map_class(exposure_long, area_of_interest, classify = "local")
+fire_exp_map(exposure_long, area_of_interest, classify = "local")
 
 # Visualize long-range ember exposure classes to values in summary table
-fire_exp_extract_vis(values_exposure_long, classify = "local")
+fire_exp_extract_summary(values_exposure_long, classify = "local")
 
 # Visualize long-range ember exposure classes to values in map
-fire_exp_extract_vis(values_exposure_long, classify = "local", map = TRUE)
+fire_exp_extract_map(values_exposure_long, classify = "local")
 
 # Repeat the visualizations for short-range ember exposure
 fire_exp_summary(exposure_short, area_of_interest, classify = "local")
-fire_exp_map_class(exposure_short, area_of_interest, classify = "local")
-fire_exp_extract_vis(values_exposure_short, classify = "local")
-fire_exp_extract_vis(values_exposure_short, classify = "local", map = TRUE)
+fire_exp_map(exposure_short, area_of_interest, classify = "local")
+fire_exp_extract_summary(values_exposure_short, classify = "local")
+fire_exp_extract_map(values_exposure_short, classify = "local")
 ```
 
 ### Advanced Example: Validate the exposure metric in a study area
@@ -313,7 +312,7 @@ hazard <- rast("hazard.tif")
 no_burn <- rast("no_burn.tif")
 
 # compute long-range ember exposure
-exposure <- fire_exp(hazard, tdist = "l", no_burn = no_burn)
+exposure <- fire_exp(hazard, t_dist = 500, no_burn = no_burn)
 
 # read the fire perimeters with terra
 fires <- vect("fires.shp")
@@ -323,7 +322,7 @@ output <- fire_exp_validate(exposure, fires)
 fire_exp_validate_plot(output)
 ```
 
-In the second example, the exposure metric is validated for two differing transmission distance definitions. This is highly recommended if the function `fire_exp_adjust()` is used to set an alternative transmission distance. 
+In the second example, the exposure metric is validated for two differing transmission distance definitions. This is highly recommended if a custom transmission distance is used. 
 
 ```{r example4b, eval = FALSE}
 # Load the fireexposuR library
@@ -342,10 +341,10 @@ hazard <- rast("hazard.tif")
 no_burn <- rast("no_burn.tif")
 
 # compute long-range ember exposure for default transmission distance
-exposure_a <- fire_exp(hazard, tdist = "l", no_burn = no_burn)
+exposure_a <- fire_exp(hazard, no_burn = no_burn)
 
 # compute long-range ember exposure for a custom transmission distance
-exposure_b <- fire_exp(hazard, tdist = 800, no_burn = no_burn)
+exposure_b <- fire_exp(hazard, t_dist = 800, no_burn = no_burn)
 
 # read the fire perimeters with terra
 fires <- vect("fires.shp")
@@ -384,10 +383,10 @@ hazard_b <- rast("hazard_b.tif")
 no_burn_b <- rast("no_burn_b.tif")
 
 # compute long-range ember exposure for option A
-exposure_a <- fire_exp(hazard_a, tdist = "l", no_burn = no_burn_a)
+exposure_a <- fire_exp(hazard_a, no_burn = no_burn_a)
 
 # compute long-range ember exposure for option A
-exposure_b <- fire_exp(hazard_b, tdist = "l", no_burn = no_burn_b)
+exposure_b <- fire_exp(hazard_b, no_burn = no_burn_b)
 
 # read the fire perimeters with terra
 fires <- vect("fires.shp")
