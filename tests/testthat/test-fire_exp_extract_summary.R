@@ -14,6 +14,15 @@ test_that("fire_exp_extract_summary() input checks work", {
                "'arg' should be one of")
   expect_error(fire_exp_extract_summary(ext_pols, classify = "blah"),
                "'arg' should be one of")
+  expect_error(fire_exp_extract_summary(ext_pts, classify = "custom",
+                                    class_breaks = c("a", "b")),
+               "`class_breaks` must be a vector of numbers")
+  expect_error(fire_exp_extract_summary(ext_pts, classify = "custom",
+                                        class_breaks = c(0.2, 0.8)),
+               "`class_breaks` must have 1 as the maximum value")
+  expect_error(fire_exp_extract_summary(ext_pts, classify = "custom",
+                                        class_breaks = c(-0.2, 1)),
+               "`class_breaks` must be greater than 0")
 })
 
 test_that("fire_exp_extract_summary() returns objects with correct class", {
