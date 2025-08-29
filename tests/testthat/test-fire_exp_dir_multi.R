@@ -10,6 +10,5 @@ test_that("fire_exp_dir_multi() input checks and function messages work", {
 test_that("fire_exp_dir_multi() runs when input conditions are met", {
   exp <- exposure()
   pts <- pts(n = 3) # reduced for speed
-  expect_no_error(fire_exp_dir_multi(exp, pts, plot = TRUE, interval = 10))
   expect_no_error(fire_exp_dir_multi(exp, pts, interval = 10))
 })

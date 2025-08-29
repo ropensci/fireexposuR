@@ -9,7 +9,10 @@ to `fire_exp()` instead.
 The functionality of these has been merged into a new function: `fire_exp_map()`
 * split `fire_exp_extract_vis()` into two separate functions: 
 `fire_exp_extract_summary()`, `fire_exp_dir_map()` to be consistent with other
-functions in the package
+function naming and expected outputs in the package
+* split `fire_exp_dir_multi()` into two separate functions:
+`fire_exp_dir_multi()` and `fire_exp_dir_multi_plot()` to be consistent with 
+other function naming and expected outputs in the package
 * example data is now for a real location, allowing for more interpretation of
 results in the vignettes
 * maps are now built with tmap library to improve basemaps and components
