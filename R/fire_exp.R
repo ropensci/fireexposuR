@@ -195,7 +195,7 @@ fire_exp <- function(hazard, t_dist = 500,
                      no_burn, tdist) {
   if (!missing(tdist)) {
     warning("use of the 'tdist' parameter has been deprecated.
-            Use 't_dist' with a numeric value instead")
+            Use 't_dist' (with an underscore) with a numeric value instead")
     if (tdist == "l") {
       t_dist <- 500
     }
