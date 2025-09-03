@@ -205,6 +205,9 @@ fire_exp <- function(hazard, t_dist = 500,
     if (tdist == "r") {
       t_dist <- 30
     }
+    if (is.numeric(tdist)) {
+      t_dist = tdist
+    }
   }
 
   stopifnot("`hazard` must be a SpatRaster object"
