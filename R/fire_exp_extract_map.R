@@ -166,14 +166,18 @@ fire_exp_extract_map <- function(values_ext,
         lwd = 2,
         fill = "class_range",
         fill.scale = tmap::tm_scale_categorical(values = cols),
-        fill.legend = tmap::tm_legend(title = "Exposure Class")
+        fill.legend = tmap::tm_legend(title = "Exposure Class",
+                                      position = tmap::tm_pos_out(
+                                        "right"))
       )
   } else {
     plt <- tmap::tm_shape(sf::st_as_sf(ext_class)) +
       tmap::tm_polygons(
         fill = "class_range",
         fill.scale = tmap::tm_scale_categorical(values = cols),
-        fill.legend = tmap::tm_legend(title = "Exposure Class")
+        fill.legend = tmap::tm_legend(title = "Exposure Class",
+                                      position = tmap::tm_pos_out(
+                                        "right"))
       )
   }
 
@@ -190,7 +194,7 @@ fire_exp_extract_map <- function(values_ext,
     ) +
     tmap::tm_scalebar(position = tmap::tm_pos_out("center", "bottom"),
                       text.size = 0.9) +
-    tmap::tm_layout(inner.margins = 0.1) +
+    tmap::tm_layout(inner.margins = 0.2) +
     tmap::tm_crs("auto")
 
 

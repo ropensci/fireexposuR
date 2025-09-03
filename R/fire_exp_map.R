@@ -164,7 +164,9 @@ fire_exp_map <- function(exposure, aoi, classify,
       tmap::tm_raster(
         col.scale = tmap::tm_scale_continuous(values = cols, limits = c(0, 1)),
         col_alpha = 0.7,
-        col.legend = tmap::tm_legend(title = "Exposure")
+        col.legend = tmap::tm_legend(title = "Exposure",
+                                     position = tmap::tm_pos_out(
+                                       "right"))
       )
   }
 

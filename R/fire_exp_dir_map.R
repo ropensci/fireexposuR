@@ -70,9 +70,9 @@ fire_exp_dir_map <- function(transects,
   stopifnot("`labels` must be a vector of three character objects"
             = class(labels) == "character" && length(labels) == 3)
 
-  labs <- c(paste("Value to", labels[1]),
-            paste(labels[1], "to", labels[2]),
-            paste(labels[2], "to", labels[3]))
+  labs <- c("seg1" = paste("Value to", labels[1]),
+            "seg2" = paste(labels[1], "to", labels[2]),
+            "seg3" = paste(labels[2], "to", labels[3]))
 
   cols <- c("darkred", "darkorange", "yellow2")
 
@@ -82,8 +82,11 @@ fire_exp_dir_map <- function(transects,
     tmap::tm_lines(lwd = 2,
                    col = "seg",
                    col.scale = tmap::tm_scale_ordinal(values = cols,
-                                                      labels = labs),
-                   col.legend = tmap::tm_legend(title = "Transect segment"))
+                                                      labels = labs,
+                                                      levels.drop = FALSE),
+                   col.legend = tmap::tm_legend(title = "Transect segment",
+                                                position = tmap::tm_pos_out(
+                                                  "right")))
 
   if (!missing(value)) {
     stopifnot("`value` must be a SpatVector object"
