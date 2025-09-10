@@ -1,7 +1,7 @@
 Type: Package
 Package: fireexposuR
 Title: Compute and Visualize Wildfire Exposure
-Version: 1.1.0.9001
+Version: 1.1.0.9002
 Authors@R: c(person("Air", "Forbes", email = "heyairf@gmail.com", 
     role = c("aut", "cre"), comment = c(ORCID = "0000-0002-9842-7648")),
     person("Jennifer", "Beverly", role = "ths"))
