@@ -23,7 +23,7 @@
 #' are capable of transmitting fire at different scales. The transmission
 #' distances define a potential maximum spread distance from an ignition
 #' source. If the default distances do not accurately represent fire behaviour
-#' in your area of interest you can adjust them with [fire_exp_adjust()].
+#' in your area of interest you can adjust them with the `t_dist` parameter.
 #'
 #' ### Radiant heat (30 m)
 #'
@@ -256,7 +256,10 @@ fire_exp <- function(hazard, t_dist = 500,
             = terra::nrow(window) * 2 < terra::nrow(haz))
   wgtwindow <- window / sum(window, na.rm = TRUE)
   exp <- terra::focal(haz, wgtwindow, fun = sum) %>%
-    tidyterra::rename(exposure = "focal_sum")
+    tidyterra::rename(exposure = "focal_sum") %>%
+    terra::round(4)
+
+
   if (missing(no_burn)) {
     return(exp)
   } else {
