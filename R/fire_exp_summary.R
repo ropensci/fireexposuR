@@ -144,7 +144,7 @@ fire_exp_summary <- function(exposure, aoi,
   df <- df %>%
     dplyr::count(.data$class_range) %>%
     dplyr::mutate(npixels = .data$n) %>%
-    dplyr::mutate(prop = .data$npixels / sum(.data$npixels)) %>%
+    dplyr::mutate(prop = round(.data$npixels / sum(.data$npixels), 4)) %>%
     dplyr::mutate(aream2 = .data$npixels * res * res) %>%
     dplyr::mutate(areaha = .data$aream2 / 10000) %>%
     dplyr::select(-"n")
