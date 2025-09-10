@@ -56,6 +56,23 @@ temporal horizons and spatial extents.
 -   provides options for customization and validation to meet the needs
     of users applying the package across diverse use cases and
     geographic areas
+    
+    
+## Installation
+
+You can install the stable version of fireexposuR from CRAN with:
+
+``` r
+install.packages("fireexposuR")
+```
+
+
+You can install the development version of fireexposuR from
+R-Universe with:
+
+``` r
+install.packages("fireexposuR", repos = "https://ropensci.r-universe.dev")
+```
 
 ### Who the package is for
 
@@ -136,21 +153,6 @@ and parameters used. It is the users responsibility to ensure that the
 outputs from the fireexposuR package are quality checked before use in
 decision support or further analysis.
 
-## Installation
-
-You can install the stable version of fireexposuR from CRAN with:
-
-``` r
-install.packages("fireexposuR")
-```
-
-
-You can install the development version of fireexposuR from
-R-Universe with:
-
-``` r
-install.packages("fireexposuR", repos = "https://ropensci.r-universe.dev")
-```
 
 ## Usage example
 
