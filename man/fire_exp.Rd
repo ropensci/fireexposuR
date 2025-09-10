@@ -54,7 +54,7 @@ different scales of wildfire ignition processes. Different fuel types
 are capable of transmitting fire at different scales. The transmission
 distances define a potential maximum spread distance from an ignition
 source. If the default distances do not accurately represent fire behaviour
-in your area of interest you can adjust them with \code{\link[=fire_exp_adjust]{fire_exp_adjust()}}.
+in your area of interest you can adjust them with the \code{t_dist} parameter.
 \subsection{Radiant heat (30 m)}{
 
 The default transmission distance for radiant heat is 30 meters. At this
