@@ -2,7 +2,7 @@
 % Please edit documentation in R/fire_exp_map_cont.R
 \name{fire_exp_map_cont}
 \alias{fire_exp_map_cont}
-\title{Map exposure with a continuous scale}
+\title{Map exposure with a continuous scale (Deprecated)}
 \usage{
 fire_exp_map_cont(exposure, aoi, title = "Wildfire Exposure")
 }
@@ -18,9 +18,9 @@ is \code{"Wildfire Exposure"}}
 a map is returned as a ggplot object
 }
 \description{
-\code{fire_exp_map_cont()} produces a standardized map of exposure
-with a continuous scale for the full extent of the data or masked to an area
-of interest.
+This function still works, but will be removed in future
+versions of the package. The same functionality is now included in
+\code{\link[=fire_exp_map]{fire_exp_map()}}. .
 }
 \details{
 This function returns a standardized map with basic cartographic elements.

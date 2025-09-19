@@ -16,7 +16,7 @@
 #' @references
 #' Beverly JL, Forbes AM (2023) Assessing directional vulnerability to
 #' wildfire. *Natural Hazards* **117**, 831-849.
-#' [DOI](https://doi.org/10.1007/s11069-023-05885-3)
+#' \doi{10.1007/s11069-023-05885-3}
 #'
 #'
 #' @param transects SpatVector (output from [fire_exp_dir()])
@@ -36,7 +36,7 @@
 #' hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 #'
 #' # generate an example point
-#' point_wkt <- "POINT (400000 6050000)"
+#' point_wkt <- "POINT (345000 5876000)"
 #' point <- terra::vect(point_wkt, crs = hazard)
 #'
 #' # compute exposure metric
@@ -48,7 +48,7 @@
 #'
 #' # radial plot
 #' fire_exp_dir_plot(transects)
-#'
+
 #' # customize labels
 #' fire_exp_dir_plot(transects, labels = c("5 km", "10 km", "15 km"))
 #'

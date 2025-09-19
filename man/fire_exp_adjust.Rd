@@ -2,7 +2,8 @@
 % Please edit documentation in R/fire_exp_adjust.R
 \name{fire_exp_adjust}
 \alias{fire_exp_adjust}
-\title{Compute the wildfire exposure metric with custom transmission distances}
+\title{Compute the wildfire exposure metric with custom transmission distances
+(Deprecated)}
 \usage{
 fire_exp_adjust(hazard, tdist, no_burn)
 }
@@ -23,8 +24,9 @@ for \code{\link[=fire_exp_validate]{fire_exp_validate()}}}
 SpatRaster object of exposure values
 }
 \description{
-For advanced users. Adjust the transmission distances from the
-defaults used in \code{\link[=fire_exp]{fire_exp()}}.
+This function still works, but will be removed in future
+versions of the package. The same functionality is now included in
+\code{\link[=fire_exp]{fire_exp()}}. .
 }
 \details{
 If the transmission distances from the wildfire exposure literature are not

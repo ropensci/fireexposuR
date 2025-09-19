@@ -12,7 +12,9 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
-  out.width = "100%"
+  out.width = "100%",
+  fig.align = "center",
+  warning = FALSE, message = FALSE
 )
 ```
 
@@ -21,12 +23,10 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/ropensci/fireexposuR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ropensci/fireexposuR/actions/workflows/R-CMD-check.yaml)
-
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-
 [![Status at rOpenSci Software Peer
 Review](https://badges.ropensci.org/659_status.svg)](https://github.com/ropensci/software-review/issues/659)
-
+[![CRAN status](https://www.r-pkg.org/badges/version/fireexposuR)](https://CRAN.R-project.org/package=fireexposuR)
 <!-- badges: end -->
 
 `firexposuR` is an R package for computing and visualizing wildfire
@@ -34,13 +34,16 @@ exposure. The outputs from wildfire exposure assessments can be utilized
 as decision support tools for wildfire management across variable
 temporal horizons and spatial extents.
 
-> **An important note for current (and past) Prometheus users**
+> **An important note for current (and past) Prometheus and Burn-P3 users**
 >
-> If Prometheus has *ever* been installed on your device you must take
+> If [Prometheus](https://firegrowthmodel.ca/#/prometheus_overview) or 
+> [Burn-P3](https://firegrowthmodel.ca/#/burnp3_overview) have *ever* been 
+> installed on your device you must take
 > some additional steps before loading this package (and most other R
 > packages that manipulate spatial data). Please go through the steps in
-> `vignette("prometheus")` even if you have since uninstalled the
-> program from your computer.
+> `vignette("prometheus")` even if you have since uninstalled these
+> programs from your computer to check for interferance or you will get 
+> unexpected errors related to the GDAL library.
 
 ## Package Overview
 
@@ -53,6 +56,23 @@ temporal horizons and spatial extents.
 -   provides options for customization and validation to meet the needs
     of users applying the package across diverse use cases and
     geographic areas
+    
+    
+## Installation
+
+You can install the stable version of fireexposuR from CRAN with:
+
+``` r
+install.packages("fireexposuR")
+```
+
+
+You can install the development version of fireexposuR from
+R-Universe with:
+
+``` r
+install.packages("fireexposuR", repos = "https://ropensci.r-universe.dev")
+```
 
 ### Who the package is for
 
@@ -133,14 +153,6 @@ and parameters used. It is the users responsibility to ensure that the
 outputs from the fireexposuR package are quality checked before use in
 decision support or further analysis.
 
-## Installation
-
-You can install the development version of fireexposuR from
-R-Universe with:
-
-``` r
-install.packages("fireexposuR", repos = "https://ropensci.r-universe.dev")
-```
 
 ## Usage example
 
@@ -160,12 +172,9 @@ library(terra)
 hazard_file_path <- "extdata/hazard.tif"
 hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 
-# read example polygon geometry for area of interest boundary
-geom_file_path <- "extdata/polygon_geometry.csv"
-geom <- read.csv(system.file(geom_file_path, package = "fireexposuR"))
-
-# use geometry to make an area of interest polygon
-aoi <- terra::vect(as.matrix(geom), "polygons", crs = hazard)
+# read example area of interest
+polygon_path <- system.file("extdata", "polygon.shp", package ="fireexposuR")
+aoi <- terra::vect(polygon_path)
 ```
 
 The `hazard` layer is a binary raster where a value of 1 represents
@@ -177,15 +186,15 @@ The `aoi` layer is a polygon representing a localized area of interest
 campground, etc.) shown in red.
 
 ```{r map_inputs, echo = FALSE}
-plot(as.factor(hazard))
+plot(hazard)
 plot(aoi, add = T, border = "red", lwd = 3)
 ```
 
 ### Compute exposure
 
 ```{r compute}
-# compute long-range ember exposure by setting transmission distance to "l"
-exposure <- fire_exp(hazard, tdist = "l")
+# compute long-range ember exposure
+exposure <- fire_exp(hazard, t_dist = 500)
 
 # compute directional exposure toward the value with default parameters
 dir_exposure <- fire_exp_dir(exposure, aoi)
@@ -193,20 +202,23 @@ dir_exposure <- fire_exp_dir(exposure, aoi)
 
 These objects can be exported using the terra library if the user
 prefers visualizing and conducting further analysis outside of the R
-environment (e.g. a GIS). - The `exposure` layer can be exported as a
-raster - The `dir_exposure` layer can be exported as a shapefile
+environment (e.g. a GIS).
+
+- The `exposure` layer can be exported as a
+raster 
+- The `dir_exposure` layer can be exported as a shapefile
 
 ### Visualize exposure
 
 The outputs can also be visualized directly in R with the fireexposuR
 package.
 
-```{r visualize}
+```{r visualize, fig.width=9, fig.height=8}
 # map the full extent of the exposure raster with a continuous scale
-fire_exp_map_cont(exposure)
+fire_exp_map(exposure)
 
-# map exposure classes within the area of interest with a base map
-fire_exp_map_class(exposure, aoi, classify = "landscape", zoom_level = 13)
+# map exposure classes within the area of interest
+fire_exp_map(exposure, aoi, classify = "local")
 
 # map the directional exposure transects toward the area of interest
 fire_exp_dir_map(dir_exposure, aoi)

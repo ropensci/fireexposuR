@@ -47,10 +47,9 @@
 #' hazard_file_path <- "extdata/hazard.tif"
 #' hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 #'
-#' # read example area of interest polygon geometry
-#' geom_file_path <- "extdata/polygon_geometry.csv"
-#' geom <- read.csv(system.file(geom_file_path, package = "fireexposuR"))
-#' aoi <- terra::vect(as.matrix(geom), "polygons", crs = hazard)
+#' # read example area of interest
+#' polygon_path <- system.file("extdata", "polygon.shp", package ="fireexposuR")
+#' aoi <- terra::vect(polygon_path)
 #'
 #' # Compute exposure
 #' exposure <- fire_exp(hazard)
@@ -145,9 +144,10 @@ fire_exp_summary <- function(exposure, aoi,
   df <- df %>%
     dplyr::count(.data$class_range) %>%
     dplyr::mutate(npixels = .data$n) %>%
-    dplyr::mutate(prop = .data$npixels / sum(.data$npixels)) %>%
+    dplyr::mutate(prop = round(.data$npixels / sum(.data$npixels), 4)) %>%
     dplyr::mutate(aream2 = .data$npixels * res * res) %>%
-    dplyr::mutate(areaha = .data$aream2 / 10000)
+    dplyr::mutate(areaha = .data$aream2 / 10000) %>%
+    dplyr::select(-"n")
 
   return(df)
 }

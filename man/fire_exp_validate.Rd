@@ -71,9 +71,8 @@ hazard_file_path <- "extdata/hazard.tif"
 hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 
 # generate example non-burnable cells data
-geom_file_path <- "extdata/polygon_geometry.csv"
-geom <- read.csv(system.file(geom_file_path, package = "fireexposuR"))
-polygon <- terra::vect(as.matrix(geom), "polygons", crs = hazard)
+polygon_path <- system.file("extdata", "polygon.shp", package ="fireexposuR")
+polygon <- terra::vect(polygon_path)
 no_burn <- terra::rasterize(polygon, hazard)
 
 # generate example fire polygons by buffering random points
@@ -92,7 +91,7 @@ fire_exp_validate(exposure, fires)
 \references{
 Beverly JL, McLoughlin N, Chapman E (2021) A simple metric of landscape
 fire exposure. \emph{Landscape Ecology} \strong{36}, 785-801.
-\href{https://doi.org/10.1007/s10980-020-01173-8}{DOI}
+\doi{10.1007/s10980-020-01173-8}
 }
 \seealso{
 \code{\link[=fire_exp_validate_plot]{fire_exp_validate_plot()}}

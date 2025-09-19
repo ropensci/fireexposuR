@@ -174,7 +174,7 @@ hazard_file_path <- "extdata/hazard.tif"
 hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 
 # generate an example point
-point_wkt <- "POINT (400000 6050000)"
+point_wkt <- "POINT (345000 5876000)"
 point <- terra::vect(point_wkt, crs = hazard)
 
 # compute exposure metric
@@ -187,9 +187,9 @@ fire_exp_dir(exposure, point)
 \references{
 Beverly JL, Forbes AM (2023) Assessing directional vulnerability to
 wildfire. \emph{Natural Hazards} \strong{117}, 831-849.
-\href{https://doi.org/10.1007/s11069-023-05885-3}{DOI}
+\doi{10.1007/s11069-023-05885-3}
 
 Beverly JL, McLoughlin N, Chapman E (2021) A simple metric of landscape
 fire exposure. \emph{Landscape Ecology} \strong{36}, 785-801.
-\href{https://doi.org/10.1007/s10980-020-01173-8}{DOI}
+\doi{10.1007/s10980-020-01173-8}
 }

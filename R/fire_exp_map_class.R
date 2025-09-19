@@ -1,7 +1,8 @@
-#' Map exposure with a classified scale
+#' Map exposure with a classified scale (Deprecated)
 #'
-#' @description `fire_exp_map_class()` produces a standardized map by
-#' classifying exposure into predetermined exposure classes.
+#' @description This function still works, but will be removed in future
+#' versions of the package. The same functionality is now included in
+#'  [fire_exp_map()]. .
 #'
 #'
 #' @details
@@ -71,12 +72,9 @@
 #' hazard_file_path <- "extdata/hazard.tif"
 #' hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 #'
-#' # read example area of interest geometry
-#' geom_file_path <- "extdata/polygon_geometry.csv"
-#' geom <- read.csv(system.file(geom_file_path, package = "fireexposuR"))
-#'
-#' # generate example area of interest polygon with geometry
-#' aoi <- terra::vect(as.matrix(geom), "polygons", crs = hazard)
+#' # read example area of interest
+#' polygon_path <- system.file("extdata", "polygon.shp", package ="fireexposuR")
+#' aoi <- terra::vect(polygon_path)
 #'
 #' # compute exposure
 #' exposure <- fire_exp(hazard)
@@ -88,6 +86,8 @@ fire_exp_map_class <- function(exposure, aoi, classify = c("local", "landscape",
                                                            "custom"),
                                class_breaks, zoom_level,
                                title = "Classified Exposure") {
+
+
   stopifnot("`exposure` must be a SpatRaster object"
             = class(exposure) == "SpatRaster",
             "`exposure` layer must have values between 0-1"
@@ -146,6 +146,8 @@ fire_exp_map_class <- function(exposure, aoi, classify = c("local", "landscape",
             = max(class_breaks) == 1)
   stopifnot("`class_breaks` must be greater than 0"
             = class_breaks > 0)
+
+  .Deprecated("fire_exp_map")
 
   class_labels <- character()
 

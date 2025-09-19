@@ -1,8 +1,8 @@
-#' Visualize exposure to values in a summary table or map
+#' Visualize exposure to values in a summary table or map (deprecated)
 #'
-#' @description `fire_exp_extract_vis()` standardizes the visualization of
-#' outputs from [fire_exp_extract()] as a summary table or a map by classifying
-#' exposure into predetermined exposure classes.
+#' @description This function still works, but please update your code to
+#' use the new [fire_exp_extract_summary()] or [fire_exp_extract_map()] instead.
+#' This function will be removed in the future.
 #'
 #' @details
 #' This function visualizes the outputs from [fire_exp_extract()] with classes.
@@ -72,12 +72,9 @@
 #' hazard_file_path <- "extdata/hazard.tif"
 #' hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 #'
-#' # read example area of interest geometry
-#' geom_file_path <- "extdata/polygon_geometry.csv"
-#' geom <- read.csv(system.file(geom_file_path, package = "fireexposuR"))
-#'
-#' # generate an area of interest polygon with the geometry
-#' aoi <- terra::vect(as.matrix(geom), "polygons", crs = hazard)
+#' # read example area of interest
+#' polygon_path <- system.file("extdata", "polygon.shp", package ="fireexposuR")
+#' aoi <- terra::vect(polygon_path)
 #'
 #' # generate random points within the aoi polygon
 #' points <- terra::spatSample(aoi, 100)
@@ -174,6 +171,7 @@ fire_exp_extract_vis <- function(values_ext,
   ext_class$class_range <- factor(ext_class$class_range, levels = names(lut2))
 
   if (map == TRUE) {
+    .Deprecated("fire_exp_extract_map")
 
     n_color <- length(class_breaks)
 
@@ -231,6 +229,8 @@ fire_exp_extract_vis <- function(values_ext,
     }
     return(plt)
   } else {
+    .Deprecated("fire_exp_extract_summary")
+
     df <- as.data.frame(ext_class) %>%
       dplyr::count(.data$class_range) %>%
       dplyr::mutate(prop = .data$n / sum(.data$n)) %>%

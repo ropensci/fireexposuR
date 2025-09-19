@@ -1,6 +1,6 @@
 test_that("fire_exp_summary() input checks work", {
   exp <- exposure()
-  v <- pol()
+  v <- polygon()
   expect_condition(fire_exp_summary(2),
                    "`exposure` must be a SpatRaster object")
   expect_condition(fire_exp_summary(exp, 2),
@@ -11,13 +11,13 @@ test_that("fire_exp_summary() input checks work", {
 
 test_that("fire_exp_summary() returns objects with correct class", {
   exp <- exposure()
-  v <- pol()
+  v <- polygon()
   expect_s3_class(fire_exp_summary(exp, v), "data.frame")
 })
 
 test_that("fire_exp_summary() runs when input conditions are met", {
   exp <- exposure()
-  v <- pol()
+  v <- polygon()
   expect_no_error(fire_exp_summary(exp, v, "loc"))
   expect_no_error(fire_exp_summary(exp, v, "lan"))
   expect_no_error(fire_exp_summary(exp, classify = "lan"))

@@ -35,7 +35,7 @@
 #' @references
 #' Beverly JL, McLoughlin N, Chapman E (2021) A simple metric of landscape
 #' fire exposure. *Landscape Ecology* **36**, 785-801.
-#' [DOI](https://doi.org/10.1007/s10980-020-01173-8)
+#' \doi{10.1007/s10980-020-01173-8}
 #'
 #' @seealso [fire_exp_validate_plot()]
 #'
@@ -62,9 +62,8 @@
 #' hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 #'
 #' # generate example non-burnable cells data
-#' geom_file_path <- "extdata/polygon_geometry.csv"
-#' geom <- read.csv(system.file(geom_file_path, package = "fireexposuR"))
-#' polygon <- terra::vect(as.matrix(geom), "polygons", crs = hazard)
+#' polygon_path <- system.file("extdata", "polygon.shp", package ="fireexposuR")
+#' polygon <- terra::vect(polygon_path)
 #' no_burn <- terra::rasterize(polygon, hazard)
 #'
 #' # generate example fire polygons by buffering random points
@@ -86,34 +85,39 @@ fire_exp_validate <- function(burnableexposure, fires, aoi,
                               samplesize = 0.005) {
   names(burnableexposure) <- "exposure"
   expb <- burnableexposure
-  stopifnot("`burnableexposure` must be a SpatRaster object"
-            = class(expb) == "SpatRaster",
-            "Linear units of `exposure` layer must be in meters"
-            = terra::linearUnits(expb) == 1,
-            "`exposure` layer must have values between 0-1"
-            = (round(terra::minmax(expb)[1], 0)) >= 0
-            && round(terra::minmax(expb)[2], 0) <= 1,
-            "`fires` must be a SpatVector object"
-            = class(fires) == "SpatVector",
-            "`burnableexposure` and `fires` must have same CRS"
-            = terra::same.crs(burnableexposure, fires)
-            )
+  stopifnot(
+    "`burnableexposure` must be a SpatRaster object"
+    = class(expb) == "SpatRaster",
+    "Linear units of `exposure` layer must be in meters"
+    = terra::linearUnits(expb) == 1,
+    "`exposure` layer must have values between 0-1"
+    = (round(terra::minmax(expb)[1], 0)) >= 0
+    && round(terra::minmax(expb)[2], 0) <= 1,
+    "`fires` must be a SpatVector object"
+    = class(fires) == "SpatVector",
+    "`burnableexposure` and `fires` must have same CRS"
+    = terra::same.crs(burnableexposure, fires)
+  )
   if (!missing(aoi)) {
-    stopifnot("`aoi` must be a SpatVector object"
-              = class(aoi) == "SpatVector",
-              "`burnableexposure` and `aoi` must have same CRS"
-              = terra::same.crs(burnableexposure, aoi))
+    stopifnot(
+      "`aoi` must be a SpatVector object"
+      = class(aoi) == "SpatVector",
+      "`burnableexposure` and `aoi` must have same CRS"
+      = terra::same.crs(burnableexposure, aoi)
+    )
   }
 
   class_breaks <- sort(class_breaks)
 
   # class_breaks checks
-  stopifnot("`class_breaks` must be a vector of numbers"
-            = class(class_breaks) == "numeric",
-            "`class_breaks` must have 1 as the maximum value"
-            = max(class_breaks) == 1,
-            "`class_breaks` must be greater than 0"
-            = class_breaks > 0)
+  stopifnot(
+    "`class_breaks` must be a vector of numbers"
+    = class(class_breaks) == "numeric",
+    "`class_breaks` must have 1 as the maximum value"
+    = max(class_breaks) == 1,
+    "`class_breaks` must be greater than 0"
+    = class_breaks > 0
+  )
 
   class_labels <- character()
 

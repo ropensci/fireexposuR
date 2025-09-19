@@ -10,7 +10,8 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  warning = FALSE, message = FALSE
 )
 ```
 
@@ -29,7 +30,7 @@ First, consider what scale(s) of wildfire transmission you are interested in ass
 
 ### Landscape
 
-Landscape scale wildfire exposure assessments are concerned with large, and often fast, wildfire ignition potential in natural wildland fuels. These assessments can be conducted for large extents (e.g., country, province (Beverly et al. 2021), state (Schmidt et al. 2024)) or focused near a value of interest (e.g., a community buffer (Beverly and Forbes 2023; Kim et al. 2023)). Only fuels that have the potential to produce long-range embers are considered for landscape scale exposure assessments. 
+Landscape scale wildfire exposure assessments are concerned with large, and often fast, wildfire ignition potential in natural wildland fuels. These assessments can be conducted for large extents (e.g., country (Khan et al. 2025), province (Beverly et al. 2021), state (Schmidt et al. 2024)) or focused near a value of interest (e.g., a community buffer (Beverly and Forbes 2023; Kim et al. 2023)). Only fuels that have the potential to produce long-range embers are considered for landscape scale exposure assessments. 
 
 ### Local
 
@@ -41,7 +42,7 @@ The defaults for the wildfire transmission distances are based on Beverly et al.
 
 #### Long-range embers 
 
-The transmission distance for long-range embers is defined as 500 meters. In reality, under extreme conditions some wildland fuels have the potential to transmit long-range embers at distances much greater than 500 meters; However, this value has been validated for the exposure metric in Alberta (Beverly et al. 2021), Alaska (Schmidt et al. 2024), Portugal (manuscript in preparation), and across the entire Canadian landbase (manuscript in preparation). 
+The transmission distance for long-range embers is defined as 500 meters. In reality, under extreme conditions some wildland fuels have the potential to transmit long-range embers at distances much greater than 500 meters; However, this value has been validated for the exposure metric in Alberta (Beverly et al. 2021), Alaska (Schmidt et al. 2024), Portugal (Khan et al. 2025), and across the entire Canadian landbase (manuscript in preparation). 
 
 #### Short-range embers and radiant heat
 
@@ -68,13 +69,11 @@ The simplest use case of this package is computing the exposure metric. All of t
 
 Analysis functions: 
 
--  `fire_exp()` : Compute exposure with default transmission distances
--  `fire_exp_adjust()` : Compute exposure with custom transmission distances
+-  `fire_exp()` : Compute exposure for a given transmission distance
 
 Visualization functions:
 
--  `fire_exp_map_cont()` : Visualize exposure mapped with a continuous scale
--  `fire_exp_map_class()` : Visualize exposure mapped with a classified scale
+-  `fire_exp_map()` : Visualize exposure mapped with a continuous scale or classified scale
 -  `fire_exp_summary()` : Visualize exposure classes in a summary table
 
 Required input data:
@@ -94,31 +93,62 @@ Additional data for visualization:
 
 #### Example workflow
 
-This example code demonstrates how to use the package to compute wildfire exposure at two different scales of wildfire transmission and then export the results as a .tif file. For advice on preparing the input data see `vignette("prep-input-data")`.
+This example code demonstrates how to use the package to compute wildfire exposure and remove non-burnable cells in the output.
 
-```{r example1, eval = FALSE}
+We remove non-burnable cells because every cell in the output will be assigned an exposure value regardless of if it can actually recieve embers. Removing these cells (for example: Open Water or Exposed rock) will provide valid summaries and comparisons of the scope of the problem - high exposure of a water cell would inflate the scope of the problem without any rational basis to do so - so we remove those values and only summarize high exposure for the burnable landbase.
+
+
+For advice on preparing your own input data see `vignette("prep-input-data")`.
+
+```{r example1a}
 # Load the fireexposuR library
 library(fireexposuR)
 
 # Load the terra library for reading/writing spatial data
 library(terra)
 
-# read raster of wildland fuels hazardous for long-range ember transmission
-hazard_long <- rast("long_range_hazard.tif")
+# read example hazard data
+hazard_file_path <- "extdata/hazard.tif"
+hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 
-# read raster of wildland fuels hazardous for short-range ember transmission
-hazard_short <- rast("short_range_hazard.tif")
+# read example non-burnable data
+nb_file_path <- "extdata/nb.tif"
+no_burn <- terra::rast(system.file(nb_file_path, package = "fireexposuR"))
 
-# compute long-range ember exposure using the long-range hazard layer
-exposure_long <- fire_exp(hazard_long, tdist = "l")
-
-# compute short-range ember exposure using the short-range hazard layer
-exposure_short <- fire_exp(hazard_short, tdist = "s")
-
-# Export the results as a .tif file using terra
-writeRaster(exposure_long, "exposure_long.tif")
-writeRaster(exposure_short, "exposure_short.tif")
 ```
+
+We will compute exposure for all of the cells, and with the non-burnable cells to compare them. 
+
+```{r example1b}
+# compute long-range ember exposure using the long-range hazard raster
+exposure <- fire_exp(hazard, t_dist = 500, no_burn = no_burn)
+
+
+# compute long-range ember exposure without removing non-burnable cells
+exposure_all_cells <- fire_exp(hazard, t_dist = 500)
+```
+
+Here we can compare the difference of removing the non-burnable cells. Its clear that most of the cells that were removed are barren rocky areas in the mountains, but include some man-made features as well like roads.
+
+```{r example1c, fig.width=9, fig.height=8,  fig.show="hold", out.width="50%"}
+# visualize in a map
+fire_exp_map(exposure, title = "Long-range exposure (non-burnable removed)")
+
+fire_exp_map(exposure_all_cells, title = "Long-range exposure (all cells)")
+```
+
+
+Looking at the summary table we can see that removing the non-burnable cells significantly decreases the proportion of cells with no exposure, and increases the proportion of extremely exposed cells by ~10%. 
+
+```{r example1d}
+# visualize in a summary table
+fire_exp_summary(exposure, classify = "landscape")
+
+fire_exp_summary(exposure_all_cells, classify = "landscape")
+
+```
+
+
 
 ### Example: Assess directional exposure
 
@@ -143,45 +173,24 @@ Required input data:
 
 #### Example workflow
 
-This example code demonstrates how to use the package to assess directional vulnerability for a single point value and multiple point values. The example code also shows how to export the results as shapefiles.
+This example code demonstrates how to use the package to assess directional vulnerability for community boundary. We will use the exposure output from the previous example.
 
-```{r example2, eval = FALSE}
-# Load the fireexposuR library
-library(fireexposuR)
-
-# Load the terra library for reading/writing spatial data
-library(terra)
-
-
-# PLEASE NOTE: The following code is to demonstrate an example workflow. The
-# referenced input data does not exist. 
-
-# read raster of wildland fuels hazardous for long-range ember transmission
-hazard_long <- rast("long_range_hazard.tif")
-
-# compute long-range ember exposure using the long-range hazard layer
-exposure_long <- fire_exp(hazard_long, tdist = "l")
-
-# read point feature vector of a single value location
-point_value <- vect("point_value.shp")
-
-# read point feature vector of value locations
-multiple_values <- vect("multiple_values.shp")
+```{r example2, fig.width=9, fig.height=8}
+# read example area of interest
+polygon_path <- system.file("extdata", "polygon.shp", package ="fireexposuR")
+aoi <- terra::vect(polygon_path)
 
 # assess directional exposure for a single point
-transects_point <- fire_exp_dir(exposure_long, point_value)
+transects <- fire_exp_dir(exposure, aoi)
 
-# export the transects for the point feature as a shapefile with terra
-writeVector(transects_point, "transects_point.shp")
+# visualize the transects in a map
+fire_exp_dir_map(transects, value = aoi)
 
-# loop through multiple values and export the results as shapefiles
-for (i in seq_len(nrow(multiple_values))) {
-  dir_exp_point <- fire_exp_dir(exposure_long, multiple_values[i])
-  # set a file name based on the feature row number
-  file_name <- paste("transects_point_", i, ".shp", sep = "")
-  writeVector(dir_exp_point, file_name)
-}
 ```
+
+From this map, we can see that this community has a significant directional vulnerability from the southeast, but none from the southwest. With the basemap, that makes sense as we can see the mountains break up the hazardous fuels to the west, but the north and west have more forest cover. 
+
+
 
 ### Example: Conduct an exposure assessment for a local area
 
@@ -193,7 +202,8 @@ Analysis functions:
 
 Visualization functions:
 
--  `fire_exp_map_extract_vis()` : Visualize classified exposure to values in a map or summary table
+-  `fire_exp_map_extract_map()` : Visualize classified exposure to values in a map
+-  `fire_exp_map_extract_summary()` : Visualize classified exposure to values in a summary table
 -  `fire_exp_map_class()` : Visualize exposure mapped with a classified scale 
 -  `fire_exp_map_summary()` : Visualize exposure classes in a summary table 
 
@@ -210,64 +220,142 @@ Additional data for visualization:
 
 #### Example workflow
 
-This example code demonstrates how to use the package to compute wildfire exposure at two different scales of wildfire transmission and then visualize the results in R for a localized area of interest. For advice on preparing the input data see `vignette("prep-input-data")`.
+This example code demonstrates how to classify landcover information into multiple hazard rasters and then use the package to compute wildfire exposure at two different scales of wildfire transmission and then visualize the results in R for a localized area of interest. For advice on preparing the input data see `vignette("prep-input-data")`.
 
-```{r example3, eval = FALSE}
+This fuel data is from the [CEC North American Land Change Monitoring System (30 m)](https://www.cec.org/north-american-environmental-atlas/land-cover-30m-2020/). Classifier descriptions have been simplified. 
+
+```{r example3a}
 # Load the fireexposuR library
 library(fireexposuR)
 
 # Load the terra library for reading/writing spatial data
 library(terra)
 
-# PLEASE NOTE: The following code is to demonstrate an example workflow. The
-# referenced input data does not exist. 
-
-# read raster of wildland fuels hazardous for long-range ember transmission
-hazard_long <- rast("long_range_hazard.tif")
-
-# read raster of wildland fuels hazardous for short-range ember transmission
-hazard_short <- rast("short_range_hazard.tif")
-
-# compute long-range ember exposure using the long-range hazard layer
-exposure_long <- fire_exp(hazard_long, tdist = "l")
-
-# compute short-range ember exposure using the short-range hazard layer
-exposure_short <- fire_exp(hazard_short, tdist = "s")
-
-# read polygon feature vector of an area of interest boundary
-# (e.g., a built environment)
-area_of_interest <- vect("area_of_interest.shp")
-
-# read point feature vector of value locations
-# (e.g., structures in a community)
-multiple_values <- vect("multiple_values.shp")
-
-# extract the underlying long-range ember exposure to values attributes
-values_exposure_long <- fire_exp_extract(exposure_long, multiple_values)
-
-# extract the underlying short-range ember exposure to values attributes
-values_exposure_short <- fire_exp_extract(exposure_short, multiple_values)
-
-# Visualize short-range ember exposure classes in the aoi with a summary table
-fire_exp_summary(exposure_long, area_of_interest, classify = "local")
-
-# Visualize long-range ember exposure classes in the aoi with a map
-fire_exp_map_class(exposure_long, area_of_interest, classify = "local")
-
-# Visualize long-range ember exposure classes to values in summary table
-fire_exp_extract_vis(values_exposure_long, classify = "local")
-
-# Visualize long-range ember exposure classes to values in map
-fire_exp_extract_vis(values_exposure_long, classify = "local", map = TRUE)
-
-# Repeat the visualizations for short-range ember exposure
-fire_exp_summary(exposure_short, area_of_interest, classify = "local")
-fire_exp_map_class(exposure_short, area_of_interest, classify = "local")
-fire_exp_extract_vis(values_exposure_short, classify = "local")
-fire_exp_extract_vis(values_exposure_short, classify = "local", map = TRUE)
+# read raster of landcover types
+fuel_file_path <- "extdata/fuel.tif"
+fuel <- terra::rast(system.file(fuel_file_path, package = "fireexposuR"))
 ```
 
+```{r example3b, echo = FALSE}
+terra::plot(fuel, type = "classes", levels = c("Conifer Forest",
+                                               "Mixedwood Forest",
+                                               "Shrubland",
+                                               "Grassland",
+                                               "Wetland",
+                                               "Barren Land",
+                                               "Urban and Built Up",
+                                               "Open Water"),
+            col = c("darkgreen",
+                    "green3",
+                    "brown",
+                    "yellow3",
+                    "lightblue1",
+                    "grey",
+                    "grey40",
+                    "blue"))
+```
+
+We can reclassify the landcover information into different hazard rasters using the terra library. For long range embers only conifer fuels are considered hazardous. For short-range embers we also include shrublands and grasslands. These reclassification decisions may not apply to different geographic areas. Consult wildfire experts in your area for guidance on these decisions. 
+
+
+```{r example3c}
+# create a reclassification matrix based on the raster values
+hazard_matrix_long <- matrix(c(1, 1,  # Conifer Forest
+                               6, 1,  # Mixedwood Forest
+                               8, 0,  # Shrubland
+                               10, 0, # Grassland
+                               14, 0, # Wetland
+                               16, 0, # Barren Land
+                               17, 0, # Urban and Built Up
+                               18, 0  # Open Water
+                               ), ncol = 2, byrow = TRUE)
+
+# use the long-range matrix to reclassify the cells in the fuel grid raster
+hazard_long <- terra::classify(fuel, hazard_matrix_long)
+
+
+# create a reclassification matrix based on the raster values
+hazard_matrix_short <- matrix(c(1, 1,  # Conifer Forest
+                                6, 1,  # Mixedwood Forest
+                                8, 1,  # Shrubland
+                                10, 1, # Grassland
+                                14, 0, # Wetland
+                                16, 0, # Barren Land
+                                17, 0, # Urban and Built Up
+                                18, 0  # Open Water
+                                ), ncol = 2, byrow = TRUE)
+
+# use the short-range matrix to reclassify the cells in the fuel grid raster
+hazard_short <- terra::classify(fuel, hazard_matrix_short)
+```
+
+Looking at the results, we can see that there are far more hazardous cells (value of 1) for a short-range ember exposure assessment.
+
+```{r example3d, echo = FALSE, fig.show="hold", out.width="50%", fig.height=8}
+terra::plot(hazard_long, main = "Long-range hazard")
+
+terra::plot(hazard_short, main = "short-range hazard")
+
+set.seed(0)
+
+```
+
+We will compute exposure for long-range embers using a 500 meter transmission distance (this is the default) and short-range ember exposure using a 100 meter transmission distance. 
+
+```{r example3e}
+# compute long-range ember exposure using the long-range hazard layer
+exposure_long <- fire_exp(hazard_long, t_dist = 500)
+
+# compute short-range ember exposure using the short-range hazard layer
+exposure_short <- fire_exp(hazard_short, t_dist = 100)
+```
+
+Now we can compare them using maps and summary tables. We will use an area of interest representing the built-up area of this community. 
+
+
+```{r example3f, fig.show="hold", out.width="50%", fig.height=8}
+# read example area of interest
+polygon_path <- system.file("extdata", "polygon.shp", package ="fireexposuR")
+aoi <- terra::vect(polygon_path)
+
+
+fire_exp_map(exposure_long, aoi = aoi, 
+             classify = "local", 
+             title = "Long-range exposure")
+
+fire_exp_map(exposure_short, aoi = aoi, 
+             classify = "local", 
+             title = "short-range exposure")
+
+```
+
+We can see that at a local scale the west side of our community is more exposed to long-range embers than the east. This is the opposite of the landscape scale directional vulnerability. 
+
+Next, we can see the exposure of individual values. Note that these values are randomly generated so won't align with the structures you can see in the basemap. 
+
+```{r example3g, fig.show="hold", out.width="50%", fig.height=8}
+# randomly generate points to represent values within the area of interest
+values <- terra::spatSample(aoi, 20)
+
+exposure_short_values <- fire_exp_extract(exposure_short, values)
+
+exposure_long_values <- fire_exp_extract(exposure_long, values)
+
+fire_exp_extract_map(exposure_short_values,
+             title = "Short-range exposure to values")
+
+fire_exp_extract_map(exposure_long_values,
+             title = "Long-range exposure to values")
+
+```
+
+Here we can see that there are 4 values that are extremely exposed (>45%) to both short- and long- range embers. 
+
+
 ### Advanced Example: Validate the exposure metric in a study area
+
+**Please note that the code in this example will not run or produce any outputs. This example is solely to demonstrate how you might write your own code. **
+
 
 This example demonstrates how to use the fireexposuR package to validate the wildfire exposure metric in an area of interest with the methods used by Beverly et al. 2021. The assessment samples and compares the distribution of classified exposure values across the study area as a whole and across areas that have burned. 
 
@@ -304,7 +392,7 @@ library(fireexposuR)
 library(terra)
 
 # PLEASE NOTE: The following code is to demonstrate an example workflow. The
-# referenced input data does not exist. 
+# referenced input data does not exist.
 
 # read long-range ember hazard raster
 hazard <- rast("hazard.tif")
@@ -313,7 +401,7 @@ hazard <- rast("hazard.tif")
 no_burn <- rast("no_burn.tif")
 
 # compute long-range ember exposure
-exposure <- fire_exp(hazard, tdist = "l", no_burn = no_burn)
+exposure <- fire_exp(hazard, t_dist = 500, no_burn = no_burn)
 
 # read the fire perimeters with terra
 fires <- vect("fires.shp")
@@ -323,7 +411,7 @@ output <- fire_exp_validate(exposure, fires)
 fire_exp_validate_plot(output)
 ```
 
-In the second example, the exposure metric is validated for two differing transmission distance definitions. This is highly recommended if the function `fire_exp_adjust()` is used to set an alternative transmission distance. 
+In the second example, the exposure metric is validated for two differing transmission distance definitions. This is highly recommended if a custom transmission distance is used. 
 
 ```{r example4b, eval = FALSE}
 # Load the fireexposuR library
@@ -333,7 +421,7 @@ library(fireexposuR)
 library(terra)
 
 # PLEASE NOTE: The following code is to demonstrate an example workflow. The
-# referenced input data does not exist. 
+# referenced input data does not exist.
 
 # read long-range ember hazard raster
 hazard <- rast("hazard.tif")
@@ -342,10 +430,10 @@ hazard <- rast("hazard.tif")
 no_burn <- rast("no_burn.tif")
 
 # compute long-range ember exposure for default transmission distance
-exposure_a <- fire_exp(hazard, tdist = "l", no_burn = no_burn)
+exposure_a <- fire_exp(hazard, no_burn = no_burn)
 
 # compute long-range ember exposure for a custom transmission distance
-exposure_b <- fire_exp(hazard, tdist = 800, no_burn = no_burn)
+exposure_b <- fire_exp(hazard, t_dist = 800, no_burn = no_burn)
 
 # read the fire perimeters with terra
 fires <- vect("fires.shp")
@@ -369,7 +457,7 @@ library(fireexposuR)
 library(terra)
 
 # PLEASE NOTE: The following code is to demonstrate an example workflow. The
-# referenced input data does not exist. 
+# referenced input data does not exist.
 
 # read long-range ember hazard raster: option A
 hazard_a <- rast("hazard_a.tif")
@@ -384,10 +472,10 @@ hazard_b <- rast("hazard_b.tif")
 no_burn_b <- rast("no_burn_b.tif")
 
 # compute long-range ember exposure for option A
-exposure_a <- fire_exp(hazard_a, tdist = "l", no_burn = no_burn_a)
+exposure_a <- fire_exp(hazard_a, no_burn = no_burn_a)
 
 # compute long-range ember exposure for option A
-exposure_b <- fire_exp(hazard_b, tdist = "l", no_burn = no_burn_b)
+exposure_b <- fire_exp(hazard_b, no_burn = no_burn_b)
 
 # read the fire perimeters with terra
 fires <- vect("fires.shp")
@@ -417,6 +505,9 @@ Forbes AM, Beverly JL (2024) Influence of fuel data assumptions on wildfire expo
 
  Hijmans R (2024). _terra: Spatial Data Analysis_. R package version 1.7-78,
   <https://CRAN.R-project.org/package=terra>.
+
+Khan SI, Colaço MC, Sequeira AC, Rego FC, Beverly JL (2025) Validating a landscape metric to map fire exposure to hazardous fuels in Portugal.*Natural Hazards* **121**, 16273–16295.
+[DOI](https://doi.org/10.1007/s11069-025-07424-8)
 
 Kim AM, Beverly JL, Al Zahid A (2024) Directional analysis of community wildfire evacuation capabilities. *Safety Science* **171**, 106378. [DOI](https://doi.org/10.1016/j.ssci.2023.106378)
 

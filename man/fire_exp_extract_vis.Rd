@@ -2,7 +2,7 @@
 % Please edit documentation in R/fire_exp_extract_vis.R
 \name{fire_exp_extract_vis}
 \alias{fire_exp_extract_vis}
-\title{Visualize exposure to values in a summary table or map}
+\title{Visualize exposure to values in a summary table or map (deprecated)}
 \usage{
 fire_exp_extract_vis(
   values_ext,
@@ -46,9 +46,9 @@ a summary table is returned as a data frame object, Unless:
 \code{map = TRUE}: a ggplot object
 }
 \description{
-\code{fire_exp_extract_vis()} standardizes the visualization of
-outputs from \code{\link[=fire_exp_extract]{fire_exp_extract()}} as a summary table or a map by classifying
-exposure into predetermined exposure classes.
+This function still works, but please update your code to
+use the new \code{\link[=fire_exp_extract_summary]{fire_exp_extract_summary()}} or \code{\link[=fire_exp_extract_map]{fire_exp_extract_map()}} instead.
+This function will be removed in the future.
 }
 \details{
 This function visualizes the outputs from \code{\link[=fire_exp_extract]{fire_exp_extract()}} with classes.
@@ -97,12 +97,9 @@ more information on zoom levels.
 hazard_file_path <- "extdata/hazard.tif"
 hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 
-# read example area of interest geometry
-geom_file_path <- "extdata/polygon_geometry.csv"
-geom <- read.csv(system.file(geom_file_path, package = "fireexposuR"))
-
-# generate an area of interest polygon with the geometry
-aoi <- terra::vect(as.matrix(geom), "polygons", crs = hazard)
+# read example area of interest
+polygon_path <- system.file("extdata", "polygon.shp", package ="fireexposuR")
+aoi <- terra::vect(polygon_path)
 
 # generate random points within the aoi polygon
 points <- terra::spatSample(aoi, 100)

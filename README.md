@@ -6,14 +6,13 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/ropensci/fireexposuR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ropensci/fireexposuR/actions/workflows/R-CMD-check.yaml)
-
 [![Project Status: Active – The project has reached a stable, usable
 state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-
 [![Status at rOpenSci Software Peer
 Review](https://badges.ropensci.org/659_status.svg)](https://github.com/ropensci/software-review/issues/659)
-
+[![CRAN
+status](https://www.r-pkg.org/badges/version/fireexposuR)](https://CRAN.R-project.org/package=fireexposuR)
 <!-- badges: end -->
 
 `firexposuR` is an R package for computing and visualizing wildfire
@@ -21,13 +20,17 @@ exposure. The outputs from wildfire exposure assessments can be utilized
 as decision support tools for wildfire management across variable
 temporal horizons and spatial extents.
 
-> **An important note for current (and past) Prometheus users**
+> **An important note for current (and past) Prometheus and Burn-P3
+> users**
 >
-> If Prometheus has *ever* been installed on your device you must take
-> some additional steps before loading this package (and most other R
-> packages that manipulate spatial data). Please go through the steps in
-> `vignette("prometheus")` even if you have since uninstalled the
-> program from your computer.
+> If [Prometheus](https://firegrowthmodel.ca/#/prometheus_overview) or
+> [Burn-P3](https://firegrowthmodel.ca/#/burnp3_overview) have *ever*
+> been installed on your device you must take some additional steps
+> before loading this package (and most other R packages that manipulate
+> spatial data). Please go through the steps in `vignette("prometheus")`
+> even if you have since uninstalled these programs from your computer
+> to check for interferance or you will get unexpected errors related to
+> the GDAL library.
 
 ## Package Overview
 
@@ -40,6 +43,21 @@ temporal horizons and spatial extents.
 - provides options for customization and validation to meet the needs of
   users applying the package across diverse use cases and geographic
   areas
+
+## Installation
+
+You can install the stable version of fireexposuR from CRAN with:
+
+``` r
+install.packages("fireexposuR")
+```
+
+You can install the development version of fireexposuR from R-Universe
+with:
+
+``` r
+install.packages("fireexposuR", repos = "https://ropensci.r-universe.dev")
+```
 
 ### Who the package is for
 
@@ -120,15 +138,6 @@ and parameters used. It is the users responsibility to ensure that the
 outputs from the fireexposuR package are quality checked before use in
 decision support or further analysis.
 
-## Installation
-
-You can install the development version of fireexposuR from R-Universe
-with:
-
-``` r
-install.packages("fireexposuR", repos = "https://ropensci.r-universe.dev")
-```
-
 ## Usage example
 
 This example shows a basic workflow to assess the long-range ember
@@ -142,18 +151,14 @@ library(fireexposuR)
 
 # load the terra library for spatial data functions
 library(terra)
-#> terra 1.8.21
 
 # read example hazard data
 hazard_file_path <- "extdata/hazard.tif"
 hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 
-# read example polygon geometry for area of interest boundary
-geom_file_path <- "extdata/polygon_geometry.csv"
-geom <- read.csv(system.file(geom_file_path, package = "fireexposuR"))
-
-# use geometry to make an area of interest polygon
-aoi <- terra::vect(as.matrix(geom), "polygons", crs = hazard)
+# read example area of interest
+polygon_path <- system.file("extdata", "polygon.shp", package ="fireexposuR")
+aoi <- terra::vect(polygon_path)
 ```
 
 The `hazard` layer is a binary raster where a value of 1 represents
@@ -164,13 +169,13 @@ The `aoi` layer is a polygon representing a localized area of interest
 (e.g., the built environment of a community, a sensitive habitat, a
 campground, etc.) shown in red.
 
-<img src="man/figures/README-map_inputs-1.png" width="100%" />
+<img src="man/figures/README-map_inputs-1.png" width="100%" style="display: block; margin: auto;" />
 
 ### Compute exposure
 
 ``` r
-# compute long-range ember exposure by setting transmission distance to "l"
-exposure <- fire_exp(hazard, tdist = "l")
+# compute long-range ember exposure
+exposure <- fire_exp(hazard, t_dist = 500)
 
 # compute directional exposure toward the value with default parameters
 dir_exposure <- fire_exp_dir(exposure, aoi)
@@ -178,8 +183,10 @@ dir_exposure <- fire_exp_dir(exposure, aoi)
 
 These objects can be exported using the terra library if the user
 prefers visualizing and conducting further analysis outside of the R
-environment (e.g. a GIS). - The `exposure` layer can be exported as a
-raster - The `dir_exposure` layer can be exported as a shapefile
+environment (e.g. a GIS).
+
+- The `exposure` layer can be exported as a raster
+- The `dir_exposure` layer can be exported as a shapefile
 
 ### Visualize exposure
 
@@ -188,18 +195,18 @@ package.
 
 ``` r
 # map the full extent of the exposure raster with a continuous scale
-fire_exp_map_cont(exposure)
+fire_exp_map(exposure)
 ```
 
-<img src="man/figures/README-visualize-1.png" width="100%" />
+<img src="man/figures/README-visualize-1.png" width="100%" style="display: block; margin: auto;" />
 
 ``` r
 
-# map exposure classes within the area of interest with a base map
-fire_exp_map_class(exposure, aoi, classify = "landscape", zoom_level = 13)
+# map exposure classes within the area of interest
+fire_exp_map(exposure, aoi, classify = "local")
 ```
 
-<img src="man/figures/README-visualize-2.png" width="100%" />
+<img src="man/figures/README-visualize-2.png" width="100%" style="display: block; margin: auto;" />
 
 ``` r
 
@@ -207,4 +214,4 @@ fire_exp_map_class(exposure, aoi, classify = "landscape", zoom_level = 13)
 fire_exp_dir_map(dir_exposure, aoi)
 ```
 
-<img src="man/figures/README-visualize-3.png" width="100%" />
+<img src="man/figures/README-visualize-3.png" width="100%" style="display: block; margin: auto;" />

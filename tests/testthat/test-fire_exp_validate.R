@@ -18,9 +18,8 @@ test_that("valdiateexp() returns object with correct class", {
 test_that("fire_exp_validate() runs when input conditions are met", {
   expnb <- exposure(nb())
   fires <- fires()
-  aoi <- aoi()
   expect_no_error(fire_exp_validate(expnb, fires))
-  expect_no_error(fire_exp_validate(expnb, fires, aoi, samplesize = 0.1))
+  expect_no_error(fire_exp_validate(expnb, fires, samplesize = 0.2))
 })
 
 test_that("fire_exp_validate() randomly samples", {

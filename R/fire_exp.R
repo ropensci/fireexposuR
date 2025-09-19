@@ -23,9 +23,9 @@
 #' are capable of transmitting fire at different scales. The transmission
 #' distances define a potential maximum spread distance from an ignition
 #' source. If the default distances do not accurately represent fire behaviour
-#' in your area of interest you can adjust them with [fire_exp_adjust()].
+#' in your area of interest you can adjust them with the `t_dist` parameter.
 #'
-#' ### Radiant heat
+#' ### Radiant heat (30 m)
 #'
 #' The default transmission distance for radiant heat is 30 meters. At this
 #' scale of wildfire transmission wildfire can spread from direct flame contact
@@ -38,7 +38,7 @@
 #' reviewed fire-spot distance observations and applied predictive models to
 #' verify these distances were a reasonable assumption.
 #'
-#' #### Short-range embers
+#' #### Short-range embers (100 m)
 #'
 #' The default transmission distance for short-range embers is 100 meters. Some
 #' fuel types have the potential to produce embers over short distances. An
@@ -47,7 +47,7 @@
 #' will also be hazardous to transmit fire via radiant heat or direct flame
 #' contact.
 #'
-#' #### Long-range embers
+#' #### Long-range embers (500 m)
 #'
 #' The default transmission distance for long-range embers is 500 meters.
 #' Some fuel types have the potential to transmit embers across large distances.
@@ -63,8 +63,19 @@
 #'
 #' The 500 meter spread distance has been further validated across Alberta
 #' (Beverly et al. 2021), in Alaska (Schmidt et al. 2024), across the entire
-#' Canadian landbase (manuscript in preparation), and in Portugal (manuscript
-#' in preparation).
+#' Canadian landbase (manuscript in preparation), and in Portugal (Khan et al.
+#' 2025).
+#'
+#'
+#' ### Setting a custom transmission distance
+#'
+#' If the transmission distances from the wildfire exposure literature are not
+#' representative of the wildland fuels in your area of interest, this function
+#' can be used to change the transmission distance to a custom distance. It is
+#' highly recommended that any exposure layers produced with this function are
+#' validated with observed fire history using the [fire_exp_validate()]
+#' function. See methods of validation in Beverly et al. 2021, Schmidt et al.
+#' 2024, and Khan et al. 2025 for more discussion on validation.
 #'
 #' ## Technical
 #'
@@ -92,10 +103,13 @@
 #'
 #' A separate hazard raster should be prepared for each of the transmission
 #' distances of interest. There are also minimum spatial resolution and extent
-#' requirements for each transmission distances.
+#' requirements for each transmission distances.For a specified transmission
+#' distance, the spatial resolution must be at least 3 times finer. For example,
+#'  for a transmission distance of 300 meters the input data should have a
+#'  resolution of 100 meters or finer.
 #'
 #' Long-range embers:
-#' -  minimum raster resolution is 150 meters
+#' -  minimum raster resolution is ~ 150 meters
 #' -  The dimensions of the data must be wider/taller than 1000 meters because
 #' 500 meters of data will be lost along the perimeter due to edge effects
 #'
@@ -112,18 +126,20 @@
 #' ### Spatial Reference
 #'
 #' The exposure raster will be returned in the same CRS as the input hazard
-#' layer. A crs must be defined if the outputs will be used in other functions
-#' in this package.
+#' layer. A crs must be defined if the output will be used as an input to other
+#' functions in this package.
+#'
+#'
 #'
 #' @references
 #' Beverly JL, McLoughlin N, Chapman E (2021) A simple metric of landscape fire
 #' exposure. *Landscape Ecology* **36**, 785-801.
-#' [DOI](https://doi.org/10.1007/s10980-020-01173-8)
+#' \doi{10.1007/s10980-020-01173-8}
 #'
 #' Beverly JL, Bothwell P, Conner JCR, Herd EPK (2010) Assessing the exposure
 #' of the built environment to potential ignition sources generated from
 #' vegetative fuel. *International Journal of Wildland Fire* **19**, 299-313.
-#' [DOI](https://doi.org/10.1071/WF09071)
+#' \doi{10.1071/WF09071}
 #'
 #' FireSmart Canada (2018) Wildfire exposure assessment guidebook. Available
 #' [here](https://firesmartcanada.ca/wp-content/uploads/2022/01/FS_ExposureAssessment_Sept2018-1.pdf)
@@ -131,22 +147,35 @@
 #' Hijmans R (2024). _terra: Spatial Data Analysis_. R package version 1.7-78,
 #' [CRAN](https://CRAN.R-project.org/package=terra).
 #'
+#' Khan SI, Colaço MC, Sequeira AC, Rego FC, Beverly JL (2025) Validating a
+#' landscape metric to map fire exposure to hazardous fuels in Portugal.
+#' *Natural Hazards* **121**, 16273–16295.
+#' \doi{10.1007/s11069-025-07424-8}
+#'
 #' Schmidt JI, Ziel RH, Calef MP, Varvak A (2024) Spatial distribution of
 #' wildfire threat in the far north: exposure assessment in boreal communities.
 #' *Natural Hazards* **120**, 4901-4924.
-#' [DOI](https://doi.org/10.1007/s11069-023-06365-4)
+#' \doi{10.1007/s11069-023-06365-4}
 #'
 #'
 #' @param hazard a SpatRaster that represents hazardous fuels for the
 #'   transmission distance specified in tdist
-#' @param tdist a character vector, can be: `"l"` for long-range
-#'   embers (Default), `"s"` for short-range embers or, `"r"` for radiant heat
+#' @param t_dist Numeric. Provide a value in meters for the transmission
+#'   distance. The default is `500` for long-range embers/landscape fire
+#'   exposure. Use `100` for short-range embers, `30` for radiant heat, or
+#'   provide a custom distance. See details for the reasoning behind the
+#'   recommended transmission distances and precautions about using a custom
+#'   one.
 #' @param no_burn (optional) a SpatRaster that represents the non-burnable
 #'   landscape. Any cells that cannot receive wildfire (e.g. open water, rock)
 #'   and any cells that are not natural (e.g. built environment,
 #'   irrigated agricultural areas) should be of value 1, all other cells
 #'   should be NODATA. This parameter should be provided if preparing data
 #'   for [fire_exp_validate()]
+#' @param tdist Deprecated. Use `t_dist`. This parameter will be removed in
+#'   future versions of the package. Choose from: `"l"` for long-range
+#'   embers (500 m), `"s"` for short-range embers (100 m), `"r"`
+#'    for radiant heat (30 m)
 #'
 #' @return A SpatRaster object of exposure values between 0-1
 #'
@@ -159,16 +188,39 @@
 #' hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 #'
 #' # compute long range exposure
-#' fire_exp(hazard, tdist = "l")
+#' fire_exp(hazard, tdist = "long")
 #'
 
-fire_exp <- function(hazard, tdist = c("l", "s", "r"), no_burn) {
+fire_exp <- function(hazard, t_dist = 500,
+                     no_burn, tdist) {
+  if (!missing(tdist)) {
+    warning("use of the 'tdist' parameter has been deprecated.
+            Use 't_dist' (with an underscore) with a numeric value instead")
+    if (tdist == "l") {
+      t_dist <- 500
+    }
+    if (tdist == "s") {
+      t_dist <- 100
+    }
+    if (tdist == "r") {
+      t_dist <- 30
+    }
+    if (is.numeric(tdist)) {
+      t_dist = tdist
+    }
+  }
+
   stopifnot("`hazard` must be a SpatRaster object"
             = class(hazard) == "SpatRaster",
             "`hazard` layer must have values between 0-1"
             = (round(terra::minmax(hazard)[1]) >= 0
-               && round(terra::minmax(hazard)[2] <= 1)))
-  tdist <- match.arg(tdist)
+               && round(terra::minmax(hazard)[2] <= 1)),
+            "only one value can be provided for `tdist`"
+            = length(t_dist) == 1,
+            "`t_dist` must be numeric"
+            = class(t_dist) == "numeric")
+
+
 
   if (terra::crs(hazard) == "") {
     message("Input CRS is undefined: If output will be used in
@@ -189,29 +241,25 @@ fire_exp <- function(hazard, tdist = c("l", "s", "r"), no_burn) {
   haz <- hazard
   res <- terra::res(haz)[1]
 
-  if (tdist == "l") {
-    stopifnot("Insufficient resolution for longrange ember exposure assessment"
-              = res <= 150)
-    annulus <- c(res, 500)
-    window <- MultiscaleDTM::annulus_window(annulus, "map", res)
-  }
-  if (tdist == "s") {
-    stopifnot("Insufficient resolution for shortrange ember exposure assessment"
-              = res <= 33)
-    annulus <- c(res, 100)
-    window <- MultiscaleDTM::annulus_window(annulus, "map", res)
-  }
-  if (tdist == "r") {
-    stopifnot("Insufficient resolution for radiant heat exposure assessment"
-              = res <= 10)
-    annulus <- c(res, 30)
-    window <- MultiscaleDTM::annulus_window(annulus, "map", res)
-  }
+
+
+  res <- terra::res(hazard)[1]
+  stopifnot("insufficient resolution for chosen exposure transmission distance"
+            = res <= t_dist / 3)
+
+
+  annulus <- c(res, t_dist)
+  window <- MultiscaleDTM::annulus_window(annulus, "map", res)
+
+
   stopifnot("Extent of hazard raster too small for exposure assessment"
             = terra::nrow(window) * 2 < terra::nrow(haz))
   wgtwindow <- window / sum(window, na.rm = TRUE)
   exp <- terra::focal(haz, wgtwindow, fun = sum) %>%
-    tidyterra::rename(exposure = "focal_sum")
+    tidyterra::rename(exposure = "focal_sum") %>%
+    terra::round(4)
+
+
   if (missing(no_burn)) {
     return(exp)
   } else {

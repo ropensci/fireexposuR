@@ -4,22 +4,13 @@
 \alias{fire_exp_dir_map}
 \title{Map directional exposure}
 \usage{
-fire_exp_dir_map(
-  transects,
-  value,
-  zoom_level = 10,
-  labels,
-  title = "Directional Vulnerability"
-)
+fire_exp_dir_map(transects, value, labels, title = "Directional Vulnerability")
 }
 \arguments{
 \item{transects}{SpatVector. Output from \code{\link[=fire_exp_dir]{fire_exp_dir()}}}
 
 \item{value}{(Optional) SpatVector. Adds the value to the map. Use the same
 value feature used to generate the transects with \code{\link[=fire_exp_dir]{fire_exp_dir()}}}
-
-\item{zoom_level}{(Optional). Numeric. set the zoom level for the base map
-tile. See details. The default is \code{10}.}
 
 \item{labels}{(Optional) a vector of three strings. Custom formatting for the
 distances in the legend. If left blank, the function will automatically label
@@ -29,7 +20,7 @@ the distances in meters.}
 \code{"Directional Vulnerability"}}
 }
 \value{
-a map of directional exposure transects as a ggplot object
+a map of directional exposure transects as a tmap object
 }
 \description{
 \code{fire_exp_dir_map()} plots directional exposure transects onto
@@ -38,22 +29,13 @@ a map.
 \details{
 This function returns a standardized map with basic cartographic elements.
 
-The plot is returned as a ggplot object which can be exported/saved to
-multiple image file formats.
+The plot is returned as a tmap object which can be further customized using
+tmap commands or exported/saved to multiple image file formats. See
+\code{\link[tmap:tmap_save]{tmap::tmap_save()}} for export details.
 \subsection{Spatial reference}{
 
-This function dynamically pulls map tiles for a base map. The inputs are
-projected to WGS 84/Pseudo-Mercator (\href{https://epsg.io/3857}{EPSG:3857}) to
-align them with the map tiles.
-}
-
-\subsection{Zoom level}{
-
-The map tile zoom level may need to be adjusted. If the base map is blurry,
-increase the zoom level. Higher zoom levels will slow down the function, so
-only increase if necessary. Reference the
-\href{https://wiki.openstreetmap.org/wiki/Zoom_levels}{OpenStreetMap Wiki} for
-more information on zoom levels.
+This function dynamically pulls map tiles for a base map. The crs is set
+automatically. See \code{\link[tmap:tm_crs]{tmap::tm_crs()}} for details.
 }
 }
 \examples{
@@ -62,17 +44,15 @@ hazard_file_path <- "extdata/hazard.tif"
 hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
 
 # generate an example point
-point_wkt <- "POINT (400000 6050000)"
+point_wkt <- "POINT (345000 5876000)"
 point <- terra::vect(point_wkt, crs = hazard)
 
 # compute exposure metric
 exposure <- fire_exp(hazard)
 
 # generate transects
-transects <- fire_exp_dir(exposure, point)
+transects <- fire_exp_dir(exposure, point, interval = 5)
 
-# map with customized distance labels
-fire_exp_dir_map(transects, labels = c("5 km", "10 km", "15 km"),
-                 zoom_level = 9)
+fire_exp_dir_map(transects)
 
 }
