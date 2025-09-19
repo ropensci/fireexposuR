@@ -349,7 +349,7 @@ fire_exp_extract_map(exposure_long_values,
 
 ```
 
-Here we can see that there are 4 values that are extremely exposed (>45%) to both short- and long- range embers. 
+Here we can see that there are a few values that are extremely exposed (>45%) to both short- and long- range embers. 
 
 
 ### Advanced Example: Validate the exposure metric in a study area
