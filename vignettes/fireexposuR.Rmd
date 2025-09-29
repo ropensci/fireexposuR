@@ -55,7 +55,7 @@ Second, consider which analyses you are interested in using the package for. Det
 Consult the flowchart and table to determine which functions you are interested in using. Note that using `fire_exp_validate()` has more requirements, see the details in the function documentation.
 
 
-```{r, out.width = "850px", echo=FALSE}
+```{r, out.width = "850px", dpi = 200, echo=FALSE}
 knitr::include_graphics("flowchart.png")
 ```
 
@@ -130,7 +130,7 @@ exposure_all_cells <- fire_exp(hazard, t_dist = 500)
 
 Here we can compare the difference of removing the non-burnable cells. Its clear that most of the cells that were removed are barren rocky areas in the mountains, but include some man-made features as well like roads.
 
-```{r example1c, fig.width=9, fig.height=8,  fig.show="hold", out.width="50%"}
+```{r example1c, fig.width=6, fig.height=5.5,  fig.show="hold", out.width="50%"}
 # visualize in a map
 fire_exp_map(exposure, title = "Long-range exposure (non-burnable removed)")
 
@@ -175,7 +175,7 @@ Required input data:
 
 This example code demonstrates how to use the package to assess directional vulnerability for community boundary. We will use the exposure output from the previous example.
 
-```{r example2, fig.width=9, fig.height=8}
+```{r example2, fig.width=6, fig.height=5.5}
 # read example area of interest
 polygon_path <- system.file("extdata", "polygon.shp", package ="fireexposuR")
 aoi <- terra::vect(polygon_path)
@@ -291,7 +291,7 @@ hazard_short <- terra::classify(fuel, hazard_matrix_short)
 
 Looking at the results, we can see that there are far more hazardous cells (value of 1) for a short-range ember exposure assessment.
 
-```{r example3d, echo = FALSE, fig.show="hold", out.width="50%", fig.height=8}
+```{r example3d, echo = FALSE, fig.show="hold", out.width="50%", fig.height=6}
 terra::plot(hazard_long, main = "Long-range hazard")
 
 terra::plot(hazard_short, main = "short-range hazard")
@@ -313,7 +313,7 @@ exposure_short <- fire_exp(hazard_short, t_dist = 100)
 Now we can compare them using maps and summary tables. We will use an area of interest representing the built-up area of this community. 
 
 
-```{r example3f, fig.show="hold", out.width="50%", fig.height=8}
+```{r example3f, fig.show="hold", out.width="50%", fig.height=6}
 # read example area of interest
 polygon_path <- system.file("extdata", "polygon.shp", package ="fireexposuR")
 aoi <- terra::vect(polygon_path)
@@ -333,7 +333,7 @@ We can see that at a local scale the west side of our community is more exposed 
 
 Next, we can see the exposure of individual values. Note that these values are randomly generated so won't align with the structures you can see in the basemap. 
 
-```{r example3g, fig.show="hold", out.width="50%", fig.height=8}
+```{r example3g, fig.show="hold", out.width="50%", fig.height=6}
 # randomly generate points to represent values within the area of interest
 values <- terra::spatSample(aoi, 20)
 
