@@ -1,6 +1,6 @@
-# fireexposuR (development version)
+# fireexposuR 1.2.0 (September 29th, 2025)
 
-* Continuous improvement of documentation and resources
+* Improvement of documentation and vignettes
 * use of `fire_exp_adjust()` has been deprecated. The functionality has been added
 to `fire_exp()` instead.
 * `fire_exp()` now takes a numeric value for the transmission distance (`t_dist`).
