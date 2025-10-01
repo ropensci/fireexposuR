@@ -39,6 +39,8 @@ automatically. See \code{\link[tmap:tm_crs]{tmap::tm_crs()}} for details.
 }
 }
 \examples{
+
+\donttest{
 # read example hazard data
 hazard_file_path <- "extdata/hazard.tif"
 hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
@@ -54,5 +56,5 @@ exposure <- fire_exp(hazard)
 transects <- fire_exp_dir(exposure, point, interval = 5)
 
 fire_exp_dir_map(transects)
-
+}
 }

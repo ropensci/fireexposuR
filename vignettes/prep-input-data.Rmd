@@ -137,7 +137,7 @@ There are two documented methods for hazard reclassification; binary (as present
 
 ### USA 
 
-[Wildland-Urban Interface](https://www.sciencebase.gov/catalog/item/617bfb43d34ea58c3c70038f)
+[Wildland-Urban Interface](https://esajournals.onlinelibrary.wiley.com/doi/10.1002/eap.2597)
 
 ### Global
 
