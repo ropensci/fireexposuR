@@ -26,7 +26,7 @@ affiliations:
 
 # Summary
 
-`fireexposuR`(v1.2.0) is an R package that automates wildfire exposure 
+`fireexposuR` (v1.2.0) is an R package that automates wildfire exposure 
 methodologies presented in several scientific publications 
 [@beverly:2010; @beverly:2021; @beverly:2023], providing an accessible and 
 adaptable platform to a broad user base. Wildfire exposure is a numeric rating 

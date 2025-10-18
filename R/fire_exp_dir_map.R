@@ -31,6 +31,8 @@
 
 #' @export
 #' @examples
+#'
+#' \donttest{
 #' # read example hazard data
 #' hazard_file_path <- "extdata/hazard.tif"
 #' hazard <- terra::rast(system.file(hazard_file_path, package = "fireexposuR"))
@@ -46,7 +48,7 @@
 #' transects <- fire_exp_dir(exposure, point, interval = 5)
 #'
 #' fire_exp_dir_map(transects)
-#'
+#'}
 
 
 
