@@ -126,7 +126,8 @@ data requirements are detailed in the function documentation.
 ![Figure 1. Suggested workflow of core `fireexposuR` functionality. 
 Computational outputs, outlined in navy, can be further manipulated in R, 
 visualized with `fireexposuR` functions, or 
-exported. \label{fig:one}](flowchart.png)
+exported. Images and tables can be exported with base R and spatial data can be
+exported with `{terra}`. \label{fig:one}](flowchart.png)
 
 # Acknowledgements
 
