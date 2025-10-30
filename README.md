@@ -13,6 +13,7 @@ developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.re
 Review](https://badges.ropensci.org/659_status.svg)](https://github.com/ropensci/software-review/issues/659)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/fireexposuR)](https://CRAN.R-project.org/package=fireexposuR)
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.08479/status.svg)](https://doi.org/10.21105/joss.08479)
 <!-- badges: end -->
 
 `firexposuR` is an R package for computing and visualizing wildfire
