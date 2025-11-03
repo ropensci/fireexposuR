@@ -2,10 +2,15 @@ citHeader("To cite fireexposuR in publications use:")
 
 bibentry(
   key      = "fireexposuR",
-  bibtype  = "Manual",
-  title    = "fireexposuR: Compute and Visualize Wildfire Exposure",
+  bibtype  = "Article",
+  title    = "fireexposuR: An R package for computing and visualizing wildfire exposure",
   author   = "Air M. Forbes [aut], Jennifer L. Beverly [ths]",
-  note     = "R Package version xxx",
-  year     = "2024",
-  url      = "https://github.com/ropensci/fireexposuR"
+  journal  = "Journal of Open Source Software",
+  year     = "2025",
+  doi      = "10.21105/joss.08479",
+  volume   = 10,
+  number   = 114,
+  pages    = 8479,
+  journal  = "The Journal of Open Source Software",
+  note     = sprintf("R package version %s", meta$Version)
 )
